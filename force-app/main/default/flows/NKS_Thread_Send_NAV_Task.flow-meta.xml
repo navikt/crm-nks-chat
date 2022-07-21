@@ -151,8 +151,8 @@
     <dynamicChoiceSets>
         <name>Priority_Picklist</name>
         <dataType>Picklist</dataType>
-        <displayField xsi:nil="true"/>
-        <object xsi:nil="true"/>
+        <displayField xsi:nil="true" />
+        <object xsi:nil="true" />
         <picklistField>CRM_Priority__c</picklistField>
         <picklistObject>NavTask__c</picklistObject>
     </dynamicChoiceSets>
@@ -224,6 +224,12 @@
                 <name>themeGroup</name>
                 <value>
                     <elementReference>Get_Thread.CRM_Theme_Group__c</elementReference>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>themeSet</name>
+                <value>
+                    <stringValue>ALL</stringValue>
                 </value>
             </inputParameters>
             <inputParameters>
