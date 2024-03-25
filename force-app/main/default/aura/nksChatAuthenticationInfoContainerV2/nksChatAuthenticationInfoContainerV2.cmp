@@ -1,0 +1,38 @@
+<aura:component
+    implements="flexipage:availableForAllPageTypes, force:hasRecordId"
+    controller="NKS_ChatTranscriptService"
+>
+    <aura:attribute name="loggingEnabled" type="boolean" default="true" />
+    <aura:attribute name="authenticated" type="boolean" default="false" />
+    <aura:attribute name="accountFields" type="String" />
+    <aura:attribute name="caseFields" type="String" />
+    <aura:attribute name="personFields" type="String" />
+    <aura:attribute name="copyPersonFields" type="String" />
+    <aura:attribute name="conversation" type="object[]" />
+    <aura:attribute name="subscription" type="Map" />
+    <aura:attribute name="chatRecord" type="Object" />
+    <aura:attribute name="recordLoadError" type="String" />
+
+    <lightning:conversationToolkitApi aura:id="chatToolkit" />
+    <lightning:workspaceAPI aura:id="workspace" />
+    <lightning:empApi aura:id="empApi" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
+
+    <force:recordData
+        aura:id="recordLoader"
+        recordId="{!v.recordId}"
+        fields="CRM_Authentication_Status__c"
+        targetFields="{!v.chatRecord}"
+        targetError="{!v.recordLoadError}"
+    />
+
+    <c:nksChatAuthenticationInfoV2
+        recordId="{!v.recordId}"
+        loggingEnabled="{!v.loggingEnabled}"
+        onrequestauthentication="{!c.requestAuthentication}"
+        onauthenticationcomplete="{!c.handleAuthCompleted}"
+        aura:id="chatAuthInfo"
+    >
+    </c:nksChatAuthenticationInfoV2>
+</aura:component>

@@ -1,0 +1,14 @@
+.badge {
+    width: 100%;
+}
+
+.button {
+    border-radius: 0.938rem;
+    width: 100%;
+}
+
+.customBadge {
+    width: 100%;
+    background-color: #ffb24914;
+    border: #ffb249 solid 2px;
+}
