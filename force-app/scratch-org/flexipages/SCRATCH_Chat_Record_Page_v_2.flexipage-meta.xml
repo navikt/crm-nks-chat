@@ -415,11 +415,15 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>flowNames</name>
-                    <value>NKS_Journal_Chat_Thread_Screenflow, NKS_Chat_Send_NAV_Task</value>
+                    <value>NKS_Chat_Journal_Thread_v_2, NKS_Chat_Send_NAV_Task_v_2</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>setBorders</name>
-                    <value>false</value>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>showNotifications</name>
+                    <value>true</value>
                 </componentInstanceProperties>
                 <componentName>nksButtonContainerBottom</componentName>
                 <identifier>c_nksButtonContainerBottom</identifier>
