@@ -1,8 +1,0 @@
-<aura:component
-    implements="flexipage:availableForAllPageTypes, lightning:backgroundUtilityItem"
-    controller="ChatAuthController"
->
-    <c:loggerUtility aura:id="loggerUtility" />
-
-    <aura:handler event="lightning:conversationChatEnded" action="{!c.handleChatEnded}" />
-</aura:component>

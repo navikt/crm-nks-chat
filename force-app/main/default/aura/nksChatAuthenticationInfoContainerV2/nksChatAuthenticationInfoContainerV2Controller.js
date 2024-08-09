@@ -15,17 +15,35 @@
         const authInfoCmp = component.find('chatAuthInfo');
         let authUrl = event.getParam('authUrl');
 
-        chatToolkit
-            .sendMessage({
-                recordId: recordId,
-                message: {
-                    text:
-                        'Trykk for å logge inn på nav.no og gi veilederen tilgang til saken din. ' + authUrl + recordId
+        const action = component.get('c.generateAuthMessage');
+        action.setParams({ recordId });
+        action.setCallback(this, function (response) {
+            const state = response.getState();
+            if (state === 'SUCCESS') {
+                chatToolkit
+                    .sendMessage({
+                        recordId: recordId,
+                        message: {
+                            text: response.getReturnValue() + authUrl + recordId
+                        }
+                    })
+                    .then(function (result) {
+                        authInfoCmp.authRequestHandling(result);
+                    });
+            } else if (state === 'INCOMPLETE') {
+                // do something
+            } else if (state === 'ERROR') {
+                const errors = response.getError();
+                if (errors) {
+                    if (errors[0] && errors[0].message) {
+                        console.log('Error message: ' + errors[0].message);
+                    }
+                } else {
+                    console.log('Unknown error');
                 }
-            })
-            .then(function (result) {
-                authInfoCmp.authRequestHandling(result);
-            });
+            }
+        });
+        $A.enqueueAction(action);
     },
 
     handleAuthCompleted: function (component, event, helper) {
