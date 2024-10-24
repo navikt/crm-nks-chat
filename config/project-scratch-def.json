@@ -16,7 +16,8 @@
         "ServiceCloud",
         "Knowledge",
         "LightningServiceConsole",
-        "FIELDSERVICE:1"
+        "FIELDSERVICE:1",
+        "LiveMessage"
     ],
     "country": "NO",
     "language": "en_US",
@@ -67,6 +68,9 @@
         },
         "surveySettings": {
             "enableSurvey": true
+        },
+        "liveMessageSettings": {
+            "enableLiveMessage": true
         }
     }
 }

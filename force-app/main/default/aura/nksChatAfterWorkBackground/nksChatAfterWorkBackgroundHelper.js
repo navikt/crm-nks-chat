@@ -57,9 +57,28 @@
         component.set('v.threatReportList', threatReports);
         helper.updateThreatTime(component, reportingId, time);
     },
+
     updateThreatTime: function (component, reportingId, time) {
         var action = component.get('c.updateThreatClickValue');
         action.setParams({ rDataId: reportingId, value: time });
         $A.enqueueAction(action);
+    },
+
+    handleChatEnded: function (component, event, helper) {
+        const eventRecordId = event.data.payload.MessagingSessionId__c;
+        const workspace = component.find('workspace');
+        const eventFullID = helper.convertId15To18(eventRecordId);
+
+        workspace
+            .getAllTabInfo()
+            .then((res) => {
+                const eventTab = res.find((content) => content.recordId === eventFullID);
+                if (!eventTab) return;
+                helper.storeClosedChatTabId(component, eventTab.tabId, eventFullID);
+                helper.startTimer(component);
+            })
+            .catch((error) => {
+                console.error('Error closing tab:', error);
+            });
     }
 });
