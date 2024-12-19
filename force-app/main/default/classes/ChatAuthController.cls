@@ -75,7 +75,7 @@ public without sharing class ChatAuthController {
      **/
     @AuraEnabled
     public static string getCommunityAuthUrl() {
-        List<Network> community = [SELECT Id, Name, UrlPathPrefix FROM Network WHERE Name = 'nks'];
+        List<Network> community = [SELECT Id FROM Network WHERE Name = 'nks'];
         String communityUrl = community.isEmpty() ? '' : Network.getLoginUrl(community[0].Id);
         communityUrl = communityUrl.removeEnd(communityUrl.substringAfterLast('/'));
         communityUrl += 's/identity-verified?ctid=';
