@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <decisions>
+        <name>Check_criteria_to_delete</name>
+        <label>Check criteria to delete</label>
+        <locationX>451</locationX>
+        <locationY>276</locationY>
+        <defaultConnectorLabel>Do not delete</defaultConnectorLabel>
+        <rules>
+            <name>Delete</name>
+            <conditionLogic>1 AND 2 AND (3 OR 4) AND 5</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.CRM_Authentication_Status__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>Completed</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.EndUserAccountId</leftValueReference>
+                <operator>IsBlank</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Ended</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Inactive</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.MessagingChannel.MasterLabel</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>NKS Messaging</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Find_Conversation_Entries_to_Delete</targetReference>
+            </connector>
+            <label>Delete</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_if_Conversation_Entries_to_Delete_exists</name>
+        <label>Check if Conversation Entries to Delete exists</label>
+        <locationX>297</locationX>
+        <locationY>492</locationY>
+        <defaultConnectorLabel>Did not find Any Conversation Entries to Delete</defaultConnectorLabel>
+        <rules>
+            <name>Found_Conversation_Entries_to_Delete</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Find_Conversation_Entries_to_Delete</leftValueReference>
+                <operator>IsEmpty</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Delete_Related_Conversation_Entries</targetReference>
+            </connector>
+            <label>Found Conversation Entries to Delete</label>
+        </rules>
+    </decisions>
+    <description>Delete Conversation Entry record related to Messaging Session Conversation after 2 days if not authenticated.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>ChannelName</name>
+        <dataType>String</dataType>
+        <expression>{!$Record.ChannelName}</expression>
+    </formulas>
+    <interviewLabel>NKS Delete Unauthenticated Chats After 2 Days {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>NKS Delete Unauthenticated Chats After 2 Days</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordDeletes>
+        <name>Delete_Related_Conversation_Entries</name>
+        <label>Delete Related Conversation Entries</label>
+        <locationX>165</locationX>
+        <locationY>600</locationY>
+        <inputReference>Find_Conversation_Entries_to_Delete</inputReference>
+    </recordDeletes>
+    <recordLookups>
+        <name>Find_Conversation_Entries_to_Delete</name>
+        <label>Find Conversation Entries to Delete</label>
+        <locationX>297</locationX>
+        <locationY>384</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_if_Conversation_Entries_to_Delete_exists</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>ConversationId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.ConversationId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>ConversationEntry</object>
+        <queriedFields>Id</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <object>MessagingSession</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <scheduledPaths>
+            <name>Delete_Conversation_Entry_after_2_days</name>
+            <connector>
+                <targetReference>Check_criteria_to_delete</targetReference>
+            </connector>
+            <label>Delete Conversation Entry after 2 days</label>
+            <offsetNumber>2</offsetNumber>
+            <offsetUnit>Days</offsetUnit>
+            <timeSource>RecordTriggerEvent</timeSource>
+        </scheduledPaths>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

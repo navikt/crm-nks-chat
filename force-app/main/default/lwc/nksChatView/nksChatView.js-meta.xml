@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata" fqn="recordComponent">
     <apiVersion>52.0</apiVersion>
     <isExposed>true</isExposed>
@@ -10,7 +10,7 @@
     <targetConfigs>
         <targetConfig targets="lightningCommunity__Default">
             <property name="recordId" type="String" label="Record ID"
-                description="Should be set to {!recordId}"/>
+                description="Should be set to {!recordId}" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>
