@@ -1,29 +1,38 @@
-import { LightningElement, api, wire, track } from 'lwc';
+import { LightningElement, api, wire } from 'lwc';
 import getThreadId from '@salesforce/apex/nksChatView.getThreadId';
-import markasread from '@salesforce/apex/CRM_MessageHelperExperience.markAsRead';
 import getChatbotMessage from '@salesforce/apex/nksChatView.getChatbotMessage';
+import getObjectInfo from '@salesforce/apex/nksChatView.getObjectInfo';
 import { publish, MessageContext } from 'lightning/messageService';
 import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
 import userId from '@salesforce/user/Id';
-
-///////////// Extra import
+import markasread from '@salesforce/apex/CRM_MessageHelperExperience.markAsRead';
 import getmessages from '@salesforce/apex/CRM_MessageHelperExperience.getMessagesFromThread';
 import getContactId from '@salesforce/apex/CRM_MessageHelperExperience.getUserContactId';
+import { CurrentPageReference } from 'lightning/navigation';
+import basepath from '@salesforce/community/basePath';
 
 export default class NksChatView extends LightningElement {
     @api recordId;
+    pageRefChatId;
     threadId;
-    errorList = { title: '', errors: [] };
     modalOpen = false;
-    @track chatbotMessage = 'Laster inn samtale';
+    userContactId;
+    messages;
+    chatbotMessage = 'Laster inn samtale';
+    recordType;
 
     @wire(MessageContext)
     messageContext;
 
-    userContactId;
-    messages;
+    @wire(CurrentPageReference)
+    getStateParameters(currentPageReference) {
+        if (currentPageReference) {
+            this.pageRefChatId = currentPageReference.state?.id;
+        }
+    }
 
     connectedCallback() {
+        this.redirect();
         getContactId({})
             .then((contactId) => {
                 this.userContactId = contactId;
@@ -33,10 +42,20 @@ export default class NksChatView extends LightningElement {
             });
     }
 
-    @wire(getThreadId, { chatId: '$recordId' })
-    test({ error, data }) {
+    @wire(getObjectInfo, { recordId: '$pageRefChatId' })
+    wiredGetObjectInfo({ error, data }) {
         if (error) {
-            console.log(error);
+            console.error(error);
+        }
+        if (data) {
+            this.recordType = data;
+        }
+    }
+
+    @wire(getThreadId, { chatId: '$pageRefChatId' })
+    wireGetThreadId({ error, data }) {
+        if (error) {
+            console.error(error);
         }
         if (data) {
             this.threadId = data;
@@ -44,24 +63,29 @@ export default class NksChatView extends LightningElement {
         }
     }
 
-    handleValidation() {
-        this.errorList = {
-            title: '',
-            errors: [{ Id: 1, EventItem: '', Text: 'Du kan ikke sende melding på en chat.' }]
-        };
-        this.createMessage(false);
-    }
-
-    createMessage(validation) {
-        this.template.querySelector('c-crm-messaging-community-thread-viewer').createMessage(validation);
+    @wire(getmessages, { threadId: '$threadId' })
+    wiremessages(result) {
+        if (result.error) {
+            this.error = result.error;
+        } else if (result.data) {
+            this.messages = result.data;
+        }
     }
 
     handleModalButton() {
         this.modalOpen = true;
         this.termsModal.focusModal();
         publish(this.messageContext, globalModalOpen, { status: 'true' });
-        getChatbotMessage({ chatId: this.recordId, userId: userId }).then((res) => {
+        getChatbotMessage({
+            chatId: this.pageRefChatId,
+            userId: userId,
+            isChatTranscript: this.recordType === 'LiveChatTranscript'
+        }).then((res) => {
             this.chatbotMessage = res;
+            if (this.recordType === 'MessagingSession') {
+                // Add new lines to chatbot message for proper formatting for Messaging Session
+                this.chatbotMessage = this.chatbotMessage?.replace(/(?:\r\n|\r|\n)/g, '<br>');
+            }
         });
     }
 
@@ -80,17 +104,16 @@ export default class NksChatView extends LightningElement {
         }
     }
 
+    // Redirect for static user notifications links
+    redirect() {
+        if (this.recordId != null && this.recordId !== '') {
+            const link = basepath + '/chat?id=' + this.recordId;
+            // eslint-disable-next-line @locker/locker/distorted-xml-http-request-window-open
+            window.open(link, '_self');
+        }
+    }
+
     get termsModal() {
         return this.template.querySelector('c-community-modal');
-    }
-    /////////////////////////////////////////////////////////////
-
-    @wire(getmessages, { threadId: '$threadId' }) //Calls apex and extracts messages related to this record
-    wiremessages(result) {
-        if (result.error) {
-            this.error = result.error;
-        } else if (result.data) {
-            this.messages = result.data;
-        }
     }
 }

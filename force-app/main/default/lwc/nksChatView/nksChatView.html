@@ -1,57 +1,17 @@
 <template>
-    <!-- <c-crm-messaging-community-thread-viewer
-        record-id={threadId}
-        alertopen="asdf"
-        alerttext="a"
-        header="Test"
-        secondheader="Testerton"
-        override-validation
-        onvalidationevent={handleValidation}
-        error-list={errorList}
-    >
-        <div slot="subheader">
-            <p>
-                Trykk her for å se
-                <button onclick={handleModalButton} class="slds-var-m-left_small lenke vilkar-link focusBtn">
-                    samtale med chatbot Frida
-                </button>
-            </p>
-
-            <div>
-                <c-community-modal show-modal={modalOpen} onmodalclosed={closeModal} onkeyup={handleKeyboardEvent}>
-                    <h1 slot="modalHeader" class="slds-var-m-top_x-large typo-sidetittel text-center blokk-l">
-                        Chatbot samtale
-                    </h1>
-                    <div slot="modalContent">
-                        <section>
-                            <form class="betingelser-panel panel side-innhold">
-                                <div class="blokk-m slds-var-m-top_medium" style="text-align: left">
-                                    <lightning-formatted-rich-text
-                                        value={chatbotMessage}
-                                    ></lightning-formatted-rich-text>
-                                </div>
-                            </form>
-                        </section>
-                    </div>
-                </c-community-modal>
-            </div>
-        </div>
-    </c-crm-messaging-community-thread-viewer> -->
     <div class="decorator-wrapper">
         <div class="header" style="text-align: center">
             <h1 class="typo-sidetittel">Chatsamtale</h1>
             <div>
                 <p>
-                    Trykk her for å se
-                    <button onclick={handleModalButton} class="slds-var-m-left_small lenke vilkar-link focusBtn">
-                        samtale med chatbot Frida
+                    <button onclick={handleModalButton} class="lenke vilkar-link focusBtn">
+                        Trykk her for å se samtale med chatbot Frida
                     </button>
                 </p>
-
                 <div>
                     <c-community-modal show-modal={modalOpen} onmodalclosed={closeModal} onkeyup={handleKeyboardEvent}>
                         <h1 slot="modalHeader" class="slds-var-m-top_x-large typo-sidetittel text-center blokk-l">
-                            Chatbot samtale
+                            Samtale med chatbot Frida
                         </h1>
                         <div slot="modalContent">
                             <section>
