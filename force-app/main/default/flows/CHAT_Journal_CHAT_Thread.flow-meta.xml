@@ -14,7 +14,7 @@
         <inputParameters>
             <name>documentString</name>
             <value>
-                <elementReference>JOURNALED_THREAD.Additional_Information__c</elementReference>
+                <elementReference>JOURNALED_THREAD.CRM_Additional_Information__c</elementReference>
             </value>
         </inputParameters>
         <inputParameters>
@@ -789,7 +789,7 @@
         <queriedFields>CRM_Date_Time_Registered__c</queriedFields>
         <queriedFields>CRM_Related_Object__c</queriedFields>
         <queriedFields>CRM_Theme_Name__c</queriedFields>
-        <queriedFields>Additional_Information__c</queriedFields>
+        <queriedFields>CRM_Additional_Information__c</queriedFields>
     </recordLookups>
     <recordUpdates>
         <name>Update_Journal_Entry</name>
