@@ -6,7 +6,7 @@
         <name>Verify_Authentication_Status</name>
         <label>Verify Authentication Status</label>
         <locationX>182</locationX>
-        <locationY>278</locationY>
+        <locationY>242</locationY>
         <defaultConnector>
             <targetReference>User_Not_Authenticated_Screen</targetReference>
         </defaultConnector>
@@ -34,6 +34,7 @@
             <label>Is Authenticated</label>
         </rules>
     </decisions>
+    <environments>Default</environments>
     <interviewLabel>Journal Chat Thread {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Journal Chat Thread - Screenflow</label>
     <processMetadataValues>
@@ -60,7 +61,7 @@
         <name>Get_Account</name>
         <label>Get Account</label>
         <locationX>50</locationX>
-        <locationY>398</locationY>
+        <locationY>350</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Get_Thread</targetReference>
@@ -81,7 +82,7 @@
         <name>Get_Chat_Transcript</name>
         <label>Get Chat Transcript</label>
         <locationX>182</locationX>
-        <locationY>158</locationY>
+        <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Verify_Authentication_Status</targetReference>
@@ -107,7 +108,7 @@
         <name>Get_Thread</name>
         <label>Get Thread</label>
         <locationX>50</locationX>
-        <locationY>518</locationY>
+        <locationY>458</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Journal_Entry_Screen</targetReference>
@@ -130,7 +131,7 @@
         <name>Finish_Screen</name>
         <label>Finish Screen</label>
         <locationX>50</locationX>
-        <locationY>878</locationY>
+        <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -179,7 +180,7 @@
         <name>Journal_Entry_Screen</name>
         <label>Journal Entry Screen</label>
         <locationX>50</locationX>
-        <locationY>638</locationY>
+        <locationY>566</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -214,7 +215,7 @@
         <name>User_Not_Authenticated_Screen</name>
         <label>User Not Authenticated Screen</label>
         <locationX>314</locationX>
-        <locationY>398</locationY>
+        <locationY>350</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -240,7 +241,7 @@
         <name>Create_Journal_Entry</name>
         <label>Create Journal Entry</label>
         <locationX>50</locationX>
-        <locationY>758</locationY>
+        <locationY>674</locationY>
         <connector>
             <targetReference>Finish_Screen</targetReference>
         </connector>
@@ -273,6 +274,12 @@
             <name>Journal_Post_Type</name>
             <value>
                 <stringValue>INNGAAENDE</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>Journal_Subtheme_Code</name>
+            <value>
+                <elementReference>Person_Case_Overview.selectedSubtheme</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
