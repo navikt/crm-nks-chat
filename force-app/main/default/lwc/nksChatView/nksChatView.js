@@ -72,7 +72,7 @@ export default class NksChatView extends LightningElement {
             this.chatbotMessage = res;
         });
 
-        logModalEvent(true, 'Chatbot samtale', 'nksChatView', 'Chatsamtale');
+        logModalEvent(true, 'Chatbot samtale', 'innboks - chat', 'nksChatView', 'Chatsamtale');
     }
 
     closeModal() {
@@ -81,7 +81,7 @@ export default class NksChatView extends LightningElement {
         const btn = this.template.querySelector('.focusBtn');
         btn.focus();
 
-        logModalEvent(false, 'Chatbot samtale', 'nksChatView', 'Chatsamtale');
+        logModalEvent(false, 'Chatbot samtale', 'innboks - chat', 'nksChatView', 'Chatsamtale');
     }
 
     handleKeyboardEvent(event) {
