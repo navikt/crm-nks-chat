@@ -7,7 +7,7 @@ import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
 import userId from '@salesforce/user/Id';
 import getmessages from '@salesforce/apex/CRM_MessageHelperExperience.getMessagesFromThread';
 import getContactId from '@salesforce/apex/CRM_MessageHelperExperience.getUserContactId';
-import { logModalEvent } from 'c/amplitude';
+import { logModalEvent, getComponentName } from 'c/inboxAmplitude';
 
 export default class NksChatView extends LightningElement {
     @api recordId;
@@ -72,7 +72,7 @@ export default class NksChatView extends LightningElement {
             this.chatbotMessage = res;
         });
 
-        logModalEvent(true, 'Chatbot samtale', 'chat', 'nksChatView', 'Chatsamtale');
+        logModalEvent(true, 'Chatbot samtale', 'chat', getComponentName('NksChatView'), 'Chatsamtale');
     }
 
     closeModal() {
@@ -81,7 +81,7 @@ export default class NksChatView extends LightningElement {
         const btn = this.template.querySelector('.focusBtn');
         btn.focus();
 
-        logModalEvent(false, 'Chatbot samtale', 'chat', 'nksChatView', 'Chatsamtale');
+        logModalEvent(false, 'Chatbot samtale', 'chat', getComponentName('NksChatView'), 'Chatsamtale');
     }
 
     handleKeyboardEvent(event) {
