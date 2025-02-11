@@ -27,13 +27,13 @@ public with sharing class nksChatView_Test {
     }
 
     @isTest
-    static void testGetThreadId() {
+    static void testGetThread() {
         LiveChatTranscript transcript = [SELECT Id FROM LiveChatTranscript LIMIT 1];
 
         Test.startTest();
-        Id threadId = nksChatView.getThreadId(transcript.Id);
+        Thread__c testThread = nksChatView.getThread(transcript.Id);
         Test.stopTest();
-        System.assert(threadId != null);
+        Assert.isNotNull(testThread.Id);
     }
 
     @isTest
@@ -41,9 +41,9 @@ public with sharing class nksChatView_Test {
         LiveChatVisitor visitor = [SELECT Id FROM LiveChatVisitor LIMIT 1];
 
         Test.startTest();
-        Id threadId = nksChatView.getThreadId(visitor.Id);
+        Thread__c testThread = nksChatView.getThread(visitor.Id);
         Test.stopTest();
-        System.assert(threadId == null);
+        Assert.isNull(testThread.Id == null);
     }
 
     @isTest
@@ -53,7 +53,7 @@ public with sharing class nksChatView_Test {
         Test.startTest();
         String chatConversation = nksChatView.getChatbotMessage(transcript.Id, user.Id);
         Test.stopTest();
-        System.assert(chatConversation == 'Det oppstod en feil');
+        Assert.isTrue(chatConversation == 'Det oppstod en feil');
     }
 
     @isTest
@@ -63,6 +63,6 @@ public with sharing class nksChatView_Test {
         Test.startTest();
         String chatConversation = nksChatView.getChatbotMessage(visitor.Id, user.Id);
         Test.stopTest();
-        System.assert(chatConversation == 'Det oppstod en feil');
+        Assert.isTrue(chatConversation == 'Det oppstod en feil');
     }
 }
