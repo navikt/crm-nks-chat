@@ -4,7 +4,7 @@ global class NKS_CaseBotConversationHandler extends MyTriggers {
             Id sourceId = casy.sourceId;
             if (
                 sourceId != null &&
-                sourceId.getSobjectType().getDescribe().getName() == 'LiveChatTranscript' &&
+                sourceId.getSobjectType().getDescribe().getName() == 'MessagingSession' &&
                 String.isBlank(casy.NKS_Conversation__c) &&
                 String.isNotBlank(casy.Description)
             ) {

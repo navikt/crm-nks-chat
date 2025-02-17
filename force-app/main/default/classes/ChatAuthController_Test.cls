@@ -1,17 +1,19 @@
 @isTest
 public class ChatAuthController_Test {
+    //Tester må tilpasses MessagingSession
     @TestSetup
     static void makeData() {
         Case casy = (Case) UTIL_TestDataFactory.createRecord(new Case());
-        UTIL_TestDataFactory.createRecord(new LiveChatTranscript(CaseId = casy.Id));
+        UTIL_TestDataFactory.createRecord(new MessagingSession(CaseId = casy.Id));
     }
+
 
     @isTest
     static void testGetChatStatus() {
         Map<String, String> chatStatuses;
 
         Test.startTest();
-        LiveChatTranscript chatTranscript = [SELECT Id FROM LiveChatTranscript LIMIT 1];
+        MessagingSession chatTranscript = [SELECT Id FROM MessagingSession LIMIT 1];
         chatStatuses = ChatAuthController.getChatInfo(chatTranscript.Id);
 
         //Testing exception
@@ -28,7 +30,7 @@ public class ChatAuthController_Test {
     @isTest
     static void testSetStatusRequested() {
         Test.startTest();
-        LiveChatTranscript chatTranscript = [SELECT Id FROM LiveChatTranscript LIMIT 1];
+        MessagingSession chatTranscript = [SELECT Id FROM MessagingSession LIMIT 1];
         LiveChatVisitor visitor = [SELECT Id FROM LiveChatVisitor LIMIT 1];
         ChatAuthController.setStatusRequested(chatTranscript.Id);
 
@@ -40,9 +42,9 @@ public class ChatAuthController_Test {
         }
         Test.stopTest();
 
-        LiveChatTranscript updatedTranscript = [
+        MessagingSession updatedTranscript = [
             SELECT Id, CRM_Authentication_Status__c
-            FROM LiveChatTranscript
+            FROM MessagingSession
             WHERE Id = :chatTranscript.Id
         ];
 
@@ -51,15 +53,15 @@ public class ChatAuthController_Test {
 
     @isTest
     static void testSetStatusCompleted() {
-        LiveChatTranscript chatTranscript = [SELECT Id FROM LiveChatTranscript LIMIT 1];
+        MessagingSession chatTranscript = [SELECT Id FROM MessagingSession LIMIT 1];
 
         Test.startTest();
         ChatAuthController.setStatusCompleted(chatTranscript.Id);
         Test.stopTest();
 
-        LiveChatTranscript updatedTranscript = [
+        MessagingSession updatedTranscript = [
             SELECT Id, CRM_Authentication_Status__c
-            FROM LiveChatTranscript
+            FROM MessagingSession
             WHERE Id = :chatTranscript.Id
         ];
         System.assertEquals('Completed', updatedTranscript.CRM_Authentication_Status__c);
@@ -79,7 +81,7 @@ public class ChatAuthController_Test {
     @isTest
     static void testGetCounselorName() {
         String fullname;
-        LiveChatTranscript chatTranscript = [SELECT Id FROM LiveChatTranscript LIMIT 1];
+        MessagingSession chatTranscript = [SELECT Id FROM MessagingSession LIMIT 1];
 
         Test.startTest();
         fullname = ChatAuthController.getCounselorName(chatTranscript.Id);

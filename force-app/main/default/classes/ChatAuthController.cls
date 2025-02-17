@@ -4,16 +4,16 @@ public without sharing class ChatAuthController {
         List<SObject> recordsToUpdate = new List<SObject>();
 
         try {
-            LiveChatTranscript lct = getChatTranscript(chatTranscriptId);
-            lct.CRM_Authentication_Status__c = status;
-            recordsToUpdate.add(lct);
+            MessagingSession messagingSession = getMessagingSession(messagingSessionId);
+            messagingSession.CRM_Authentication_Status__c = status;
+            recordsToUpdate.add(messagingSession);
 
-            if (status == 'Completed' && String.isBlank(lct.AccountId)) {
-                handleChatAuthentication(lct);
+            if (status == 'Completed' && String.isBlank(messagingSession.AccountId)) {
+                handleChatAuthentication(messagingSession);
 
-                if (String.isNotBlank(lct.CaseId)) {
-                    Case casy = new Case(Id = lct.CaseId, AccountId = lct.accountId, ContactId = lct.contactId);
-                    recordsToUpdate.add(casy);
+                if (String.isNotBlank(messagingSession.CaseId)) {
+                    Case case = new Case(Id = messagingSession.CaseId, AccountId = messagingSession.accountId, ContactId = messagingSession.contactId);
+                    recordsToUpdate.add(case);
                 }
             }
             update recordsToUpdate;
@@ -22,17 +22,12 @@ public without sharing class ChatAuthController {
         }
     }
 
-    /**
-     * @description: Performs necesary steps to related the chat and case to the authenticated individual
-     * @author Stian Ruud Schikora | 01-31-2022
-     * @param chatTrans
-     **/
-    private static void handleChatAuthentication(LiveChatTranscript chatTrans) {
+    private static void handleChatAuthentication(MessagingSession messagingSession) {
         Id accountId = getPersonAccountId();
         Id contactId = getPersonContactId();
-        chatTrans.AccountId = accountId;
-        chatTrans.ContactId = contactId;
-        chatTrans.NKS_Authentication_Timestamp__c = DateTime.now();
+        MessagingSession.AccountId = accountId;
+        MessagingSession.ContactId = contactId;
+        MessagingSession.NKS_Authentication_Timestamp__c = DateTime.now();
         createChatThread(chatTrans);
 
         if (String.isNotBlank(accountId)) {
@@ -42,37 +37,26 @@ public without sharing class ChatAuthController {
                 personAcc.CRM_Person__r.INT_IsNavEmployee__c
             )
                 //Persons tagged as confidential or is NAV employees cannot be journaled - NKS-430
-                chatTrans.NKS_Journal_Entry_Status__c = 'Completed';
+                messagingSession.NKS_Journal_Entry_Status__c = 'Completed';
         }
     }
 
-    /**
-     * @description: Created the thread equivalent of an authenticated chat
-     * @author Stian Ruud Schikora | 01-31-2022
-     * @param chatTrans
-     * @return Id
-     **/
-    private static void createChatThread(LiveChatTranscript chatTrans) {
-        Thread__c chatThread = new Thread__c(
+    private static void createChatThread(MessagingSession messagingSession) {
+        Thread__c messagingThread = new Thread__c(
             CRM_Thread_Type__c = 'CHAT',
-            CRM_Account__c = chatTrans.AccountId,
-            CRM_Contact__c = chatTrans.ContactId,
+            CRM_Account__c = messagingSession.AccountId,
+            CRM_Contact__c = messagingSession.ContactId,
             CRM_isActive__c = true,
-            CRM_Related_Object__c = chatTrans.Id,
-            CRM_Theme_Group__c = chatTrans.NKS_Theme_Group__c
+            CRM_Related_Object__c = messagingSession.Id,
+            CRM_Theme_Group__c = messagingSession.NKS_Theme_Group__c
         );
-        insert chatThread;
+        insert messagingSession;
     }
 
-    private static LiveChatTranscript getChatTranscript(Id chatTranscriptId) {
-        return [SELECT Id, CaseId, AccountId, NKS_Theme_Group__c FROM LiveChatTranscript WHERE Id = :chatTranscriptId];
+    private static MessagingSession getMessagingSession(Id messagingSessionId) {
+        return [SELECT Id, CaseId, AccountId, NKS_Theme_Group__c FROM MessagingSession WHERE Id = :messagingSessionId];
     }
 
-    /**
-     * @description: Returns the community url used for chat authentication
-     * @author Stian Ruud Schikora | 10-01-2020
-     * @return string
-     **/
     @AuraEnabled
     public static string getCommunityAuthUrl() {
         List<Network> community = [SELECT Id FROM Network WHERE Name = 'nks'];
@@ -83,17 +67,14 @@ public without sharing class ChatAuthController {
         return communityUrl;
     }
 
-    /**
-     * @description: Returns the CRM_Authentication_Status__c, and status of the chat transcript
-     * @author Stian Ruud Schikora | 09-04-2020
-     * @param chatTranscriptId [STRING]
-     * @return chatInfo [MAP<STRING, STRING>]
-     **/
+
+    //@description: Returns the CRM_Authentication_Status__c, and status of the messaging Session
+
     @AuraEnabled(Cacheable=true)
-    public static Map<String, String> getChatInfo(String chatTranscriptId) {
+    public static Map<String, String> getChatInfo(String messagingSessionId) {
         Map<String, String> chatInfo;
         try {
-            LiveChatTranscript trans = [
+            MessagingSession messagingSession = [
                 SELECT
                     Id,
                     CRM_Authentication_Status__c,
@@ -106,22 +87,22 @@ public without sharing class ChatAuthController {
                     LiveChatButton.WindowLanguage,
                     Status,
                     EndTime
-                FROM LiveChatTranscript
-                WHERE Id = :chatTranscriptId
+                FROM messagingSession
+                WHERE Id = :messagingSessionId
             ];
             chatInfo = new Map<String, String>{
-                'AUTH_STATUS' => trans.CRM_Authentication_Status__c,
-                'CONVERSATION_STATUS' => trans.Status,
-                'ACCOUNTID' => trans.accountId,
-                'CASEID' => trans.CaseId,
-                'PERSONID' => trans.Account.CRM_Person__c,
-                'IS_NAV_EMPLOYEE' => isNavEmployee(trans),
-                'IS_CONFIDENTIAL' => '' + personIsConfidential(trans),
-                'NMB_SECURITY_MEASURES' => numberOfSecurityMeasures(trans),
-                'CHAT_LANGUAGE' => String.isNotBlank(trans.LiveChatButton.WindowLanguage)
+                'AUTH_STATUS' => messagingSession.CRM_Authentication_Status__c,
+                'CONVERSATION_STATUS' => messagingSession.Status,
+                'ACCOUNTID' => messagingSession.accountId,
+                'CASEID' => messagingSession.CaseId,
+                'PERSONID' => messagingSession.Account.CRM_Person__c,
+                'IS_NAV_EMPLOYEE' => isNavEmployee(messagingSession),
+                'IS_CONFIDENTIAL' => '' + personIsConfidential(messagingSession),
+                'NMB_SECURITY_MEASURES' => numberOfSecurityMeasures(messagingSession),
+                'CHAT_LANGUAGE' => String.isNotBlank(messagingSession.LiveChatButton.WindowLanguage) //what is this? -Jan Robert
                     ? trans.LiveChatButton.WindowLanguage
                     : 'no',
-                'END_TIME' => string.valueOf(trans.EndTime)
+                'END_TIME' => string.valueOf(messagingSession.EndTime)
             };
             return chatInfo;
         } catch (Exception ex) {
@@ -129,23 +110,23 @@ public without sharing class ChatAuthController {
         }
     }
 
-    private static String personIsConfidential(LiveChatTranscript trans) {
-        if (String.isNotBlank(trans.AccountId)) {
-            return trans.Account.CRM_Person__r.INT_Confidential__c.equalsIgnoreCase('UGRADERT') ? 'false' : 'true';
+    private static String personIsConfidential(MessagingSession messagingSession) {
+        if (String.isNotBlank(messagingSession.AccountId)) {
+            return messagingSession.Account.CRM_Person__r.INT_Confidential__c.equalsIgnoreCase('UGRADERT') ? 'false' : 'true';
         }
         return 'false';
     }
 
-    private static String isNavEmployee(LiveChatTranscript trans) {
-        if (String.isNotBlank(trans.AccountId)) {
-            return trans.Account.CRM_Person__r.INT_IsNavEmployee__c ? 'true' : 'false';
+    private static String isNavEmployee(MessagingSession messagingSession) {
+        if (String.isNotBlank(messagingSession.AccountId)) {
+            return messagingSession.Account.CRM_Person__r.INT_IsNavEmployee__c ? 'true' : 'false';
         }
         return 'false';
     }
 
-    private static String numberOfSecurityMeasures(LiveChatTranscript trans) {
-        if (String.isNotBlank(trans.AccountId)) {
-            return '' + trans.Account.CRM_Person__r.NKS_NumberOfSecurityMeasures__c;
+    private static String numberOfSecurityMeasures(MessagingSession messagingSession) {
+        if (String.isNotBlank(messagingSession.AccountId)) {
+            return '' + messagingSession.Account.CRM_Person__r.NKS_NumberOfSecurityMeasures__c;
         }
 
         return '0';
@@ -157,13 +138,13 @@ public without sharing class ChatAuthController {
      * @param chatTranscriptId [STRING]
      **/
     @AuraEnabled
-    public static void setStatusRequested(Id chatTranscriptId) {
-        setStatus(chatTranscriptId, 'Authentication Requested');
+    public static void setStatusRequested(Id messagingSessionId) {
+        setStatus(messagingSessionId, 'Authentication Requested');
     }
 
     @AuraEnabled
-    public static void setStatusCompleted(Id chatTranscriptId) {
-        setStatus(chatTranscriptId, 'Completed');
+    public static void setStatusCompleted(Id messagingSessionId) {
+        setStatus(messagingSessionId, 'Completed');
     }
 
     private static Id getPersonAccountId() {
@@ -203,7 +184,7 @@ public without sharing class ChatAuthController {
 
     @AuraEnabled
     public static string getCounselorName(String recordId) {
-        Id ownerId = [SELECT OwnerId FROM LiveChatTranscript WHERE Id = :recordId LIMIT 1]?.OwnerId;
+        Id ownerId = [SELECT OwnerId FROM messagingSession WHERE Id = :recordId LIMIT 1]?.OwnerId;
         String fullname = [SELECT NKS_FullName__c FROM User WHERE Id = :ownerId LIMIT 1]?.NKS_FullName__c;
         return fullname;
     }

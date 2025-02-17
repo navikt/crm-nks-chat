@@ -11,12 +11,12 @@ public without sharing class Chat_SurveyHelper {
             surveyInvitationLink = [
                 SELECT InvitationLink
                 FROM SurveyInvitation
-                WHERE Case__c IN (SELECT CaseId FROM LiveChatTranscript WHERE ChatKey = :chatKey)
+                WHERE Case__c IN (SELECT CaseId FROM MessagingSession WHERE ChatKey = :chatKey)
                 LIMIT 1
             ]
             ?.InvitationLink;
         } catch (QueryException e) {
-            System.debug('An error has occurred on getting LiveChatTranscript or SurveyInvitation: ' + e.getMessage());
+            System.debug('An error has occurred on getting MessagingSession or SurveyInvitation: ' + e.getMessage());
         }
         return surveyInvitationLink;
     }

@@ -3,7 +3,7 @@ public with sharing class Chat_SurveyHelperTest {
     @isTest
     static void testGetSurveyLink() {
         Case enCase = new Case(Status = 'New');
-        LiveChatTranscript transcript = new LiveChatTranscript(
+        MessagingSession transcript = new MessagingSession(
             ChatKey = 'testKey',
             CaseId = enCase.Id,
             CRM_Authentication_Status__c = 'Completed',

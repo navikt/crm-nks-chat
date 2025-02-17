@@ -1,4 +1,4 @@
-global class NKS_ChatTranscriptService {
+global class NKS_messagingSessionService {
     @TestVisible
     private static Map<String, String> authTexts = new Map<String, String>{
         'norwegian' => 'Trykk for å logge inn på nav.no og gi veilederen tilgang til saken din. ',
@@ -43,9 +43,9 @@ global class NKS_ChatTranscriptService {
      **/
     @AuraEnabled
     public static void storeConversation(String chatId, String jsonConversation) {
-        LiveChatTranscript chatTranscript = getChatDetails(chatId);
+        MessagingSession messagingSession = getChatDetails(chatId);
         Thread__c chatThread;
-        if (chatTranscript.NKS_Authentication_Timestamp__c == null) {
+        if (messagingSession.NKS_Authentication_Timestamp__c == null) {
             return;
         } else {
             chatThread = getThreadDetails(chatId);
@@ -62,7 +62,7 @@ global class NKS_ChatTranscriptService {
         List<Message__c> threadMessages = new List<Message__c>();
 
         try {
-            threadMessages = converToThreadMessages(messageList, chatTranscript, chatThread);
+            threadMessages = converToThreadMessages(messageList, messagingSession, chatThread);
             List<Message__c> existingMessages = getExistingMessages(chatThread.Id);
             if (threadMessages.size() > 0)
                 insert threadMessages;
@@ -92,7 +92,7 @@ global class NKS_ChatTranscriptService {
      **/
     private static List<Message__c> converToThreadMessages(
         List<Message> wrapperMessages,
-        LiveChatTranscript chatTrans,
+        LivemessagingSession chatTrans,
         Thread__c chatThread
     ) {
         List<Message__c> returnMessages = new List<Message__c>();
@@ -135,7 +135,7 @@ global class NKS_ChatTranscriptService {
      * @param chatTrans
      * @return Message__c
      **/
-    private static Message__c createAuthEventMessage(LiveChatTranscript chatTrans, Thread__c chatThread) {
+    private static Message__c createAuthEventMessage(LivemessagingSession chatTrans, Thread__c chatThread) {
         String authText = chatTrans.LiveChatButton?.WindowLanguage == 'en_US'
             ? 'Started authenticated chat'
             : 'Startet innlogget chat';
@@ -180,7 +180,7 @@ global class NKS_ChatTranscriptService {
         return convertedMessage;
     }
 
-    private static LiveChatTranscript getChatDetails(String chatId) {
+    private static MessagingSession getChatDetails(String chatId) {
         return [
             SELECT
                 AccountId,
@@ -194,7 +194,7 @@ global class NKS_ChatTranscriptService {
                 NKS_Authentication_Timestamp__c,
                 LiveChatButton.WindowLanguage,
                 NKS_Conversation_Stored__c
-            FROM LiveChatTranscript
+            FROM MessagingSession
             WHERE Id = :chatId
             FOR UPDATE
         ];
@@ -211,7 +211,7 @@ global class NKS_ChatTranscriptService {
     }
 
     @AuraEnabled
-    public static LiveChatTranscript getChatTranscript(Id recordId) {
+    public static MessagingSession getMessagingSession(Id recordId) {
         try {
             return [
                 SELECT
@@ -221,7 +221,7 @@ global class NKS_ChatTranscriptService {
                     Case.CaseNumber,
                     CRM_Authentication_Status__c,
                     Status
-                FROM LiveChatTranscript
+                FROM LivemessagingSession
                 WHERE Id = :recordId
             ];
         } catch (Exception e) {
@@ -277,7 +277,7 @@ global class NKS_ChatTranscriptService {
     @AuraEnabled
     public static string generateAuthMessage(Id recordId) {
         try {
-            return [SELECT Id, LiveChatButton.WindowLanguage FROM LiveChatTranscript WHERE id = :recordId LIMIT 1]
+            return [SELECT Id, LiveChatButton.WindowLanguage FROM LivemessagingSession WHERE id = :recordId LIMIT 1]
                     ?.LiveChatButton
                     ?.WindowLanguage == 'en_US'
                 ? authTexts.get('english')

@@ -1,4 +1,4 @@
-@RestResource(urlMapping='/LiveChatTranscript/')
+@RestResource(urlMapping='/MessagingSession/')
 global with sharing class Chat_SurveyAPI {
     private static LoggerUtility logger = new LoggerUtility('Chat API');
     /**

@@ -13,7 +13,7 @@ public with sharing class nksChatView_Test {
 
         Case botCase = (Case) UTIL_TestDataFactory.createRecord(new Case(Description = botConversation));
 
-        LiveChatTranscript transcript = new LiveChatTranscript(
+        MessagingSession transcript = new MessagingSession(
             NKS_Journal_Entry_Created__c = true,
             Body = 'TESTBODY',
             CaseId = botCase.Id,
@@ -28,7 +28,7 @@ public with sharing class nksChatView_Test {
 
     @isTest
     static void testGetThreadId() {
-        LiveChatTranscript transcript = [SELECT Id FROM LiveChatTranscript LIMIT 1];
+        MessagingSession transcript = [SELECT Id FROM MessagingSession LIMIT 1];
 
         Test.startTest();
         Id threadId = nksChatView.getThreadId(transcript.Id);
@@ -49,7 +49,7 @@ public with sharing class nksChatView_Test {
     @isTest
     static void testGetChatbotMessage() {
         User user = [SELECT Id FROM User WHERE CRM_NAV_Ident__c = 'Z654923'];
-        LiveChatTranscript transcript = [SELECT Id FROM LiveChatTranscript LIMIT 1];
+        MessagingSession transcript = [SELECT Id FROM MessagingSession LIMIT 1];
         Test.startTest();
         String chatConversation = nksChatView.getChatbotMessage(transcript.Id, user.Id);
         Test.stopTest();
