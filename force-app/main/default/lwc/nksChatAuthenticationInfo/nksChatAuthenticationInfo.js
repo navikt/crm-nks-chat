@@ -191,11 +191,11 @@ export default class ChatAuthenticationOverview extends LightningElement {
                 //Message defaults to norwegian
                 const loginMessage =
                     this.chatLanguage === 'en_US'
-                        ? 'You are now in a secure chat with NAV, you are chatting with ' +
+                        ? 'You are now in a secure chat with Nav, you are chatting with ' +
                           data +
                           '. ' +
                           this.labels.CHAT_LOGIN_MSG_EN
-                        : 'Du er nå i en innlogget chat med NAV, du snakker med ' +
+                        : 'Du er nå i en innlogget chat med Nav, du snakker med ' +
                           data +
                           '. ' +
                           this.labels.CHAT_LOGIN_MSG_NO;

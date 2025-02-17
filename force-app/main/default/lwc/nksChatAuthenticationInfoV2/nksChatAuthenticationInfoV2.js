@@ -14,6 +14,7 @@ import CHAT_LOGIN_MSG_NO from '@salesforce/label/c.NKS_Chat_Login_Message_NO';
 import CHAT_LOGIN_MSG_EN from '@salesforce/label/c.NKS_Chat_Login_Message_EN';
 import CHAT_GETTING_AUTH_STATUS from '@salesforce/label/c.NKS_Chat_Getting_Authentication_Status';
 import CHAT_SENDING_AUTH_REQUEST from '@salesforce/label/c.NKS_Chat_Sending_Authentication_Request';
+import { refreshApex } from '@salesforce/apex';
 
 const STATUSES = {
     NOT_STARTED: 'Not Started',
@@ -48,11 +49,13 @@ export default class ChatAuthenticationOverview extends LightningElement {
     lmsSubscription = null;
     loginEvtSent = false;
     endTime = null;
+    wiredRecordResult;
 
     @wire(getChatInfo, { chatTranscriptId: '$recordId' })
-    wiredStatus({ error, data }) {
+    wiredResult(result) {
+        this.wiredRecordResult = result;
+        const { error, data } = result;
         if (data) {
-            this.log(data);
             this.currentAuthenticationStatus = data.AUTH_STATUS;
             this.isActiveConversation = data.CONVERSATION_STATUS === STATUSES.INPROGRESS;
             this.chatLanguage = data.CHAT_LANGUAGE;
@@ -122,6 +125,7 @@ export default class ChatAuthenticationOverview extends LightningElement {
                 if (this.authenticationComplete) {
                     if (!this.loginEvtSent) this.sendLoginEvent();
                     getRecordNotifyChange([{ recordId: this.recordId }]);
+                    this.refreshData();
                     this.handleUnsubscribe();
                 }
             }
@@ -152,11 +156,11 @@ export default class ChatAuthenticationOverview extends LightningElement {
             .then((data) => {
                 const loginMessage =
                     this.chatLanguage === 'en_US'
-                        ? 'You are now in a secure chat with NAV, you are chatting with ' +
+                        ? 'You are now in a secure chat with Nav, you are chatting with ' +
                           data +
                           '. ' +
                           this.labels.CHAT_LOGIN_MSG_EN
-                        : 'Du er nå i en innlogget chat med NAV, du snakker med ' +
+                        : 'Du er nå i en innlogget chat med Nav, du snakker med ' +
                           data +
                           '. ' +
                           this.labels.CHAT_LOGIN_MSG_NO;
@@ -215,5 +219,11 @@ export default class ChatAuthenticationOverview extends LightningElement {
 
     log(loggable) {
         if (this.loggingEnabled) console.log(loggable);
+    }
+
+    refreshData() {
+        if (this.wiredRecordResult) {
+            refreshApex(this.wiredRecordResult);
+        }
     }
 }

@@ -17,7 +17,11 @@
         </div>
 
         <div class="content">
-            <h2>Journalført henvendelse</h2>
+            <h2>
+                Journalført henvendelse 
+                <apex:outputText value=" {!thread__c.CRM_Theme__r.Name} " />
+                <apex:outputText value="{!thread__c.CRM_Subtheme__r.Name}"  />
+            </h2>
 
             <span> <strong>Navn: </strong>{!thread__c.CRM_Account__r.Name} <br /> </span>
             <span> <strong>Fødselsnummer: </strong>{!thread__c.CRM_Account__r.INT_PersonIdent__c} <br /> </span>
@@ -39,19 +43,23 @@
                                     {!message.fromName}
                                 </apex:outputPanel>
                                 <apex:outputPanel rendered="{!message.externalMessage == false}">
-                                    NAV {!message.fromIdent}
+                                    Nav {!message.fromIdent}
                                 </apex:outputPanel>
                                 -
                                 <apex:outputText value=" {!message.sentDate}"> </apex:outputText>
                             </b>
-                            <p style="margin-top: 0.5em; white-space: pre-wrap"><apex:outputText escape="false" value="{!message.messageText}"></apex:outputText></p>
+                            <p style="margin-top: 0.5em; white-space: pre-wrap">
+                                <apex:outputText escape="false" value="{!message.messageText}"></apex:outputText>
+                            </p>
                         </div>
                     </apex:outputPanel>
                     <apex:outputPanel rendered="{!message.type == 'Event'}">
                         <div style="padding-bottom: 1.75em; text-align: center">
                             <b>
                                 <apex:outputText value=" {!message.sentDate}"> </apex:outputText>
-                                <span style="margin-top: 0.5em; white-space: pre-wrap"><apex:outputText escape="false" value="{!message.messageText}"></apex:outputText></span>
+                                <span style="margin-top: 0.5em; white-space: pre-wrap"
+                                    ><apex:outputText escape="false" value="{!message.messageText}"></apex:outputText
+                                ></span>
                             </b>
                         </div>
                     </apex:outputPanel>

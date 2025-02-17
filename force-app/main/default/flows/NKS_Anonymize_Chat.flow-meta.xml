@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>61.0</apiVersion>
-    <description>Delete chat and related case if account is null and the chat is older than 2 days and/or chat queue is Sosial or Gjeldsrådgivning</description>
+    <description>Delete chat and related case if account is null and the chat is older than 2 days
+        and/or chat queue is Sosial or Gjeldsrådgivning</description>
     <environments>Default</environments>
     <interviewLabel>NKS {!$Flow.CurrentDateTime}</interviewLabel>
     <label>NKS Anonymize Chat</label>
@@ -120,14 +121,14 @@
             <field>NKS_Chat_Queue__c</field>
             <operator>EqualTo</operator>
             <value>
-                <stringValue>Gjeldsrådgivning</stringValue>
+                <stringValue>Gjeldsveiledning</stringValue>
             </value>
         </filters>
         <filters>
             <field>NKS_Chat_Queue__c</field>
             <operator>EqualTo</operator>
             <value>
-                <stringValue>Gjeldsrådgivning EN</stringValue>
+                <stringValue>Gjeldsveiledning EN</stringValue>
             </value>
         </filters>
         <object>LiveChatTranscript</object>
