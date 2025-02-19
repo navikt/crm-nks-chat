@@ -1,7 +1,12 @@
 public with sharing class nksChatView {
     @AuraEnabled(cacheable=true)
     public static Thread__c getThread(String chatId) {
-        List<Thread__c> thread = [SELECT Id, CRM_Theme_Group_Name__c FROM Thread__c WHERE CRM_Related_Object__c = :chatId LIMIT 1];
+        List<Thread__c> thread = [
+            SELECT Id, CRM_Theme_Group_Name__c
+            FROM Thread__c
+            WHERE CRM_Related_Object__c = :chatId
+            LIMIT 1
+        ];
         if (thread.size() > 0) {
             return thread[0];
         }
