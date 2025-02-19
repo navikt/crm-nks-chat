@@ -43,7 +43,7 @@ public with sharing class nksChatView_Test {
         Test.startTest();
         Thread__c testThread = nksChatView.getThread(visitor.Id);
         Test.stopTest();
-        Assert.isNull(testThread.Id == null);
+        Assert.isNull(testThread);
     }
 
     @isTest
