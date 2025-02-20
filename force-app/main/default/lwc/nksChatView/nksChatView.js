@@ -45,7 +45,7 @@ export default class NksChatView extends LightningElement {
 
             this.themeGroup = data.CRM_Theme_Group_Name__c;
             if (this.themeGroup) {
-                setDecoratorParams('Chatsamtale', this.themeGroup);
+                setDecoratorParams('Chat', 'Chatsamtale', this.themeGroup);
             }
         }
     }
