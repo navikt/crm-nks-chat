@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>53.0</apiVersion>
+    <apiVersion>62.0</apiVersion>
     <decisions>
         <description>Check that the chat har been authenticated to be able to create a journal entry.</description>
         <name>Verify_Authentication_Status</name>
         <label>Verify Authentication Status</label>
         <locationX>182</locationX>
-        <locationY>278</locationY>
+        <locationY>242</locationY>
         <defaultConnector>
             <targetReference>User_Not_Authenticated_Screen</targetReference>
         </defaultConnector>
@@ -15,14 +15,14 @@
             <name>Is_Authenticated</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>Get_Chat_Transcript.CRM_Authentication_Status__c</leftValueReference>
+                <leftValueReference>Get_Messaging_Session.CRM_Authentication_Status__c</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <stringValue>Completed</stringValue>
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>Get_Chat_Transcript.AccountId</leftValueReference>
+                <leftValueReference>Get_Messaging_Session.EndUserAccountId</leftValueReference>
                 <operator>IsNull</operator>
                 <rightValue>
                     <booleanValue>false</booleanValue>
@@ -34,6 +34,7 @@
             <label>Is Authenticated</label>
         </rules>
     </decisions>
+    <environments>Default</environments>
     <interviewLabel>Journal Chat Thread {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Journal Chat Thread - Screenflow</label>
     <processMetadataValues>
@@ -60,7 +61,7 @@
         <name>Get_Account</name>
         <label>Get Account</label>
         <locationX>50</locationX>
-        <locationY>398</locationY>
+        <locationY>350</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Get_Thread</targetReference>
@@ -70,7 +71,7 @@
             <field>Id</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>Get_Chat_Transcript.AccountId</elementReference>
+                <elementReference>Get_Messaging_Session.EndUserAccountId</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
@@ -78,10 +79,10 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
-        <name>Get_Chat_Transcript</name>
-        <label>Get Chat Transcript</label>
+        <name>Get_Messaging_Session</name>
+        <label>Get Messaging Session</label>
         <locationX>182</locationX>
-        <locationY>158</locationY>
+        <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Verify_Authentication_Status</targetReference>
@@ -95,10 +96,10 @@
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>LiveChatTranscript</object>
+        <object>MessagingSession</object>
         <queriedFields>Id</queriedFields>
         <queriedFields>CRM_Authentication_Status__c</queriedFields>
-        <queriedFields>AccountId</queriedFields>
+        <queriedFields>EndUserAccountId</queriedFields>
         <queriedFields>NKS_Theme_Group__c</queriedFields>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
@@ -107,7 +108,7 @@
         <name>Get_Thread</name>
         <label>Get Thread</label>
         <locationX>50</locationX>
-        <locationY>518</locationY>
+        <locationY>458</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Journal_Entry_Screen</targetReference>
@@ -117,7 +118,7 @@
             <field>CRM_Related_Object__c</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>Get_Chat_Transcript.Id</elementReference>
+                <elementReference>Get_Messaging_Session.Id</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
@@ -130,7 +131,7 @@
         <name>Finish_Screen</name>
         <label>Finish Screen</label>
         <locationX>50</locationX>
-        <locationY>878</locationY>
+        <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -179,7 +180,7 @@
         <name>Journal_Entry_Screen</name>
         <label>Journal Entry Screen</label>
         <locationX>50</locationX>
-        <locationY>638</locationY>
+        <locationY>566</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -193,7 +194,7 @@
             <inputParameters>
                 <name>prefilledThemeGroup</name>
                 <value>
-                    <elementReference>Get_Chat_Transcript.NKS_Theme_Group__c</elementReference>
+                    <elementReference>Get_Messaging_Session.NKS_Theme_Group__c</elementReference>
                 </value>
             </inputParameters>
             <inputParameters>
@@ -214,7 +215,7 @@
         <name>User_Not_Authenticated_Screen</name>
         <label>User Not Authenticated Screen</label>
         <locationX>314</locationX>
-        <locationY>398</locationY>
+        <locationY>350</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -223,7 +224,7 @@
             <fieldText>&lt;p&gt;Brukeren må være logget inn for å kunne journalføre.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
-        <nextOrFinishButtonLabel>Oppdater</nextOrFinishButtonLabel>
+        <nextOrFinishButtonLabel>Ok</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
     </screens>
@@ -231,7 +232,7 @@
         <locationX>56</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Get_Chat_Transcript</targetReference>
+            <targetReference>Get_Messaging_Session</targetReference>
         </connector>
     </start>
     <status>Active</status>
@@ -240,7 +241,7 @@
         <name>Create_Journal_Entry</name>
         <label>Create Journal Entry</label>
         <locationX>50</locationX>
-        <locationY>758</locationY>
+        <locationY>674</locationY>
         <connector>
             <targetReference>Finish_Screen</targetReference>
         </connector>
