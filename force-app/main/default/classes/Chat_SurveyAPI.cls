@@ -19,7 +19,6 @@ global with sharing class Chat_SurveyAPI {
         String correlationId = request.headers.containsKey('X-Correlation-ID')
             ? request.headers.get('X-Correlation-ID')
             : null;
-        logger.apiTransaction(correlationId, RestContext.request, CRM_ApplicationDomain.Domain.NKS);
 
         try {
             String surveyInvitationLink = Chat_SurveyHelper.getSurveyInvitationLink(chatKey);
