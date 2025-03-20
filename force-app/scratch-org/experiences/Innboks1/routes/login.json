@@ -4,6 +4,7 @@
     "configurationTags": [],
     "id": "0c4b6315-e66d-4a75-bd1d-70ec1ab58615",
     "label": "Login",
+    "devName": "Login",
     "routeType": "login-main",
     "type": "route",
     "urlPrefix": "login"

@@ -3,7 +3,7 @@
         <!-- Spinner while loading authentication information -->
         <template if:true={isLoading}>
             <div class="slds-var-p-top_small slds-var-p-bottom_small">
-                <lightning-spinner size="medium" title="Getting authentication status"> </lightning-spinner>
+                <lightning-spinner size="medium" title={labels.CHAT_GETTING_AUTH_STATUS}> </lightning-spinner>
             </div>
         </template>
 
@@ -36,10 +36,11 @@
                 <template if:false={authenticationRequested}>
                     <div class="slds-var-p-top_small">
                         <template if:true={sendingAuthRequest}>
-                            <lightning-spinner size="small" title="Sending authentication request"> </lightning-spinner>
+                            <lightning-spinner size="small" title={labels.CHAT_SENDING_AUTH_REQUEST}>
+                            </lightning-spinner>
                         </template>
                         <lightning-button
-                            label="Send autentiseringsforespørsel"
+                            label={labels.SEND_AUTH_REQUEST}
                             disabled={cannotInitAuth}
                             variant="neutral"
                             onclick={requestAuthentication}

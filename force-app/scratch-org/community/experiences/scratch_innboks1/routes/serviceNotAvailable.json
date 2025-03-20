@@ -4,6 +4,7 @@
     "configurationTags": ["allow-in-static-site"],
     "id": "f7fe0ec5-3deb-44ef-9997-1d456d287ac4",
     "label": "Service Not Available",
+    "devName": "Service_Not_Available",
     "routeType": "service-not-available",
     "type": "route",
     "urlPrefix": "service-not-available"

@@ -4,6 +4,7 @@
     "configurationTags": [],
     "id": "aff56c84-dbd4-4a77-9f58-1f70eee78791",
     "label": "Login Error",
+    "devName": "Login_Error",
     "routeType": "login-error",
     "type": "route",
     "urlPrefix": "error"

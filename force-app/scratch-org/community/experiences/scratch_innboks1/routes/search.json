@@ -4,6 +4,7 @@
     "configurationTags": [],
     "id": "24cb3eea-931c-4b71-8151-879950710385",
     "label": "Search",
+    "devName": "Search",
     "pageAccess": "UseParent",
     "routeType": "global-search",
     "type": "route",

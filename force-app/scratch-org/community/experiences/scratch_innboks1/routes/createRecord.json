@@ -4,6 +4,7 @@
     "configurationTags": [],
     "id": "9b301815-43d2-45d9-8f9c-344cbfff4a99",
     "label": "Create Record",
+    "devName": "Create_Record",
     "routeType": "createrecord",
     "type": "route",
     "urlPrefix": "createrecord"

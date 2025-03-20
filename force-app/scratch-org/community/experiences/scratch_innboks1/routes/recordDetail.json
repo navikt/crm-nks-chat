@@ -4,6 +4,7 @@
     "configurationTags": [],
     "id": "460fab6c-301c-44a0-9d57-135793778c73",
     "label": "Record Detail",
+    "devName": "Record_Detail",
     "routeType": "detail",
     "type": "route",
     "urlPrefix": "detail"

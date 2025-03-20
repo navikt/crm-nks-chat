@@ -4,6 +4,7 @@
     "configurationTags": [],
     "id": "496b1074-8e1a-44c2-9b2e-302b63c76d5d",
     "label": "Related Record List",
+    "devName": "Related_Record_List",
     "pageAccess": "UseParent",
     "routeType": "relatedlist",
     "type": "route",

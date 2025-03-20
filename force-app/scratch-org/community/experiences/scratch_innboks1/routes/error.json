@@ -4,6 +4,7 @@
     "configurationTags": [],
     "id": "76c0ef2d-15fa-41a1-8560-43ea2c0e4e4f",
     "label": "Error",
+    "devName": "Error",
     "pageAccess": "UseParent",
     "routeType": "error",
     "type": "route",

@@ -1,43 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Translations xmlns="http://soap.sforce.com/2006/04/metadata">
     <customLabels>
-        <label/>
+        <label>Kunne ikke igangsette autentisering. Hvis problemet vedvarer, kontakt din
+            administrator.</label>
         <name>CRM_Chat_Authentication_Init_Failed</name>
     </customLabels>
     <customLabels>
-        <label/>
+        <label>Autentiseringsforespørsel sendt</label>
         <name>CRM_Chat_Authentication_Requested</name>
     </customLabels>
     <customLabels>
-        <label/>
+        <label>Venter på at brukeren logger inn</label>
         <name>CRM_Chat_Authentication_Started</name>
     </customLabels>
     <customLabels>
-        <label/>
+        <label>Identitet bekreftet</label>
         <name>CRM_Chat_Identity_Confirmed</name>
     </customLabels>
     <customLabels>
-        <label/>
+        <label>Brukeren har bekreftet sin identitet</label>
         <name>CRM_Chat_Identity_Confirmed_Disclaimer</name>
     </customLabels>
     <customLabels>
-        <label/>
+        <label>Vær oppmerksom - brukeren har ikke bekreftet sin identitet</label>
         <name>CRM_Chat_Unconfirmed_Identity_Warning</name>
     </customLabels>
     <customLabels>
-        <label/>
+        <label />
         <name>NKS_Chat_Login_Message_EN</name>
     </customLabels>
     <customLabels>
-        <label/>
+        <label />
         <name>NKS_Chat_Login_Message_NO</name>
     </customLabels>
+    <customLabels>
+        <label>Send autentiseringsforespørsel</label>
+        <name>NKS_Chat_Send_Authentication_Request</name>
+    </customLabels>
+    <customLabels>
+        <label>Henter autentiseringsstatus</label>
+        <name>NKS_Chat_Getting_Authentication_Status</name>
+    </customLabels>
+    <customLabels>
+        <label>Sender autentiseringsforespørsel</label>
+        <name>NKS_Chat_Sending_Authentication_Request</name>
+    </customLabels>
     <reportTypes>
-        <description/>
-        <label/>
+        <description />
+        <label />
         <name>Chat_Transcript</name>
         <sections>
-            <label/>
+            <label />
             <name>Chat Transcripts</name>
         </sections>
     </reportTypes>

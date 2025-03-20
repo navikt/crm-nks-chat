@@ -9,8 +9,8 @@
                     .isSubtab({
                         tabId: newTabId
                     })
-                    .then(function (response) {
-                        if (!response) {
+                    .then(function (response2) {
+                        if (!response2) {
                             workspace.focusTab({
                                 tabId: newTabId
                             });
@@ -41,7 +41,7 @@
                 if (!eventTab) return;
                 helper.setTabColor(workspace, eventTab.tabId, 'success');
             })
-            .catch((error) => {
+            .catch(() => {
                 //Errors require manual handling.
             });
 
@@ -51,13 +51,13 @@
             })
             .then((result) => {
                 let conversation = result.messages;
-                let filteredConversation = conversation.filter(function (message, index, arr) {
+                let filteredConversation = conversation.filter(function (message) {
                     //Filtering out all messages of type supervisor and AgentWhisper as these are "whispers" and should not be added to the journal
                     return message.type !== 'Supervisor' && message.type !== 'AgentWhisper';
                 });
                 helper.callStoreConversation(component, filteredConversation, eventRecordId);
             })
-            .catch((error) => {
+            .catch(() => {
                 //Errors require manual handling.
             });
     }

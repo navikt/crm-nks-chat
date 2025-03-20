@@ -75,7 +75,7 @@ public without sharing class ChatAuthController {
      **/
     @AuraEnabled
     public static string getCommunityAuthUrl() {
-        List<Network> community = [SELECT Id, Name, UrlPathPrefix FROM Network WHERE Name = 'nks'];
+        List<Network> community = [SELECT Id FROM Network WHERE Name = 'nks'];
         String communityUrl = community.isEmpty() ? '' : Network.getLoginUrl(community[0].Id);
         communityUrl = communityUrl.removeEnd(communityUrl.substringAfterLast('/'));
         communityUrl += 's/identity-verified?ctid=';
@@ -104,7 +104,8 @@ public without sharing class ChatAuthController {
                     Account.CRM_Person__r.NKS_NumberOfSecurityMeasures__c,
                     CaseId,
                     LiveChatButton.WindowLanguage,
-                    Status
+                    Status,
+                    EndTime
                 FROM LiveChatTranscript
                 WHERE Id = :chatTranscriptId
             ];
@@ -119,7 +120,8 @@ public without sharing class ChatAuthController {
                 'NMB_SECURITY_MEASURES' => numberOfSecurityMeasures(trans),
                 'CHAT_LANGUAGE' => String.isNotBlank(trans.LiveChatButton.WindowLanguage)
                     ? trans.LiveChatButton.WindowLanguage
-                    : 'no'
+                    : 'no',
+                'END_TIME' => string.valueOf(trans.EndTime)
             };
             return chatInfo;
         } catch (Exception ex) {
@@ -200,7 +202,7 @@ public without sharing class ChatAuthController {
     }
 
     @AuraEnabled
-    public static string getCouncellorName(String recordId) {
+    public static string getCounselorName(String recordId) {
         Id ownerId = [SELECT OwnerId FROM LiveChatTranscript WHERE Id = :recordId LIMIT 1]?.OwnerId;
         String fullname = [SELECT NKS_FullName__c FROM User WHERE Id = :ownerId LIMIT 1]?.NKS_FullName__c;
         return fullname;

@@ -13,14 +13,20 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
-                <componentName>nksBackgroundTabUpdator</componentName>
-                <identifier>nksBackgroundTabUpdator</identifier>
+                <componentName>nksChatConversationHandler</componentName>
+                <identifier>nksChatConversationHandler</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
             <componentInstance>
-                <componentName>nksChatConversationHandler</componentName>
-                <identifier>nksChatConversationHandler</identifier>
+                <componentName>nksChatAfterWorkBackground</componentName>
+                <identifier>nksChatAfterWorkBackground</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>nksBackgroundTabUpdator</componentName>
+                <identifier>nksBackgroundTabUpdator</identifier>
             </componentInstance>
         </itemInstances>
         <name>backgroundComponents</name>

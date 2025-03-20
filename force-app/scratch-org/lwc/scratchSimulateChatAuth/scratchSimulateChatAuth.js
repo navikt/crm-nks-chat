@@ -8,7 +8,7 @@ export default class ScratchSimulateChatAuth extends LightningElement {
     initAuth() {
         let chatId = this.inputField.value;
         console.log('INIT AUTH: ' + chatId);
-        if (chatId && chatId != '') {
+        if (chatId && chatId !== '') {
             this.loading = true;
             this.errorMsg = null;
             setStatusCompleted({ chatTranscriptId: chatId })

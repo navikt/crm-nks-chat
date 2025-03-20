@@ -64,4 +64,15 @@ private class NKS_ChatTranscriptService_Test {
 
         System.assertNotEquals(null, result);
     }
+
+    @isTest
+    static void testGenerateAuthMessage() {
+        LiveChatTranscript transcript = [SELECT Id FROM LiveChatTranscript LIMIT 1];
+        Test.startTest();
+        String result = NKS_ChatTranscriptService.generateAuthMessage(transcript.Id);
+        Test.stopTest();
+        String expectedText = NKS_ChatTranscriptService.authTexts.get('norwegian');
+
+        Assert.areEqual(expectedText, result);
+    }
 }

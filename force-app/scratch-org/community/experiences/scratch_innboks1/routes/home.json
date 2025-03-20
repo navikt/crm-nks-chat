@@ -4,6 +4,7 @@
     "configurationTags": [],
     "id": "d14dae53-2129-48f1-a691-41e31dc6b3ee",
     "label": "Home",
+    "devName": "Home",
     "pageAccess": "UseParent",
     "routeType": "home",
     "type": "route",

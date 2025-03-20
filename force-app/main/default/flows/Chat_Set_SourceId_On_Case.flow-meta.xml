@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>49.0</apiVersion>
+    <formulas>
+        <name>Subject</name>
+        <dataType>String</dataType>
+        <expression>&quot;Chat - &quot; &amp; {!$Record.NKS_Theme_Group__r.Name}</expression>
+    </formulas>
     <interviewLabel>Chat {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Chat Set SourceId On Case</label>
+    <label>Chat Set SourceId And Subject On Case</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -26,7 +31,7 @@
         <name>Set_SourceId_On_Case</name>
         <label>Set SourceId On Case</label>
         <locationX>176</locationX>
-        <locationY>335</locationY>
+        <locationY>323</locationY>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
@@ -39,6 +44,12 @@
             <field>SourceId</field>
             <value>
                 <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Subject</field>
+            <value>
+                <elementReference>Subject</elementReference>
             </value>
         </inputAssignments>
         <object>Case</object>

@@ -13,12 +13,14 @@ export default class AuthenticationCompletedHandler extends LightningElement {
                 console.log(error);
             });
 
+        // eslint-disable-next-line @lwc/lwc/no-async-operation, @locker/locker/distorted-window-set-timeout
         setTimeout(function () {
             window.close();
         }, 5000);
     }
 
     getUrlParamValue(url, key) {
+        // eslint-disable-next-line compat/compat
         return new URL(url).searchParams.get(key);
     }
 }

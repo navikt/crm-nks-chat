@@ -11,7 +11,7 @@
                     text: loginMsg
                 }
             })
-            .then(function (result) {
+            .then(function () {
                 //Message success
             });
     },
@@ -60,7 +60,7 @@
         // Unsubscribe from event
         empApi.unsubscribe(
             subscription,
-            $A.getCallback((unsubscribed) => {
+            $A.getCallback(() => {
                 // Confirm that we have unsubscribed from the event channel
                 component.set('v.subscription', null);
             })

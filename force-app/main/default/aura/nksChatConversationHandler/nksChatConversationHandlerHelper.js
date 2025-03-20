@@ -74,7 +74,7 @@
     },
 
     convertId15To18: function (Id) {
-        if (Id.length == 15) {
+        if (Id.length === 15) {
             var addon = '';
             for (var block = 0; block < 3; block++) {
                 var loop = 0;
