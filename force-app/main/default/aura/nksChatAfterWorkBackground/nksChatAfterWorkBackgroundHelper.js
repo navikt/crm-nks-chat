@@ -21,13 +21,14 @@
         component.set('v.closedChatList', tabs);
     },
 
-    removeClosedChatTabId: function (component, tabId) {
+    removeClosedChatTabId: function (component, tabId, helper) {
         const tabs = component.get('v.closedChatList');
         const index = tabs.findIndex((tab) => tab.tab === tabId);
-        if (index > -1) {
-            tabs.splice(index, 1);
-            component.set('v.closedChatList', tabs);
-        }
+        if (index === -1) return;
+        const recordId = tabs[index].recordId;
+        tabs.splice(index, 1);
+        component.set('v.closedChatList', tabs);
+        helper.removeThreatReport(component, recordId, helper);
     },
 
     startTimer: function (component) {
@@ -36,6 +37,29 @@
         var appEvent = $A.get('e.c:afterworkEvent');
         appEvent.setParams({ tabId: tabs[0].tab });
         appEvent.setParams({ recordId: tabs[0].recordId });
+        appEvent.setParams({ type: 'startTimer' });
         appEvent.fire();
+    },
+
+    storeThreatReport: function (component, reportingId, recordId) {
+        let threatReportList = component.get('v.threatReportList');
+        threatReportList.push({ reportingId: reportingId, recordId: recordId, time: Date.now() });
+        component.set('v.threatReportList', threatReportList);
+    },
+
+    removeThreatReport: function (component, recordId, helper) {
+        const threatReports = component.get('v.threatReportList');
+        const index = threatReports.findIndex((reporting) => reporting.recordId === recordId);
+        if (index === -1) return;
+        const reportingId = threatReports[index].reportingId;
+        const time = Date.now() - threatReports[index].time;
+        threatReports.splice(index, 1);
+        component.set('v.threatReportList', threatReports);
+        helper.updateThreatTime(component, reportingId, time);
+    },
+    updateThreatTime: function (component, reportingId, time) {
+        var action = component.get('c.updateThreatClickValue');
+        action.setParams({ rDataId: reportingId, value: time });
+        $A.enqueueAction(action);
     }
 });

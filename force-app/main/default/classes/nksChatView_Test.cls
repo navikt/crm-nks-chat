@@ -27,13 +27,23 @@ public with sharing class nksChatView_Test {
     }
 
     @isTest
-    static void testGetThreadId() {
+    static void testGetThread() {
         LiveChatTranscript transcript = [SELECT Id FROM LiveChatTranscript LIMIT 1];
 
         Test.startTest();
-        Id threadId = nksChatView.getThreadId(transcript.Id);
+        Thread__c testThread = nksChatView.getThread(transcript.Id);
         Test.stopTest();
-        System.assert(threadId != null);
+        Assert.isNotNull(testThread.Id);
+    }
+
+    @isTest
+    static void testGetThreadIdNoThread() {
+        LiveChatVisitor visitor = [SELECT Id FROM LiveChatVisitor LIMIT 1];
+
+        Test.startTest();
+        Thread__c testThread = nksChatView.getThread(visitor.Id);
+        Test.stopTest();
+        Assert.isNull(testThread);
     }
 
     @isTest
@@ -43,6 +53,16 @@ public with sharing class nksChatView_Test {
         Test.startTest();
         String chatConversation = nksChatView.getChatbotMessage(transcript.Id, user.Id);
         Test.stopTest();
-        System.assert(chatConversation == 'Det oppstod en feil');
+        Assert.isTrue(chatConversation == 'Det oppstod en feil');
+    }
+
+    @isTest
+    static void testGetChatbotMessageNoUser() {
+        User user = [SELECT Id FROM User WHERE CRM_NAV_Ident__c = 'Z654923'];
+        LiveChatVisitor visitor = [SELECT Id FROM LiveChatVisitor LIMIT 1];
+        Test.startTest();
+        String chatConversation = nksChatView.getChatbotMessage(visitor.Id, user.Id);
+        Test.stopTest();
+        Assert.isTrue(chatConversation == 'Det oppstod en feil');
     }
 }

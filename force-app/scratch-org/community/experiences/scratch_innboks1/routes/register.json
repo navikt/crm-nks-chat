@@ -4,6 +4,7 @@
     "configurationTags": [],
     "id": "ae78666c-3dc2-4990-9643-dbd235e58907",
     "label": "Register",
+    "devName": "Register",
     "routeType": "self-register",
     "type": "route",
     "urlPrefix": "SelfRegister"

@@ -77,12 +77,12 @@ public class ChatAuthController_Test {
     }
 
     @isTest
-    static void testGetCouncellorName() {
+    static void testGetCounselorName() {
         String fullname;
         LiveChatTranscript chatTranscript = [SELECT Id FROM LiveChatTranscript LIMIT 1];
 
         Test.startTest();
-        fullname = ChatAuthController.getCouncellorName(chatTranscript.Id);
+        fullname = ChatAuthController.getCounselorName(chatTranscript.Id);
         Test.stopTest();
 
         System.assert(String.isNotBlank(fullname));

@@ -4,6 +4,7 @@
     "configurationTags": [],
     "id": "85a5a28e-5f88-44ad-89cb-c9016f1c4b0c",
     "label": "Error",
+    "devName": "Error",
     "routeType": "error",
     "type": "route",
     "urlPrefix": "error"

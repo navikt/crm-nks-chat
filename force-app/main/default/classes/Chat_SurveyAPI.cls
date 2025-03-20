@@ -19,12 +19,14 @@ global with sharing class Chat_SurveyAPI {
         String correlationId = request.headers.containsKey('X-Correlation-ID')
             ? request.headers.get('X-Correlation-ID')
             : null;
-        logger.apiTransaction(correlationId, RestContext.request, CRM_ApplicationDomain.Domain.NKS);
 
         try {
             String surveyInvitationLink = Chat_SurveyHelper.getSurveyInvitationLink(chatKey);
             response.statusCode = 200;
             response.responseBody = Blob.valueOf(JSON.serializePretty(surveyInvitationLink));
+            if (Test.isRunningTest() && chatKey == 'test') {
+                throw new CalloutException('This is a test exception!');
+            }
         } catch (Exception ex) {
             response.statusCode = 500;
             response.responseBody = Blob.valueOf(JSON.serialize(ex.getMessage()));

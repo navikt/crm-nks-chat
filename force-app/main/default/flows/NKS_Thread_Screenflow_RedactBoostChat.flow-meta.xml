@@ -131,7 +131,9 @@
         <allowPause>false</allowPause>
         <fields>
             <name>SomethingWentWrong</name>
-            <fieldText>&lt;p&gt;Noe gikk galt ved sladding av Boost samtalen.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Feilmelding:&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
+            <fieldText>
+                &lt;p&gt;Noe gikk galt ved sladding av Boost
+                samtalen.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Feilmelding:&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>

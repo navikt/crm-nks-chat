@@ -6,7 +6,8 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Chat redaction Boost replacement text</shortDescription>
-        <value>Denne delen av samtalen har blitt slettet fordi den inneholdt informasjon som ikke kan behandles, forvaltes eller lagres av denne tjenesten.</value>
+        <value>Denne delen av samtalen har blitt slettet fordi den inneholdt informasjon som ikke
+            kan behandles, forvaltes eller lagres av denne tjenesten.</value>
     </labels>
     <labels>
         <fullName>NKS_Chat_RedactionMessageText_NO</fullName>
@@ -14,7 +15,8 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Chat Redaction Message Text</shortDescription>
-        <value>Innhold i samtalen din har blitt slettet fordi den inneholdt informasjon som ikke kan behandles, forvaltes eller lagres av denne tjenesten.</value>
+        <value>Innhold i samtalen din har blitt slettet fordi den inneholdt informasjon som ikke kan
+            behandles, forvaltes eller lagres av denne tjenesten.</value>
     </labels>
     <labels>
         <fullName>CRM_Chat_Authentication_Init_Failed</fullName>
@@ -22,7 +24,8 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Chat Authentication Init Failed</shortDescription>
-        <value>Kunne ikke igangsette autentisering. Hvis problemet vedvarer, kontakt din administrator.</value>
+        <value>Could not initiate authentication. If the problem persists, contact your
+            administrator.</value>
     </labels>
     <labels>
         <fullName>CRM_Chat_Authentication_Requested</fullName>
@@ -30,7 +33,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Chat Authentication Requested</shortDescription>
-        <value>Autentiseringsforespørsel sendt</value>
+        <value>Authentication request sent</value>
     </labels>
     <labels>
         <fullName>CRM_Chat_Authentication_Started</fullName>
@@ -38,7 +41,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Chat Authentication Started</shortDescription>
-        <value>Venter på at brukeren logger inn</value>
+        <value>Waiting for the user to log in</value>
     </labels>
     <labels>
         <fullName>CRM_Chat_Identity_Confirmed</fullName>
@@ -46,7 +49,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Chat Identity Confirmed</shortDescription>
-        <value>Identitet bekreftet</value>
+        <value>Identity confirmed</value>
     </labels>
     <labels>
         <fullName>CRM_Chat_Identity_Confirmed_Disclaimer</fullName>
@@ -54,7 +57,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Chat Identity Confirmed Disclaimer</shortDescription>
-        <value>Brukeren har bekreftet sin identitet</value>
+        <value>The user has confirmed their identity</value>
     </labels>
     <labels>
         <fullName>CRM_Chat_Unconfirmed_Identity_Warning</fullName>
@@ -62,7 +65,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Chat Unconfirmed Identity Warning</shortDescription>
-        <value>Vær oppmerksom - brukeren har ikke bekreftet sin identitet</value>
+        <value>Please note - the user has not confirmed their identity</value>
     </labels>
     <labels>
         <fullName>NKS_Chat_Login_Message_EN</fullName>
@@ -70,7 +73,13 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Chat Login Message EN</shortDescription>
-        <value>We advise you according to forvaltningsloven §11. To ensure your right to privacy, we ask you to only provide information regarding your case. The counsellor already has access to your case. The transcript will be stored and cannot be amended after completion. When the chat is over, you will find the transcript on Ditt NAV and it will be available to NAV for future case handling. You can read more about how NAV processes your personal data here (norwegian): https://www.nav.no/no/nav-og-samfunn/om-nav/personvern-i-arbeids-og-velferdsetaten</value>
+        <value>We advise you according to forvaltningsloven §11. To ensure your right to privacy, we
+            ask you to only provide information regarding your case. The counsellor already has
+            access to your case. The transcript will be stored and cannot be amended after
+            completion. When the chat is over, you will find the transcript on Ditt Nav and it will
+            be available to Nav for future case handling. You can read more about how Nav processes
+            your personal data here (norwegian):
+            https://www.nav.no/no/nav-og-samfunn/om-nav/personvern-i-arbeids-og-velferdsetaten</value>
     </labels>
     <labels>
         <fullName>NKS_Chat_Login_Message_NO</fullName>
@@ -78,6 +87,35 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Chat Login Message NO</shortDescription>
-        <value>Vi veileder deg etter forvaltningsloven § 11. Av hensyn til personvern, ber vi deg om å kun gi oss opplysninger som gjelder det du kontakter oss om. Veilederen har allerede tilgang til saken din. Samtalen blir lagret og kan ikke endres senere. Når samtalen er avsluttet, finner du chatloggen på Ditt NAV og den vil være tilgjengelig for NAV i videre saksgang. Du kan lese mer om hvordan NAV behandler dine personopplysninger her: https://www.nav.no/no/nav-og-samfunn/om-nav/personvern-i-arbeids-og-velferdsetaten</value>
+        <value>Vi veileder deg etter forvaltningsloven § 11. Av hensyn til personvern, ber vi deg om
+            å kun gi oss opplysninger som gjelder det du kontakter oss om. Veilederen har allerede
+            tilgang til saken din. Samtalen blir lagret og kan ikke endres senere. Når samtalen er
+            avsluttet, finner du chatloggen på Ditt Nav og den vil være tilgjengelig for Nav i
+            videre saksgang. Du kan lese mer om hvordan Nav behandler dine personopplysninger her:
+            https://www.nav.no/no/nav-og-samfunn/om-nav/personvern-i-arbeids-og-velferdsetaten</value>
+    </labels>
+    <labels>
+        <fullName>NKS_Chat_Send_Authentication_Request</fullName>
+        <categories>UI, Chat, Authentication</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Send authentication request</shortDescription>
+        <value>Send authentication request</value>
+    </labels>
+    <labels>
+        <fullName>NKS_Chat_Getting_Authentication_Status</fullName>
+        <categories>UI, Chat, Authentication</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Getting Authentication Status</shortDescription>
+        <value>Getting authentication status</value>
+    </labels>
+    <labels>
+        <fullName>NKS_Chat_Sending_Authentication_Request</fullName>
+        <categories>UI, Chat, Authentication</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Sending Authentication Request</shortDescription>
+        <value>Sending authentication request</value>
     </labels>
 </CustomLabels>

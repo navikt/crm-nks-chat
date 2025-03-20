@@ -1,4 +1,10 @@
 global class NKS_ChatTranscriptService {
+    @TestVisible
+    private static Map<String, String> authTexts = new Map<String, String>{
+        'norwegian' => 'Trykk for å logge inn på nav.no og gi veilederen tilgang til saken din. ',
+        'english' => 'Click to log in to nav.no and grant your advisor access to your case. '
+    };
+
     //INITIATE INTERNAL MAP OF NAV IDENT --> User ID
     @testVisible
     private static Map<String, User> navIdentUserMap {
@@ -265,6 +271,19 @@ global class NKS_ChatTranscriptService {
         @TestVisible
         private boolean isAgentMessage() {
             return type.equalsIgnoreCase('agent');
+        }
+    }
+
+    @AuraEnabled
+    public static string generateAuthMessage(Id recordId) {
+        try {
+            return [SELECT Id, LiveChatButton.WindowLanguage FROM LiveChatTranscript WHERE id = :recordId LIMIT 1]
+                    ?.LiveChatButton
+                    ?.WindowLanguage == 'en_US'
+                ? authTexts.get('english')
+                : authTexts.get('norwegian');
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
         }
     }
 }

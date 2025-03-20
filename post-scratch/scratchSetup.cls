@@ -17,7 +17,7 @@ catch(Exception ex) {
 Account personAccount = [SELECT FirstName, LastName, PersonContactId FROM Account WHERE INT_PersonIdent__c = '12345678901'];
 //Create user
 Profile portalProfile = [SELECT Id FROM Profile WHERE Name='Scratch Community Profile' Limit 1];
-String userName  = personAccount.FirstName + '.' +personAccount.LastName + '@' + URL.getSalesforceBaseUrl().getHost();
+String userName  = personAccount.FirstName + '.' +personAccount.LastName + '@' + URL.getOrgDomainUrl().getHost();
 User user1 = new User(
     UserName = userName,
     FirstName = personAccount.FirstName,

@@ -1,11 +1,28 @@
 ({
-    doInit: function (component) {
-        var action = component.get('c.hasBetaAccess');
+    handleChatEnded: function (component, event, helper) {
+        var type = event.getParam('type');
+        if (type === 'startTimer') {
+            var recordId = component.get('v.recordId');
+            var eventRecordId = event.getParam('recordId');
+            if (recordId === eventRecordId) {
+                helper.startTimer(component, eventRecordId);
+            }
+        }
+    },
+
+    stopTimer: function (component) {
+        component.set('v.stopped', true);
+        var action = component.get('c.reportThreatClick');
         action.setCallback(this, function (response) {
             var state = response.getState();
-            console.log(state);
             if (state === 'SUCCESS') {
-                component.set('v.betaAccess', response.getReturnValue());
+                var reportingId = response.getReturnValue();
+                var appEvent = $A.get('e.c:afterworkEvent');
+                const recordId = component.get('v.recordId');
+                appEvent.setParams({ reportingId: reportingId });
+                appEvent.setParams({ recordId: recordId });
+                appEvent.setParams({ type: 'createdThreatReport' });
+                appEvent.fire();
 
                 // You would typically fire a event here to trigger
                 // client-side notification that the server-side
@@ -23,16 +40,7 @@
                 }
             }
         });
+
         $A.enqueueAction(action);
-    },
-    handleChatEnded: function (component, event, helper) {
-        var recordId = component.get('v.recordId');
-        var eventRecordId = event.getParam('recordId');
-        if (recordId === eventRecordId && component.get('v.betaAccess')) {
-            helper.startTimer(component, eventRecordId);
-        }
-    },
-    stopTimer: function (component) {
-        component.set('v.stopped', true);
     }
 });

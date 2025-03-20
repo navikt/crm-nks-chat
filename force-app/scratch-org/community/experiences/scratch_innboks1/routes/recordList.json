@@ -4,6 +4,7 @@
     "configurationTags": [],
     "id": "d91acbec-9543-496b-bc89-c4f5a2fde406",
     "label": "Record List",
+    "devName": "Record_List",
     "pageAccess": "UseParent",
     "routeType": "list",
     "type": "route",
