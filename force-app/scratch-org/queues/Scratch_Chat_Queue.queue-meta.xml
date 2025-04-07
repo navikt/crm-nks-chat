@@ -2,8 +2,19 @@
 <Queue xmlns="http://soap.sforce.com/2006/04/metadata">
     <doesSendEmailToMembers>false</doesSendEmailToMembers>
     <name>Scratch Chat Queue</name>
+    <queueMembers>
+        <publicGroups>
+            <publicGroup>AllInternalUsers</publicGroup>
+        </publicGroups>
+        <roles>
+            <role>NKS</role>
+        </roles>
+    </queueMembers>
     <queueRoutingConfig>Scratch_Chat_Routing</queueRoutingConfig>
     <queueSobject>
         <sobjectType>LiveChatTranscript</sobjectType>
+    </queueSobject>
+    <queueSobject>
+        <sobjectType>MessagingSession</sobjectType>
     </queueSobject>
 </Queue>
