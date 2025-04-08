@@ -54,7 +54,7 @@ sfdx force:org:open
 
 ## Pre scratch setup
 
-Scratch deploy will fail due to sharing. If that is the case you need to set Case and Opportunity Internal Access to Private in Sharing Settings. Then continue deployment.
+Scratch deploy will fail due to sharing, seemingly due to Salesforce setting public sharing by default when using Developer edition of scratch. If that is the case you need to set Case and Opportunity Internal Access to Private in Sharing Settings to match platform-base sharing settings. Then continue deployment.
 
 ## Post scratch setup
 As some metadata have poor support for packaging and metadata deployment there are a few manual steps to perform to be able to test the chat solution.
