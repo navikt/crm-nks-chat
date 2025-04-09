@@ -1,68 +1,79 @@
 {
-  "appPageId" : "e9a45ad3-f764-4838-8cde-d5bad3c95b02",
-  "componentName" : "siteforce:sldsOneColLayout",
-  "dataProviders" : [ ],
-  "id" : "d2b4f92c-a224-4563-867a-2a06c2dcd2a9",
-  "label" : "Home",
-  "regions" : [ {
-    "id" : "bb29fa1f-67df-4c08-9533-d9c9d50e00f2",
-    "regionName" : "header",
-    "type" : "region"
-  }, {
-    "components" : [ {
-      "componentAttributes" : {
-        "richTextValue" : "<p><span style=\"font-size: 48px;\">SCRATCH CHAT TESTING</span></p>"
-      },
-      "componentName" : "forceCommunity:richTextInline",
-      "id" : "9d26beac-c78a-42e8-ac97-d79ae8225bc9",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    }, {
-      "componentAttributes" : { },
-      "componentName" : "c:scratchSimulateChatAuth",
-      "id" : "255548bb-25ef-4446-b1c3-3bfbc1db026f",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    }, {
-      "componentAttributes" : {
-        "deploymentName" : "Test_Deployment",
-        "hideChatButtonOnLoad" : "Default",
-        "isExpSiteAuthMode" : false,
-        "scrtUrl" : "https://fun-customer-5565-dev-ed.scratch.my.salesforce-scrt.com",
-        "siteEndpoint" : "https://fun-customer-5565-dev-ed.scratch.my.site.com/ESWTestDeployment1744104401442"
-      },
-      "componentName" : "experience_messaging:embeddedMessaging",
-      "id" : "6061a69c-6364-4993-aec8-29f81c2e68ca",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    } ],
-    "id" : "cd3225d7-6e7d-4be6-8fd6-5865528cba3b",
-    "regionName" : "content",
-    "type" : "region"
-  }, {
-    "id" : "4ee1264a-8fca-43a8-a203-97b345c01dd5",
-    "regionName" : "footer",
-    "type" : "region"
-  }, {
-    "components" : [ {
-      "componentAttributes" : {
-        "customHeadTags" : "",
-        "description" : "",
-        "title" : "Home"
-      },
-      "componentName" : "forceCommunity:seoAssistant",
-      "id" : "c38e5cad-d7bd-4552-b595-12adf7d5c469",
-      "renditionMap" : { },
-      "type" : "component"
-    } ],
-    "id" : "4953f71e-aa7b-4825-bc58-faf901597eca",
-    "regionName" : "sfdcHiddenRegion",
-    "type" : "region"
-  } ],
-  "themeLayoutType" : "Inner",
-  "type" : "view",
-  "viewType" : "home"
+    "appPageId": "e9a45ad3-f764-4838-8cde-d5bad3c95b02",
+    "componentName": "siteforce:sldsOneColLayout",
+    "dataProviders": [],
+    "id": "d2b4f92c-a224-4563-867a-2a06c2dcd2a9",
+    "label": "Home",
+    "regions": [
+        {
+            "id": "bb29fa1f-67df-4c08-9533-d9c9d50e00f2",
+            "regionName": "header",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "richTextValue": "<p><span style=\"font-size: 48px;\">SCRATCH CHAT TESTING</span></p>"
+                    },
+                    "componentName": "forceCommunity:richTextInline",
+                    "id": "9d26beac-c78a-42e8-ac97-d79ae8225bc9",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                },
+                {
+                    "componentAttributes": {},
+                    "componentName": "c:scratchSimulateChatAuth",
+                    "id": "255548bb-25ef-4446-b1c3-3bfbc1db026f",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                },
+                {
+                    "componentAttributes": {
+                        "deploymentName": "Test_Deployment",
+                        "hideChatButtonOnLoad": "Default",
+                        "isExpSiteAuthMode": false,
+                        "scrtUrl": "https://fun-customer-5565-dev-ed.scratch.my.salesforce-scrt.com",
+                        "siteEndpoint": "https://fun-customer-5565-dev-ed.scratch.my.site.com/ESWTestDeployment1744104401442"
+                    },
+                    "componentName": "experience_messaging:embeddedMessaging",
+                    "id": "6061a69c-6364-4993-aec8-29f81c2e68ca",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "cd3225d7-6e7d-4be6-8fd6-5865528cba3b",
+            "regionName": "content",
+            "type": "region"
+        },
+        {
+            "id": "4ee1264a-8fca-43a8-a203-97b345c01dd5",
+            "regionName": "footer",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "customHeadTags": "",
+                        "description": "",
+                        "title": "Home"
+                    },
+                    "componentName": "forceCommunity:seoAssistant",
+                    "id": "c38e5cad-d7bd-4552-b595-12adf7d5c469",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "4953f71e-aa7b-4825-bc58-faf901597eca",
+            "regionName": "sfdcHiddenRegion",
+            "type": "region"
+        }
+    ],
+    "themeLayoutType": "Inner",
+    "type": "view",
+    "viewType": "home"
 }
