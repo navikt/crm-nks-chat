@@ -1,6 +1,6 @@
 {
     "orgName": "crm-nks-chat",
-    "edition": "Enterprise",
+    "edition": "Developer",
     "release": "Current",
     "adminEmail": "fakeemail@nav.no.scratchorg",
     "features": [
@@ -72,6 +72,14 @@
         },
         "surveySettings": {
             "enableSurvey": true
+        }
+    },
+    "objectSettings": {
+        "case": {
+            "sharingModel": "private"
+        },
+        "opportunity": {
+            "sharingModel": "private"
         }
     }
 }
