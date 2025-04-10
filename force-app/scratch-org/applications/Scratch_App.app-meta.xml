@@ -27,6 +27,24 @@
         <type>Flexipage</type>
         <pageOrSobjectType>Thread__c</pageOrSobjectType>
     </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <comment>Action override created by Lightning App Builder during activation.</comment>
+        <content>Messaging_Session_Record_Page</content>
+        <formFactor>Small</formFactor>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Flexipage</type>
+        <pageOrSobjectType>MessagingSession</pageOrSobjectType>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <comment>Action override updated by Lightning App Builder during activation.</comment>
+        <content>Messaging_v2</content>
+        <formFactor>Large</formFactor>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Flexipage</type>
+        <pageOrSobjectType>MessagingSession</pageOrSobjectType>
+    </actionOverrides>
     <brand>
         <headerColor>#ED1919</headerColor>
         <shouldOverrideOrgTheme>false</shouldOverrideOrgTheme>
