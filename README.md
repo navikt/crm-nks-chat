@@ -62,39 +62,35 @@ As some metadata have poor support for packaging and metadata deployment there a
     npm run scratchSetup
     ```
 
-2.  Give access to Messaging
-
-    -   Go to Setup -> Users -> "User, User" and add Messaging for In-App and Web User to Permission Set License Assignments.
-
-3.  Create a Messaging Channel
+2.  Create a Messaging Channel
 
     -   Go to Setup -> Messaging Settings -> Make sure Messaging is ON. Then press New Channel -> Messaging for In-App and Web. Under Omni-Channel Routing set Routing Type to Omni-Queue and assign Scratch Chat Queue. Make sure to activate the channel.
 
-4.  Create an Embedded Service Deployment
+3.  Create an Embedded Service Deployment
 
     -   Go to Setup -> Embedded Service Deployments -> New Deployment -> Messaging for In-App and Web -> Web -> Add the domain name of the experience site. Make sure the domain name is without any prefixes (Example: enterprise-power-8072-dev-ed.scratch.my.site.com). Make sure to publish it after it is created.
 
-5.  Add URL to Trusted URLs
+4.  Add URL to Trusted URLs
 
     -   Go to Setup -> Trusted URLs and add the SCRT-URL from the Embedded Service Deployment's Code Snippet "scrt2URL" to Trusted URLs. Example: https://enterprise-power-8072-dev-ed.scratch.my.salesforce-scrt.com. Allow all CSP Directives.
 
-6.  Add URL to CORS
+5.  Add URL to CORS
 
     -   Go to Setup -> CORS and add your experience site url.
 
-7.  Experience Site
+6.  Experience Site
 
     -   Go to the experience site scratch_innboks and into builder. Add the "Embedded Messaging" component to the site and set the Embedded Web Deployment, Enhanced Service URL and Site Endpoint.
 
     -   In the experience site builder, open settings -> Security and privacy and enable Relaxed CSP (if not already enabled). Then under the CSP Errors section allow the two sites that have been blocked from the live agent endpoints (if they are blocked - check CSP Errors and console log).
     -   Navigate to the workspace of scratch-innboks. The easiest way to get there is the hamburger in the top left of the builder. Go to Administration -> Members and add customer profile Scratch Community Profile and save.
 
-8.  Add service presence status to permission set
+7.  Add service presence status to permission set
 
     -   Go to setup -> Permission sets -> Scratch Permission set and add access to the service presence statuses needed for chat.
 
-9.  To start a chat find the Harry Potter Account and the use the Log In to Experience as User action.
-10. To receive a chat go to an app with omni-console enabled, such as the scratch app, and change your omni-channel presence to Tilgjengelig for chat.
+8.  To start a chat find the Harry Potter Account and the use the Log In to Experience as User action.
+9.  To receive a chat go to an app with omni-console enabled, such as the scratch app, and change your omni-channel presence to Tilgjengelig for chat.
 
 Other useful commands included in this package:
 
