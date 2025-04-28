@@ -6,7 +6,7 @@
         <name>Set_Theme_Group</name>
         <label>Set Theme Group</label>
         <locationX>50</locationX>
-        <locationY>551</locationY>
+        <locationY>503</locationY>
         <assignmentItems>
             <assignToReference>$Record.NKS_Theme_Group__c</assignToReference>
             <operator>Assign</operator>
@@ -20,7 +20,7 @@
         <name>Common_Code_Check</name>
         <label>Common Code Check</label>
         <locationX>182</locationX>
-        <locationY>431</locationY>
+        <locationY>395</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Common_Code_Not_Null</name>
@@ -39,6 +39,7 @@
         </rules>
     </decisions>
     <description>Automatically populates the theme group value for the chat based on which queue it originates from.</description>
+    <environments>Default</environments>
     <formulas>
         <description>Maps the incoming queue names to a theme group.</description>
         <name>Queue_Theme_Mapping</name>
@@ -50,6 +51,7 @@
     &apos;NKS_Chat_Helse&apos;, &apos;HELSE&apos;,
     &apos;NKS_Chat_Arbeidsgiver_og_Samhandler&apos;, &apos;ARBD&apos;,
     &apos;NKS_Chat_Pensjon&apos;, &apos;PENS&apos;,
+    &apos;HOT_Chat_Hjelpemiddelsentralen&apos;, &apos;HJLPM&apos;,
     null
 )</expression>
     </formulas>
@@ -79,7 +81,7 @@
         <name>Get_theme_groups</name>
         <label>Get theme groups</label>
         <locationX>182</locationX>
-        <locationY>311</locationY>
+        <locationY>287</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Common_Code_Check</targetReference>
