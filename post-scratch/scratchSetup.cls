@@ -6,12 +6,15 @@ usr.CRM_NAV_Ident__c = 'Z999999'; //Setting default nav ident for the scratch us
 update usr;
 
 Group scratchQueue = [SELECT Id FROM Group WHERE DeveloperName = 'Scratch_Chat_Queue'];
+PermissionSetLicense psl = [Select Id from PermissionSetLicense where DeveloperName = 'EmbeddedServiceMessagingUserPsl'];
 try{
     insert new GroupMember(UserOrGroupId = usr.Id, GroupId = scratchQueue.Id);
+    insert new PermissionSetLicenseAssign(AssigneeId=usr.Id, PermissionSetLicenseId=psl.Id);
 }
 catch(Exception ex) {
     //Probably failed due to rerun of script
 }
+
 
 //Create community user
 Account personAccount = [SELECT FirstName, LastName, PersonContactId FROM Account WHERE INT_PersonIdent__c = '12345678901'];
