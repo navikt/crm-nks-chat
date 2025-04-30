@@ -14,6 +14,13 @@
                 <elementReference>Get_theme_groups.Id</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>$Record.NKS_Theme_Group_Name__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_theme_groups.Name</elementReference>
+            </value>
+        </assignmentItems>
     </assignments>
     <decisions>
         <description>Validate the queried common code</description>
