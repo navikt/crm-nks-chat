@@ -13,7 +13,7 @@
     <aura:if isTrue="{!v.showTimer}">
         <div class="slds-card slds-var-p-around_small">
             <lightning:button
-                variant="destructive"
+                variant="destructive-text"
                 label="Kritisk henvendelse"
                 title="Kritisk henvendelse"
                 onclick="{! c.stopTimer }"
