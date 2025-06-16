@@ -36,7 +36,7 @@
                 },
                 {
                     "package": "crm-journal-utilities",
-                    "versionNumber": "0.44.0.LATEST"
+                    "versionNumber": "0.45.0.LATEST"
                 },
                 {
                     "package": "crm-platform-oppgave",
@@ -44,7 +44,7 @@
                 },
                 {
                     "package": "crm-thread-view",
-                    "versionNumber": "0.3.0.LATEST"
+                    "versionNumber": "0.7.0.LATEST"
                 },
                 {
                     "package": "crm-community-base",
