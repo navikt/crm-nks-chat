@@ -39,7 +39,7 @@
             .then((res) => {
                 const eventTab = res.find((content) => content.recordId === eventFullID);
                 if (!eventTab) return;
-                helper.setTabColor(workspace, eventTab.tabId, 'success');
+                helper.setTabColor(workspace, eventTab.tabId);
             })
             .catch(() => {
                 //Errors require manual handling.
