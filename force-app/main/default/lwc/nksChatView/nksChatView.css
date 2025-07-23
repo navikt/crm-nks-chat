@@ -1,9 +1,18 @@
-.vilkar-link {
-    align-self: end;
+.navds-link {
+    align-self: start;
     justify-self: start;
     border: 0px;
+    background-color: transparent;
 }
 
-.contentholder {
-    max-width: 80em;
+.header {
+    margin-bottom: var(--a-spacing-10);
+}
+
+.modal-header {
+    margin-top: var(--a-spacing-12);
+}
+
+.container {
+    margin: 0 var(--a-spacing-3) var(--a-spacing-12) var(--a-spacing-3);
 }

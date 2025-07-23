@@ -5,7 +5,7 @@ import getChatbotMessage from '@salesforce/apex/nksChatView.getChatbotMessage';
 import { publish, MessageContext } from 'lightning/messageService';
 import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
 import userId from '@salesforce/user/Id';
-import getmessages from '@salesforce/apex/CRM_MessageHelperExperience.getMessagesFromThread';
+import getGroupedMessagesFromThread from '@salesforce/apex/stoInboxHelper.getGroupedMessagesFromThread';
 import getContactId from '@salesforce/apex/CRM_MessageHelperExperience.getUserContactId';
 import { logModalEvent, setDecoratorParams, getComponentName } from 'c/inboxAmplitude';
 
@@ -17,7 +17,7 @@ export default class NksChatView extends LightningElement {
     modalOpen = false;
     chatbotMessage = 'Laster inn samtale';
     userContactId;
-    messages;
+    messageGroups;
     themeGroup;
 
     @wire(MessageContext)
@@ -50,13 +50,13 @@ export default class NksChatView extends LightningElement {
         }
     }
 
-    @wire(getmessages, { threadId: '$threadId' }) //Calls apex and extracts messages related to this record
-    wiremessages(result) {
+    @wire(getGroupedMessagesFromThread, { threadId: '$threadId' })
+    wiredGroups(result) {
         const { data, error } = result;
         if (error) {
             console.error(error);
         } else if (data) {
-            this.messages = data;
+            this.messageGroups = data;
         }
     }
 
@@ -102,9 +102,5 @@ export default class NksChatView extends LightningElement {
 
     get termsModal() {
         return this.template.querySelector('c-community-modal');
-    }
-
-    get pageTitle() {
-        return `Chatsamtale${this.themeGroup ? ' - ' + this.themeGroup : ''}`;
     }
 }
