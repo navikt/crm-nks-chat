@@ -80,11 +80,6 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>Message__c.CRM_Is_logged_in_User__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>true</editable>
         <field>Message__c.CRM_Message_Text__c</field>
         <readable>true</readable>
@@ -307,11 +302,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Thread__c.CRM_Original_Person_NAV_Unit__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Thread__c.CRM_Recipient__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
