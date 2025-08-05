@@ -50,7 +50,7 @@
                 }
                 //Set tab color
                 if (data.getReturnValue().Status === 'Completed') {
-                    this.setTabColor(workspace, tabId, 'success');
+                    this.setTabColor(workspace, tabId);
                 }
             }
         });
@@ -65,11 +65,10 @@
         });
     },
 
-    setTabColor: function (workspace, tabId, state) {
+    setTabColor: function (workspace, tabId) {
         workspace.setTabHighlighted({
             tabId: tabId,
-            highlighted: true,
-            options: { state: state }
+            highlighted: true
         });
     },
 
