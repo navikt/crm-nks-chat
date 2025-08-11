@@ -2,13 +2,18 @@
     <div class="container">
         <p class="navds-bodylong navds-bodylong--medium">Chatsamtale</p>
         <h1 class="navds-heading navds-heading--xlarge header">{themeGroup}</h1>
-        <p class="navds-bodylong navds-bodylong--medium">
+        <p class="navds-bodylong navds-bodylong--medium modal-text">
             Trykk her for å se
-            <button onclick={handleModalButton} class="navds-link navds-link--action navds-link--inline-text focusBtn">
+            <button onclick={handleModalButton} class="navds-link navds-link--action frida-button">
                 samtale med chatbot Frida
             </button>
         </p>
-        <c-community-modal show-modal={modalOpen} onmodalclosed={closeModal} onkeyup={handleKeyboardEvent}>
+        <c-community-modal
+            show-close-button
+            show-modal={modalOpen}
+            onmodalclosed={closeModal}
+            onkeyup={handleKeyboardEvent}
+        >
             <h1 slot="modalHeader" class="navds-heading navds-heading--xlarge modal-header">Chatbot samtale</h1>
             <div slot="modalContent">
                 <lightning-formatted-rich-text value={chatbotMessage}></lightning-formatted-rich-text>

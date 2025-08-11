@@ -14,5 +14,25 @@
 }
 
 .container {
-    margin: 0 var(--a-spacing-3) var(--a-spacing-12) var(--a-spacing-3);
+    margin-bottom: var(--a-spacing-12);
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 640px;
+}
+
+.modal-text {
+    margin-bottom: var(--a-spacing-10);
+}
+
+.frida-button {
+    border: none;
+    background-color: transparent;
+}
+
+.frida-button:active,
+.frida-button:focus {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    color: var(--a-text-action);
 }
