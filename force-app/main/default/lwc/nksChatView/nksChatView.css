@@ -14,5 +14,30 @@
 }
 
 .container {
-    margin: 0 var(--a-spacing-3) var(--a-spacing-12) var(--a-spacing-3);
+    margin: var(--a-spacing-05) auto var(--a-spacing-20) auto;
+    max-width: 640px;
+}
+
+.modal-text {
+    margin-bottom: var(--a-spacing-10);
+}
+
+.frida-button {
+    border: none;
+    background-color: transparent;
+}
+
+.frida-button:active,
+.frida-button:focus {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    color: var(--a-text-action);
+}
+
+@media only screen and (max-width: 576px) {
+    .container {
+        margin-left: var(--a-spacing-3);
+        margin-right: var(--a-spacing-3);
+    }
 }
