@@ -99,6 +99,14 @@ export default class ChatAuthenticationOverview extends LightningElement {
         return !this.endTime && !this.chatEnded;
     }
 
+    get flattenedLabels() {
+        const result = {};
+        Object.keys(this.labels).forEach((key) => {
+            result[key] = (this.labels[key] ?? '').replace(/\s+/g, ' ').trim();
+        });
+        return result;
+    }
+
     registerErrorListener() {
         onError((error) => {
             console.error('Received error from empApi: ', JSON.stringify(error));
@@ -159,11 +167,11 @@ export default class ChatAuthenticationOverview extends LightningElement {
                         ? 'You are now in a secure chat with Nav, you are chatting with ' +
                           data +
                           '. ' +
-                          this.labels.CHAT_LOGIN_MSG_EN
+                          this.flattenedLabels.CHAT_LOGIN_MSG_EN
                         : 'Du er nå i en innlogget chat med Nav, du snakker med ' +
                           data +
                           '. ' +
-                          this.labels.CHAT_LOGIN_MSG_NO;
+                          this.flattenedLabels.CHAT_LOGIN_MSG_NO;
 
                 const authenticationCompleteEvt = new CustomEvent('authenticationcomplete', {
                     detail: { loginMessage }
