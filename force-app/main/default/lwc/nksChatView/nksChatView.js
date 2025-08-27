@@ -72,35 +72,23 @@ export default class NksChatView extends LightningElement {
         this.template.querySelector('c-crm-messaging-community-thread-viewer').createMessage(validation);
     }
 
-    handleModalButton() {
+    async handleModalButton() {
         this.modalOpen = true;
-        this.termsModal.focusModal();
         publish(this.messageContext, globalModalOpen, { status: 'true' });
-        getChatbotMessage({ chatId: this.recordId, userId: userId }).then((res) => {
-            this.chatbotMessage = res;
-        });
-
+        this.chatbotMessage = 'Laster inn samtale';
+        try {
+            this.chatbotMessage = await getChatbotMessage({ chatId: this.recordId, userId: userId });
+        } catch (e) {
+            this.chatbotMessage = 'Kunne ikke laste samtale';
+        }
         logModalEvent(true, 'Chatbot samtale', getComponentName(this.template), 'Chatsamtale');
     }
 
     closeModal() {
         this.modalOpen = false;
         publish(this.messageContext, globalModalOpen, { status: 'false' });
-        const btn = this.template.querySelector('.focusBtn');
-        btn.focus();
-
+        const btn = this.template.querySelector('.frida-button');
+        if (btn) btn.focus();
         logModalEvent(false, 'Chatbot samtale', getComponentName(this.template), 'Chatsamtale');
-    }
-
-    handleKeyboardEvent(event) {
-        if (event.keyCode === 27 || event.code === 'Escape') {
-            this.closeModal();
-        } else if (event.keyCode === 9 || event.code === 'Tab') {
-            this.termsModal.focusLoop();
-        }
-    }
-
-    get termsModal() {
-        return this.template.querySelector('c-community-modal');
     }
 }
