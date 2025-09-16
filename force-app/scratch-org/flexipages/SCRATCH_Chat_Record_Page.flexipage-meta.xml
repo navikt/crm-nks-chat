@@ -360,8 +360,8 @@
                     <name>loggingEnabled</name>
                     <value>true</value>
                 </componentInstanceProperties>
-                <componentName>nksChatAuthenticationInfoContainerV2</componentName>
-                <identifier>c_nksChatAuthenticationInfoContainerV2</identifier>
+                <componentName>nksChatAuthenticationInfoContainer</componentName>
+                <identifier>c_nksChatAuthenticationInfoContainer</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -392,7 +392,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>flowNames</name>
-                    <value>NKS_Chat_Journal_Thread_v_2, NKS_Chat_Send_NAV_Task_v_2</value>
+                    <value>NKS_Chat_Journal_Thread, NKS_Chat_Send_NAV_Task</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>setBorders</name>
@@ -445,7 +445,7 @@
         <name>leftsidebar</name>
         <type>Region</type>
     </flexiPageRegions>
-    <masterLabel>SCRATCH Chat Record Page v. 2</masterLabel>
+    <masterLabel>SCRATCH Chat Record Page</masterLabel>
     <sobjectType>LiveChatTranscript</sobjectType>
     <template>
         <name>flexipage:recordHomePinnedHeaderLeftSidebarTemplateDesktop</name>
