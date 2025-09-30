@@ -93,6 +93,13 @@
                 <elementReference>Get_Thread.CRM_Account__c</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>NavTask.CRM_Subtype__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Selected_Subtype_SF_Id</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>Send_NAV_Task</targetReference>
         </connector>
@@ -355,6 +362,10 @@
                 <assignToReference>Selected_Subtheme_SF_Id</assignToReference>
                 <name>subtheme</name>
             </outputParameters>
+            <outputParameters>
+                <assignToReference>Selected_Subtype_SF_Id</assignToReference>
+                <name>subtype</name>
+            </outputParameters>
         </fields>
         <fields>
             <name>Task_Type_Selector</name>
@@ -560,6 +571,13 @@
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>Selected_Subtype_SF_Id</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
     </variables>
     <variables>
         <name>Selected_Theme_Group_SF_Id</name>
