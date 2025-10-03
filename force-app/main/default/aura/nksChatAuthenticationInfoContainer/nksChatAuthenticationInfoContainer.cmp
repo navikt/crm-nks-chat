@@ -1,5 +1,4 @@
 <aura:component
-    implements="flexipage:availableForAllPageTypes, force:hasRecordId"
     controller="NKS_ChatTranscriptService"
 >
     <aura:attribute name="loggingEnabled" type="boolean" default="true" />
