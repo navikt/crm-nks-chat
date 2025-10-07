@@ -350,8 +350,7 @@
                 <identifier>forceKnowledge_articleSearchDesktop</identifier>
             </componentInstance>
         </itemInstances>
-        <name>
-        rightsidebar</name>
+        <name>rightsidebar</name>
         <type>Region</type>
     </flexiPageRegions>
     <flexiPageRegions>
