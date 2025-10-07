@@ -18,8 +18,7 @@
                 </visibilityRule>
             </componentInstance>
         </itemInstances>
-        <name>
-        header</name>
+        <name>header</name>
         <type>Region</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -70,8 +69,7 @@
                 <identifier>c_nksRecordInformation4</identifier>
             </componentInstance>
         </itemInstances>
-        <name>
-        Facet-5b9934d6-aa38-4628-85c0-62c4987238d3</name>
+        <name>Facet-5b9934d6-aa38-4628-85c0-62c4987238d3</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -93,8 +91,7 @@
                 <identifier>flexipage_tab</identifier>
             </componentInstance>
         </itemInstances>
-        <name>
-        Facet-80e0a1fb-5c61-4692-8e27-577984e78e6a</name>
+        <name>Facet-80e0a1fb-5c61-4692-8e27-577984e78e6a</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -111,7 +108,7 @@
                     <name>displayedFields</name>
                     <value>NKS_Full_Name__c,Name,INT_Sex__c, INT_LegalStatus__c,
                         INT_Citizenships__c,
-        INT_BankAccountNumber__c,INT_BankAccountNumberLastModified__c</value>
+                        INT_BankAccountNumber__c,INT_BankAccountNumberLastModified__c</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>enableRefresh</name>
@@ -161,7 +158,7 @@
                 <componentInstanceProperties>
                     <name>displayedFields</name>
                     <value>NKS_Mobile_Phone__c, NKS_Phone_1__c, NKS_Email__c, NKS_Phone_2__c,
-        INT_KRR_Reservation__c, NKS_County__c, INT_VerifiedFromKRR__c</value>
+                        INT_KRR_Reservation__c, NKS_County__c, INT_VerifiedFromKRR__c</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>enableRefresh</name>
@@ -211,7 +208,7 @@
                 <componentInstanceProperties>
                     <name>displayedFields</name>
                     <value>INT_MovedFromCountry__c,
-        INT_MovedFromPlace__c,INT_MovedToCountry__c,INT_MovedToPlace__c</value>
+                        INT_MovedFromPlace__c,INT_MovedToCountry__c,INT_MovedToPlace__c</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>enableRefresh</name>
@@ -279,8 +276,7 @@
                 <identifier>c_nksNavUnitSingle</identifier>
             </componentInstance>
         </itemInstances>
-        <name>
-        Facet-9eab6cf7-77f2-47a3-9c95-6c88c9a9f26b</name>
+        <name>Facet-9eab6cf7-77f2-47a3-9c95-6c88c9a9f26b</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -298,8 +294,7 @@
                 <identifier>flexipage_tab2</identifier>
             </componentInstance>
         </itemInstances>
-        <name>
-        Facet-b030d591-08ce-48a2-9826-240b7f54fad5</name>
+        <name>Facet-b030d591-08ce-48a2-9826-240b7f54fad5</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -337,8 +332,7 @@
                 </visibilityRule>
             </componentInstance>
         </itemInstances>
-        <name>
-        main</name>
+        <name>main</name>
         <type>Region</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -449,8 +443,7 @@
                 <identifier>nksRecordInformation2</identifier>
             </componentInstance>
         </itemInstances>
-        <name>
-        leftsidebar</name>
+        <name>leftsidebar</name>
         <type>Region</type>
     </flexiPageRegions>
     <masterLabel>SCRATCH Chat Record Page v. 2</masterLabel>
