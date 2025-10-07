@@ -5,7 +5,7 @@ import getChatbotMessage from '@salesforce/apex/nksChatView.getChatbotMessage';
 import { publish, MessageContext } from 'lightning/messageService';
 import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
 import userId from '@salesforce/user/Id';
-import getmessages from '@salesforce/apex/CRM_MessageHelperExperience.getMessagesFromThread';
+import getGroupedMessagesFromThread from '@salesforce/apex/CRM_MessageHelperExperience.getGroupedMessagesFromThread';
 import getContactId from '@salesforce/apex/CRM_MessageHelperExperience.getUserContactId';
 import { logModalEvent, setDecoratorParams, getComponentName } from 'c/inboxAmplitude';
 
@@ -17,7 +17,7 @@ export default class NksChatView extends LightningElement {
     modalOpen = false;
     chatbotMessage = 'Laster inn samtale';
     userContactId;
-    messages;
+    messageGroups;
     themeGroup;
 
     @wire(MessageContext)
@@ -50,13 +50,13 @@ export default class NksChatView extends LightningElement {
         }
     }
 
-    @wire(getmessages, { threadId: '$threadId' }) //Calls apex and extracts messages related to this record
-    wiremessages(result) {
+    @wire(getGroupedMessagesFromThread, { threadId: '$threadId' })
+    wiredGroups(result) {
         const { data, error } = result;
         if (error) {
             console.error(error);
         } else if (data) {
-            this.messages = data;
+            this.messageGroups = data;
         }
     }
 
@@ -72,39 +72,23 @@ export default class NksChatView extends LightningElement {
         this.template.querySelector('c-crm-messaging-community-thread-viewer').createMessage(validation);
     }
 
-    handleModalButton() {
+    async handleModalButton() {
         this.modalOpen = true;
-        this.termsModal.focusModal();
         publish(this.messageContext, globalModalOpen, { status: 'true' });
-        getChatbotMessage({ chatId: this.recordId, userId: userId }).then((res) => {
-            this.chatbotMessage = res;
-        });
-
+        this.chatbotMessage = 'Laster inn samtale';
+        try {
+            this.chatbotMessage = await getChatbotMessage({ chatId: this.recordId, userId: userId });
+        } catch (e) {
+            this.chatbotMessage = 'Kunne ikke laste samtale';
+        }
         logModalEvent(true, 'Chatbot samtale', getComponentName(this.template), 'Chatsamtale');
     }
 
     closeModal() {
         this.modalOpen = false;
         publish(this.messageContext, globalModalOpen, { status: 'false' });
-        const btn = this.template.querySelector('.focusBtn');
-        btn.focus();
-
+        const btn = this.template.querySelector('.frida-button');
+        if (btn) btn.focus();
         logModalEvent(false, 'Chatbot samtale', getComponentName(this.template), 'Chatsamtale');
-    }
-
-    handleKeyboardEvent(event) {
-        if (event.keyCode === 27 || event.code === 'Escape') {
-            this.closeModal();
-        } else if (event.keyCode === 9 || event.code === 'Tab') {
-            this.termsModal.focusLoop();
-        }
-    }
-
-    get termsModal() {
-        return this.template.querySelector('c-community-modal');
-    }
-
-    get pageTitle() {
-        return `Chatsamtale${this.themeGroup ? ' - ' + this.themeGroup : ''}`;
     }
 }

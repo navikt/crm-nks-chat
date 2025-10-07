@@ -75,8 +75,8 @@
                     <name>viewedObjectApiName</name>
                     <value>Case</value>
                 </componentInstanceProperties>
-                <componentName>nksRecordInfo</componentName>
-                <identifier>nksRecordInfo</identifier>
+                <componentName>nksRecordInformation</componentName>
+                <identifier>nksRecordInformation</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -201,8 +201,8 @@
                     <name>showLink</name>
                     <value>true</value>
                 </componentInstanceProperties>
-                <componentName>nksRecordInfo</componentName>
-                <identifier>nksRecordInfo2</identifier>
+                <componentName>nksRecordInformation</componentName>
+                <identifier>nksRecordInformation2</identifier>
             </componentInstance>
         </itemInstances>
         <name>leftsidebar</name>
