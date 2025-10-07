@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Flow xmlns="http://soap.sforce.com/2006/04/metadata"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <apiVersion>59.0</apiVersion>
     <assignments>
         <name>Add_henvendelse_ID</name>
@@ -213,14 +212,14 @@
     <dynamicChoiceSets>
         <name>Priority_Picklist</name>
         <dataType>Picklist</dataType>
-        <displayField xsi:nil="true" />
-        <object xsi:nil="true" />
+        <displayField xsi:nil="true"/>
+        <object xsi:nil="true"/>
         <picklistField>CRM_Priority__c</picklistField>
         <picklistObject>NavTask__c</picklistObject>
     </dynamicChoiceSets>
     <environments>Default</environments>
     <interviewLabel>NKS Chat Send NAV Task {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>NKS Chat Send NAV Task</label>
+    <label>NKS Chat Send NAV Task v. 2</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -404,8 +403,7 @@
             <name>Task_Description</name>
             <fieldText>Oppgave til NAV-enhet</fieldText>
             <fieldType>LargeTextArea</fieldType>
-            <helpText>&lt;p&gt;Husk at oppgavebeskrivelsen ikke skal inneholde personsensitive
-                opplysninger!&lt;/p&gt;</helpText>
+            <helpText>&lt;p&gt;Husk at oppgavebeskrivelsen ikke skal inneholde personsensitive opplysninger!&lt;/p&gt;</helpText>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
         </fields>
@@ -464,9 +462,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>No_Account_Error_Screen</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color:
-                rgb(68, 68, 68);&quot;&gt;Brukeren må være logget inn for at du skal kunne opprette
-                oppgave.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Brukeren må være logget inn for at du skal kunne opprette oppgave.&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <nextOrFinishButtonLabel>Ok</nextOrFinishButtonLabel>
@@ -497,12 +493,7 @@
         </fields>
         <fields>
             <name>Post_Error_Text</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);
-                font-size: 12px; font-family: -apple-system, system-ui, &amp;quot;Segoe
-                UI&amp;quot;, Roboto, Oxygen, Ubuntu, &amp;quot;Fira Sans&amp;quot;, &amp;quot;Droid
-                Sans&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, sans-serif; color: rgb(0, 0,
-                0);&quot;&gt;Oppgaveopprettelse feilet. En utvikler har fått beskjed og vil feilsøke
-                dette. Bruk Modia for å opprette oppgaven for denne brukeren.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); font-size: 12px; font-family: -apple-system, system-ui, &amp;quot;Segoe UI&amp;quot;, Roboto, Oxygen, Ubuntu, &amp;quot;Fira Sans&amp;quot;, &amp;quot;Droid Sans&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, sans-serif; color: rgb(0, 0, 0);&quot;&gt;Oppgaveopprettelse feilet. En utvikler har fått beskjed og vil feilsøke dette. Bruk Modia for å opprette oppgaven for denne brukeren.&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <nextOrFinishButtonLabel>Ok</nextOrFinishButtonLabel>
