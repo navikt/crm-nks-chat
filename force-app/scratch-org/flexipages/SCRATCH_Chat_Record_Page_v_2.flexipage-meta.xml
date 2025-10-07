@@ -65,8 +65,8 @@
                     <name>viewedObjectApiName</name>
                     <value>Case</value>
                 </componentInstanceProperties>
-                <componentName>nksRecordInfo</componentName>
-                <identifier>c_nksRecordInfo4</identifier>
+                <componentName>nksRecordInformation</componentName>
+                <identifier>c_nksRecordInformation4</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-5b9934d6-aa38-4628-85c0-62c4987238d3</name>
@@ -142,8 +142,8 @@
                     <name>viewedObjectApiName</name>
                     <value>Person__c</value>
                 </componentInstanceProperties>
-                <componentName>nksRecordInfo</componentName>
-                <identifier>c_nksRecordInfo</identifier>
+                <componentName>nksRecordInformation</componentName>
+                <identifier>c_nksRecordInformation</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -192,8 +192,8 @@
                     <name>viewedObjectApiName</name>
                     <value>Person__c</value>
                 </componentInstanceProperties>
-                <componentName>nksRecordInfo</componentName>
-                <identifier>c_nksRecordInfo2</identifier>
+                <componentName>nksRecordInformation</componentName>
+                <identifier>c_nksRecordInformation2</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -242,8 +242,8 @@
                     <name>viewedObjectApiName</name>
                     <value>Person__c</value>
                 </componentInstanceProperties>
-                <componentName>nksRecordInfo</componentName>
-                <identifier>c_nksRecordInfo3</identifier>
+                <componentName>nksRecordInformation</componentName>
+                <identifier>c_nksRecordInformation3</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -438,8 +438,8 @@
                     <name>showLink</name>
                     <value>true</value>
                 </componentInstanceProperties>
-                <componentName>nksRecordInfo</componentName>
-                <identifier>nksRecordInfo2</identifier>
+                <componentName>nksRecordInformation</componentName>
+                <identifier>nksRecordInformation2</identifier>
             </componentInstance>
         </itemInstances>
         <name>leftsidebar</name>
