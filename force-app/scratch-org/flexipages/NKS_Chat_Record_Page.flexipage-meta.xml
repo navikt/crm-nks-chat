@@ -30,7 +30,8 @@
                 </visibilityRule>
             </componentInstance>
         </itemInstances>
-        <name>header</name>
+        <name>
+        header</name>
         <type>Region</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -75,8 +76,8 @@
                     <name>viewedObjectApiName</name>
                     <value>Case</value>
                 </componentInstanceProperties>
-                <componentName>nksRecordInfo</componentName>
-                <identifier>nksRecordInfo</identifier>
+                <componentName>nksRecordInformation</componentName>
+                <identifier>nksRecordInformation</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -93,7 +94,8 @@
                 <identifier>c_nksInvisibleContentForSr</identifier>
             </componentInstance>
         </itemInstances>
-        <name>main</name>
+        <name>
+        main</name>
         <type>Region</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -141,7 +143,8 @@
                 <identifier>forceKnowledge_articleSearchDesktop</identifier>
             </componentInstance>
         </itemInstances>
-        <name>rightsidebar</name>
+        <name>
+        rightsidebar</name>
         <type>Region</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -201,11 +204,12 @@
                     <name>showLink</name>
                     <value>true</value>
                 </componentInstanceProperties>
-                <componentName>nksRecordInfo</componentName>
-                <identifier>nksRecordInfo2</identifier>
+                <componentName>nksRecordInformation</componentName>
+                <identifier>nksRecordInformation2</identifier>
             </componentInstance>
         </itemInstances>
-        <name>leftsidebar</name>
+        <name>
+        leftsidebar</name>
         <type>Region</type>
     </flexiPageRegions>
     <masterLabel>NKS Chat Record Page</masterLabel>
