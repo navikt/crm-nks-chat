@@ -60,18 +60,6 @@ export default class NksChatView extends LightningElement {
         }
     }
 
-    handleValidation() {
-        this.errorList = {
-            title: '',
-            errors: [{ Id: 1, EventItem: '', Text: 'Du kan ikke sende melding på en chat.' }]
-        };
-        this.createMessage(false);
-    }
-
-    createMessage(validation) {
-        this.template.querySelector('c-crm-messaging-community-thread-viewer').createMessage(validation);
-    }
-
     async handleModalButton() {
         this.modalOpen = true;
         publish(this.messageContext, globalModalOpen, { status: 'true' });
