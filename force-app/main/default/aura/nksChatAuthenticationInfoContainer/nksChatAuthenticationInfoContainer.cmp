@@ -1,4 +1,7 @@
-<aura:component controller="NKS_ChatTranscriptService">
+<aura:component
+    implements="flexipage:availableForAllPageTypes, force:hasRecordId"
+    controller="NKS_ChatTranscriptService"
+>
     <aura:attribute name="loggingEnabled" type="boolean" default="true" />
     <aura:attribute name="authenticated" type="boolean" default="false" />
     <aura:attribute name="accountFields" type="String" />
