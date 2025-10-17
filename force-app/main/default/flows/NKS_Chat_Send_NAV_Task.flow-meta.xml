@@ -219,7 +219,7 @@
     </dynamicChoiceSets>
     <environments>Default</environments>
     <interviewLabel>NKS Chat Send NAV Task {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>NKS Chat Send NAV Task v. 2</label>
+    <label>NKS Chat Send NAV Task</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
