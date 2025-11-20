@@ -33,5 +33,6 @@
     "scratch.default.permissionsets": [
         "Scratch_Permissions",
         "NKS_Chat_Permissions"
-    ]
+    ],
+    "xml.preferences.showSchemaDocumentationType": "none"
 }
