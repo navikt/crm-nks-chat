@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-    <label>Permittering og Rekruttering</label>
+    <label>Hjelpemidler</label>
     <protected>false</protected>
     <values>
         <field>Puzzel_Chat_Name__c</field>
-        <value xsi:type="xsd:string">SF_Chat_Permittering_og_Rekruttering</value>
+        <value xsi:type="xsd:string">SF_Chat_Hjelpemidler</value>
     </values>
     <values>
         <field>Puzzel_Queue_Api__c</field>
-        <value xsi:type="xsd:string">q_sf_chat_permittering_og_rekruttering</value>
+        <value xsi:type="xsd:string">q_sf_chat_hjelpemidler</value>
     </values>
-    <values>
+     <values>
         <field>Salesforce_QueueId_Prod__c</field>
         <value xsi:nil="true"/>
     </values>
     <values>
         <field>Salesforce_QueueId_Test__c</field>
-        <value xsi:type="xsd:string">00G2o000009aC05EAE</value>
+        <value xsi:type="xsd:string">00GKD000000iAkd2AE</value>
     </values>
 </CustomMetadata>
