@@ -8,7 +8,7 @@
     </values>
     <values>
         <field>Puzzel_Queue_Api__c</field>
-        <value xsi:type="xsd:string">q_sf_chat_arbeidsgiver_og_samhandler</value>
+        <value xsi:type="xsd:string">q_chat_arbeidsgiver_og_samhandler</value>
     </values>
     <values>
         <field>Salesforce_QueueId__c</field>
