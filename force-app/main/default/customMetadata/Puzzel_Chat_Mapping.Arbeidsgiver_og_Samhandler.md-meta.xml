@@ -10,12 +10,8 @@
         <field>Puzzel_Queue_Api__c</field>
         <value xsi:type="xsd:string">q_sf_chat_arbeidsgiver_og_samhandler</value>
     </values>
-     <values>
-        <field>Salesforce_QueueId_Prod__c</field>
-        <value xsi:nil="true"/>
-    </values>
     <values>
-        <field>Salesforce_QueueId_Test__c</field>
+        <field>Salesforce_QueueId__c</field>
         <value xsi:type="xsd:string">00G2o000009a1CUEAY</value>
     </values>
 </CustomMetadata>
