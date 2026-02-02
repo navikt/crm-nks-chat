@@ -203,7 +203,7 @@ global class NKS_ChatTranscriptService {
     private static Thread__c getThreadDetails(String chatId) {
         Id convertedId = (Id) chatId;
         return [
-            SELECT Id, CRM_Account__c, CRM_Contact__c, CRM_Latest_Message_Datetime__c, CRM_Related_Object__c
+            SELECT Id, CRM_Contact__c, CRM_Latest_Message_Datetime__c
             FROM Thread__c
             WHERE CRM_Related_Object__c = :convertedId
             FOR UPDATE
