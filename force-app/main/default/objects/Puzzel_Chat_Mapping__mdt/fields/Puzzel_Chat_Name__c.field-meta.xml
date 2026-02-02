@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Puzzel_Chat_Name__c</fullName>
+    <description>Specifies the chat group name in Puzzel. The value is used to support eTasks configuration.</description>
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
     <label>Puzzel Chat Name</label>
