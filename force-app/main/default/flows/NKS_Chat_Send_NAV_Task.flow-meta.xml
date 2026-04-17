@@ -1,28 +1,98 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <apiVersion>59.0</apiVersion>
-    <assignments>
-        <name>Add_henvendelse_ID</name>
-        <label>Add henvendelse ID</label>
-        <locationX>314</locationX>
-        <locationY>674</locationY>
-        <assignmentItems>
-            <assignToReference>NavTask.NKS_Henvendelse_BehandlingsId__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Get_Thread.CRM_API_Reference__c</elementReference>
-            </value>
-        </assignmentItems>
+    <actionCalls>
+        <name>Post_Oppgave</name>
+        <label>Post Oppgave</label>
+        <locationX>182</locationX>
+        <locationY>566</locationY>
+        <actionName>OppgaveManager</actionName>
+        <actionType>apex</actionType>
         <connector>
-            <targetReference>NAV_Task_Assignment</targetReference>
+            <targetReference>Verify_Task_Post</targetReference>
         </connector>
-    </assignments>
+        <flowTransactionModel>Automatic</flowTransactionModel>
+        <inputParameters>
+            <name>aktoerId</name>
+            <value>
+                <elementReference>Get_Thread.CRM_Account__r.CRM_Person__r.INT_ActorId__c</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>behandlingstema</name>
+            <value>
+                <elementReference>Theme_Categorization.subthemeCode</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>behandlingstype</name>
+            <value>
+                <elementReference>Theme_Categorization.subtypeCode</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>beskrivelse</name>
+            <value>
+                <elementReference>Task_Description</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>eksternHenvendelseId</name>
+            <value>
+                <elementReference>Henvendelse_BehandlingsId</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>methodType</name>
+            <value>
+                <stringValue>POST</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>oppgavetype</name>
+            <value>
+                <elementReference>Task_Type_Selector.selectedTaskType</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>opprettetAvEnhetsnr</name>
+            <value>
+                <elementReference>$User.Department</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>prioritet</name>
+            <value>
+                <elementReference>Task_Priority</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>tema</name>
+            <value>
+                <elementReference>Theme_Categorization.themeCode</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>tildeltEnhetsnr</name>
+            <value>
+                <elementReference>Work_Allocation.selectedUnitNumber</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>tilordnetRessurs</name>
+            <value>
+                <elementReference>Work_Allocation.assignedResource</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>OppgaveManager</nameSegment>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </actionCalls>
+    <apiVersion>59.0</apiVersion>
     <assignments>
         <description>Assigns the appropriate values from the input screen to the NAV task.</description>
         <name>NAV_Task_Assignment</name>
         <label>NAV Task Assignment</label>
         <locationX>182</locationX>
-        <locationY>866</locationY>
+        <locationY>458</locationY>
         <assignmentItems>
             <assignToReference>NavTask.NKS_Comments__c</assignToReference>
             <operator>Assign</operator>
@@ -101,31 +171,14 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Send_NAV_Task</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Remove_henvendelse_ID</name>
-        <label>Remove henvendelse ID</label>
-        <locationX>50</locationX>
-        <locationY>674</locationY>
-        <assignmentItems>
-            <assignToReference>NavTask.NKS_Henvendelse_BehandlingsId__c</assignToReference>
-            <operator>Assign</operator>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>NavTask.NKS_Case__c</assignToReference>
-            <operator>Assign</operator>
-        </assignmentItems>
-        <connector>
-            <targetReference>NAV_Task_Assignment</targetReference>
+            <targetReference>Post_Oppgave</targetReference>
         </connector>
     </assignments>
     <assignments>
         <name>Set_Publish_Notification_To_True</name>
         <label>Set Publish Notification To True</label>
         <locationX>50</locationX>
-        <locationY>1190</locationY>
+        <locationY>782</locationY>
         <assignmentItems>
             <assignToReference>Publish_Notification</assignToReference>
             <operator>Assign</operator>
@@ -160,44 +213,19 @@
         </rules>
     </decisions>
     <decisions>
-        <name>Create_Task_on_Henvendelse_or_Person</name>
-        <label>Create Task on Henvendelse or Person</label>
-        <locationX>182</locationX>
-        <locationY>566</locationY>
-        <defaultConnector>
-            <targetReference>Add_henvendelse_ID</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Create Henvendelse Task</defaultConnectorLabel>
-        <rules>
-            <name>Create_person_Task</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Selected_Theme_SF_Id</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <elementReference>Get_Communal_Service_Theme.Id</elementReference>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Remove_henvendelse_ID</targetReference>
-            </connector>
-            <label>Create person Task</label>
-        </rules>
-    </decisions>
-    <decisions>
         <name>Verify_Task_Post</name>
         <label>Verify Task Post</label>
         <locationX>182</locationX>
-        <locationY>1082</locationY>
+        <locationY>674</locationY>
         <defaultConnector>
             <targetReference>Post_Error_Screen</targetReference>
         </defaultConnector>
-        <defaultConnectorLabel>Post Failed</defaultConnectorLabel>
+        <defaultConnectorLabel>Post Error</defaultConnectorLabel>
         <rules>
-            <name>Post_Success</name>
+            <name>Successful_Post</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>Send_NAV_Task.SUCCESSFUL_POST</leftValueReference>
+                <leftValueReference>Post_Oppgave.isSuccess</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
@@ -206,7 +234,7 @@
             <connector>
                 <targetReference>Set_Publish_Notification_To_True</targetReference>
             </connector>
-            <label>Post Success</label>
+            <label>Successful Post</label>
         </rules>
     </decisions>
     <dynamicChoiceSets>
@@ -218,6 +246,15 @@
         <picklistObject>NavTask__c</picklistObject>
     </dynamicChoiceSets>
     <environments>Default</environments>
+    <formulas>
+        <name>Henvendelse_BehandlingsId</name>
+        <dataType>String</dataType>
+        <expression>IF(
+    {!Theme_Categorization.themeCode} &lt;&gt; &quot;KOM&quot;,
+    {!Get_Thread.CRM_API_Reference__c},
+    &quot;&quot;
+)</expression>
+    </formulas>
     <interviewLabel>NKS Chat Send NAV Task {!$Flow.CurrentDateTime}</interviewLabel>
     <label>NKS Chat Send NAV Task</label>
     <processMetadataValues>
@@ -239,35 +276,6 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
-    <recordLookups>
-        <name>Get_Communal_Service_Theme</name>
-        <label>Get Communal Service Theme</label>
-        <locationX>182</locationX>
-        <locationY>458</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Create_Task_on_Henvendelse_or_Person</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>CRM_Code__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>KOM</stringValue>
-            </value>
-        </filters>
-        <filters>
-            <field>CRM_Code_Set__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>Tema</stringValue>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Common_Code__c</object>
-        <queriedFields>Id</queriedFields>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
     <recordLookups>
         <description>Query the thread to relate the NAV Task to.</description>
         <name>Get_Thread</name>
@@ -300,7 +308,7 @@
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <connector>
-            <targetReference>Get_Communal_Service_Theme</targetReference>
+            <targetReference>NAV_Task_Assignment</targetReference>
         </connector>
         <fields>
             <name>Theme_Categorization</name>
@@ -344,22 +352,7 @@
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
-            <outputParameters>
-                <assignToReference>Selected_Theme_SF_Id</assignToReference>
-                <name>theme</name>
-            </outputParameters>
-            <outputParameters>
-                <assignToReference>Selected_Theme_Group_SF_Id</assignToReference>
-                <name>themeGroup</name>
-            </outputParameters>
-            <outputParameters>
-                <assignToReference>Selected_Subtheme_SF_Id</assignToReference>
-                <name>subtheme</name>
-            </outputParameters>
-            <outputParameters>
-                <assignToReference>Selected_Subtype_SF_Id</assignToReference>
-                <name>subtype</name>
-            </outputParameters>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
         <fields>
             <name>Task_Type_Selector</name>
@@ -425,22 +418,7 @@
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
-            <outputParameters>
-                <assignToReference>Selected_Assigned_Resource</assignToReference>
-                <name>assignedResource</name>
-            </outputParameters>
-            <outputParameters>
-                <assignToReference>Selected_Unit_Id</assignToReference>
-                <name>selectedUnitId</name>
-            </outputParameters>
-            <outputParameters>
-                <assignToReference>Selected_Unit_Name</assignToReference>
-                <name>selectedUnitName</name>
-            </outputParameters>
-            <outputParameters>
-                <assignToReference>Selected_Unit_Number</assignToReference>
-                <name>selectedUnitNumber</name>
-            </outputParameters>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
         <nextOrFinishButtonLabel>Opprett oppgave</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
@@ -467,7 +445,7 @@
         <name>Post_Error_Screen</name>
         <label>Post Error Screen</label>
         <locationX>314</locationX>
-        <locationY>1190</locationY>
+        <locationY>782</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -487,8 +465,47 @@
         </fields>
         <fields>
             <name>Post_Error_Text</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); font-size: 12px; font-family: -apple-system, system-ui, &amp;quot;Segoe UI&amp;quot;, Roboto, Oxygen, Ubuntu, &amp;quot;Fira Sans&amp;quot;, &amp;quot;Droid Sans&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, sans-serif; color: rgb(0, 0, 0);&quot;&gt;Oppgaveopprettelse feilet. En utvikler har fått beskjed og vil feilsøke dette. Bruk Modia for å opprette oppgaven for denne brukeren.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;color: rgb(0, 0, 0); font-size: 12px; background-color: rgb(255, 255, 255);&quot;&gt;Oppgaveopprettelse feilet med feilmelding: {!Post_Oppgave.errorMessage}&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>Post_Oppgave.isSuccess</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <booleanValue>false</booleanValue>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>Post_Oppgave.isRetry</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <booleanValue>false</booleanValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
+        <fields>
+            <name>Post_Error_Text_Not4xx</name>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 12px; color: rgb(0, 0, 0);&quot;&gt;Oppgaveopprettelse feilet med feilmelding: &lt;/span&gt;&lt;span style=&quot;font-size: 12px; color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);&quot;&gt;{!Post_Oppgave.errorMessage}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 12px; color: rgb(0, 0, 0);&quot;&gt;En utvikler har fått beskjed og vil feilsøke dette.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 12px; color: rgb(0, 0, 0);&quot;&gt;Oppgaven vil bli automatisk rekjørt på et senere tidspunkt.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>Post_Oppgave.isSuccess</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <booleanValue>false</booleanValue>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>Post_Oppgave.isRetry</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <booleanValue>true</booleanValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
         </fields>
         <nextOrFinishButtonLabel>Ok</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
@@ -502,29 +519,6 @@
         </connector>
     </start>
     <status>Active</status>
-    <subflows>
-        <name>Send_NAV_Task</name>
-        <label>Send NAV Task</label>
-        <locationX>182</locationX>
-        <locationY>974</locationY>
-        <connector>
-            <targetReference>Verify_Task_Post</targetReference>
-        </connector>
-        <flowName>CRM_Send_NAV_Task_Auto</flowName>
-        <inputAssignments>
-            <name>Created_By_Unit_Number</name>
-            <value>
-                <elementReference>$User.Department</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <name>NAV_Task</name>
-            <value>
-                <elementReference>NavTask</elementReference>
-            </value>
-        </inputAssignments>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </subflows>
     <variables>
         <description>The NAV task record to perform the action on.</description>
         <name>NavTask</name>
