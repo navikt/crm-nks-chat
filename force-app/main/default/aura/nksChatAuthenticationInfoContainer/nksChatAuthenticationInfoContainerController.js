@@ -55,6 +55,23 @@
     },
 
     handleAuthCompleted: function (component, event, helper) {
+        if (component.get('v.authCompletedHandled')) {
+            return;
+        }
+
+        component.set('v.authCompletedHandled', true);
         helper.showLoginMsg(component, event);
+    },
+
+    handleChatEnded: function (component, event, helper) {
+        const eventFullId = helper.convertId15To18(event.getParam('recordId'));
+        const recordId = component.get('v.recordId');
+
+        if (eventFullId === recordId) {
+            const authInfoCmp = component.find('chatAuthInfo');
+            authInfoCmp.set('v.chatEnded', true);
+
+            component.set('v.authCompletedHandled', false); // Reset for future chats
+        }
     }
 });

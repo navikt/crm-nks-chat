@@ -1,9 +1,43 @@
-.vilkar-link {
-    align-self: end;
-    justify-self: start;
-    border: 0px;
+.header {
+    margin-bottom: var(--a-spacing-10);
 }
 
-.contentholder {
-    max-width: 80em;
+.container {
+    margin: var(--a-spacing-05) auto var(--a-spacing-20) auto;
+    max-width: 640px;
+}
+
+.modal-text {
+    margin-bottom: var(--a-spacing-10);
+}
+
+.frida-button {
+    border: none;
+    background-color: transparent;
+}
+
+.frida-button:hover, 
+.frida-button:focus {
+    text-decoration: none;
+}
+
+.frida-button:active, 
+.frida-button:focus {
+    background-color: #014486;
+}
+
+.frida-button:focus {
+    color: #ffffff;
+}
+ 
+.frida-button:active,
+.frida-button:hover {
+    outline: none;
+}
+
+@media only screen and (max-width: 576px) {
+    .container {
+        margin-left: var(--a-spacing-4);
+        margin-right: var(--a-spacing-4);
+    }
 }

@@ -1,5 +1,5 @@
 import { LightningElement, api, wire } from 'lwc';
-import { subscribe, unsubscribe, onError } from 'lightning/empApi';
+import { subscribe as empApiSubscribe, unsubscribe, onError } from 'lightning/empApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getChatInfo from '@salesforce/apex/ChatAuthController.getMessagingInfo';
 import setStatusRequested from '@salesforce/apex/ChatAuthController.setStatusRequested';
@@ -12,28 +12,31 @@ import { refreshApex } from '@salesforce/apex';
 //#### LABEL IMPORTS ####
 import AUTH_REQUESTED from '@salesforce/label/c.CRM_Chat_Authentication_Requested';
 import AUTH_STARTED from '@salesforce/label/c.CRM_Chat_Authentication_Started';
-import IDENTITY_CONFIRMED from '@salesforce/label/c.CRM_Chat_Identity_Confirmed';
-import UNCONFIRMED_IDENTITY_WARNING from '@salesforce/label/c.CRM_Chat_Unconfirmed_Identity_Warning';
 import IDENTITY_CONFIRMED_DISCLAIMER from '@salesforce/label/c.CRM_Chat_Identity_Confirmed_Disclaimer';
-import AUTH_INIT_FAILED from '@salesforce/label/c.CRM_Chat_Authentication_Init_Failed';
 import SEND_AUTH_REQUEST from '@salesforce/label/c.NKS_Chat_Send_Authentication_Request';
+import SET_TO_REDACTION_LABEL from '@salesforce/label/c.NKS_Set_To_Redaction';
 import CHAT_LOGIN_MSG_NO from '@salesforce/label/c.NKS_Chat_Login_Message_NO';
 import CHAT_LOGIN_MSG_EN from '@salesforce/label/c.NKS_Chat_Login_Message_EN';
 import CHAT_GETTING_AUTH_STATUS from '@salesforce/label/c.NKS_Chat_Getting_Authentication_Status';
 import CHAT_SENDING_AUTH_REQUEST from '@salesforce/label/c.NKS_Chat_Sending_Authentication_Request';
+
+const STATUSES = {
+    NOT_STARTED: 'Not Started',
+    IN_PROGRESS: 'In Progress',
+    COMPLETED: 'Completed',
+    INPROGRESS: 'InProgress',
+    AUTHREQUESTED: 'Authentication Requested'
+};
 
 export default class ChatAuthenticationOverview extends LightningElement {
     @api recordId;
     @api loggingEnabled; //Determines if console logging is enabled for the component
 
     labels = {
-        AUTH_REQUESTED,
         AUTH_STARTED,
-        IDENTITY_CONFIRMED,
-        UNCONFIRMED_IDENTITY_WARNING,
         IDENTITY_CONFIRMED_DISCLAIMER,
-        AUTH_INIT_FAILED,
         SEND_AUTH_REQUEST,
+        SET_TO_REDACTION_LABEL,
         CHAT_LOGIN_MSG_NO,
         CHAT_LOGIN_MSG_EN,
         CHAT_GETTING_AUTH_STATUS,
@@ -52,7 +55,8 @@ export default class ChatAuthenticationOverview extends LightningElement {
     activeConversation; //Boolean to determine if the componenet is rendered in a context on an active chat conversation
     chatLanguage;
     chatAuthUrl;
-    subscription = {}; //Unique empAPI subscription for the component instance
+    subscription = {};
+    lmsSubscription = null;
     loginEvtSent = false;
     nmbOfSecurityMeasures = 0;
     isNavEmployee = false;
@@ -96,19 +100,15 @@ export default class ChatAuthenticationOverview extends LightningElement {
     }
 
     get cannotInitAuth() {
-        return !(this.activeConversation && !this.sendingAuthRequest);
+        return !(this.isActiveConversation && !this.sendingAuthRequest);
     }
 
-    get authenticationRequested() {
-        return this.currentAuthenticationStatus !== 'Not Started';
-    }
-
-    get authenticationStarted() {
-        return this.currentAuthenticationStatus === 'In Progress' || this.currentAuthenticationStatus === 'Completed';
+    get isAuthenticating() {
+        return this.currentAuthenticationStatus === STATUSES.AUTHREQUESTED;
     }
 
     get authenticationComplete() {
-        return this.currentAuthenticationStatus === 'Completed';
+        return this.currentAuthenticationStatus === STATUSES.COMPLETED;
     }
 
     get isEmpSubscribed() {

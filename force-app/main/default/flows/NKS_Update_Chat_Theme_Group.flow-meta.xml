@@ -1,51 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>49.0</apiVersion>
+    <apiVersion>63.0</apiVersion>
     <assignments>
-        <description>Defines the chat theme group based on the original queue.</description>
-        <name>Set_Theme_Group</name>
-        <label>Set Theme Group</label>
+        <name>Update_Theme_Group</name>
+        <label>Update Theme Group</label>
         <locationX>50</locationX>
         <locationY>503</locationY>
         <assignmentItems>
             <assignToReference>$Record.NKS_Theme_Group__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Get_theme_groups.Id</elementReference>
+                <elementReference>Get_Theme_Group.Id</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
             <assignToReference>$Record.NKS_Theme_Group_Name__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Get_theme_groups.Name</elementReference>
+                <elementReference>Get_Theme_Group.Name</elementReference>
             </value>
         </assignmentItems>
     </assignments>
     <decisions>
-        <description>Validate the queried common code</description>
-        <name>Common_Code_Check</name>
-        <label>Common Code Check</label>
+        <name>Theme_Found</name>
+        <label>Theme Found</label>
         <locationX>182</locationX>
         <locationY>395</locationY>
-        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <defaultConnectorLabel>No</defaultConnectorLabel>
         <rules>
-            <name>Common_Code_Not_Null</name>
+            <name>Yes</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>Get_theme_groups</leftValueReference>
+                <leftValueReference>Get_Theme_Group</leftValueReference>
                 <operator>IsNull</operator>
                 <rightValue>
                     <booleanValue>false</booleanValue>
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Set_Theme_Group</targetReference>
+                <targetReference>Update_Theme_Group</targetReference>
             </connector>
-            <label>Common Code Not Null</label>
+            <label>Yes</label>
         </rules>
     </decisions>
-    <description>Automatically populates the theme group value for the chat based on which queue it originates from.</description>
     <environments>Default</environments>
     <formulas>
         <description>Maps the incoming queue names to a theme group.</description>
@@ -62,8 +59,8 @@
     null
 )</expression>
     </formulas>
-    <interviewLabel>Set Chat Theme Group {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Set Chat Theme Group</label>
+    <interviewLabel>Update {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Update Chat Theme Group</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -84,14 +81,13 @@
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <recordLookups>
-        <description>Query the active theme groups available.</description>
-        <name>Get_theme_groups</name>
-        <label>Get theme groups</label>
+        <name>Get_Theme_Group</name>
+        <label>Get Theme Group</label>
         <locationX>182</locationX>
         <locationY>287</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Common_Code_Check</targetReference>
+            <targetReference>Theme_Found</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -126,18 +122,18 @@
         <locationX>56</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Get_theme_groups</targetReference>
+            <targetReference>Get_Theme_Group</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
-            <field>NKS_Theme_Group__c</field>
-            <operator>IsNull</operator>
+            <field>LiveChatButtonId</field>
+            <operator>IsChanged</operator>
             <value>
                 <booleanValue>true</booleanValue>
             </value>
         </filters>
         <object>LiveChatTranscript</object>
-        <recordTriggerType>Create</recordTriggerType>
+        <recordTriggerType>Update</recordTriggerType>
         <triggerType>RecordBeforeSave</triggerType>
     </start>
     <status>Active</status>

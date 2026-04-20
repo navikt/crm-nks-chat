@@ -1,35 +1,26 @@
 import { LightningElement, api, wire } from 'lwc';
-import getThreadId from '@salesforce/apex/nksChatView.getThreadId';
+import getThread from '@salesforce/apex/nksChatView.getThread';
+import markasread from '@salesforce/apex/CRM_MessageHelperExperience.markAsRead';
 import getChatbotMessage from '@salesforce/apex/nksChatView.getChatbotMessage';
-import getObjectInfo from '@salesforce/apex/nksChatView.getObjectInfo';
 import { publish, MessageContext } from 'lightning/messageService';
 import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
 import userId from '@salesforce/user/Id';
-import markasread from '@salesforce/apex/CRM_MessageHelperExperience.markAsRead';
-import getmessages from '@salesforce/apex/CRM_MessageHelperExperience.getMessagesFromThread';
+import getGroupedMessagesFromThread from '@salesforce/apex/CRM_MessageHelperExperience.getGroupedMessagesFromThread';
 import getContactId from '@salesforce/apex/CRM_MessageHelperExperience.getUserContactId';
-import { CurrentPageReference } from 'lightning/navigation';
-import basepath from '@salesforce/community/basePath';
+import { logModalEvent, setDecoratorParams, getComponentName } from 'c/inboxAmplitude';
 
 export default class NksChatView extends LightningElement {
     @api recordId;
-    pageRefChatId;
+
     threadId;
     modalOpen = false;
-    userContactId;
-    messages;
     chatbotMessage = 'Laster inn samtale';
-    recordType;
+    userContactId;
+    messageGroups;
+    themeGroup;
 
     @wire(MessageContext)
     messageContext;
-
-    @wire(CurrentPageReference)
-    getStateParameters(currentPageReference) {
-        if (currentPageReference) {
-            this.pageRefChatId = currentPageReference.state?.id;
-        }
-    }
 
     connectedCallback() {
         this.redirect();
@@ -37,83 +28,55 @@ export default class NksChatView extends LightningElement {
             .then((contactId) => {
                 this.userContactId = contactId;
             })
-            .catch(() => {
-                //Apex error
+            .catch((error) => {
+                console.error('Error retrieving contactId: ', error);
             });
     }
 
-    @wire(getObjectInfo, { recordId: '$pageRefChatId' })
-    wiredGetObjectInfo({ error, data }) {
+    @wire(getThread, { chatId: '$recordId' })
+    wiredThread(result) {
+        const { error, data } = result;
         if (error) {
             console.error(error);
         }
         if (data) {
-            this.recordType = data;
-        }
-    }
-
-    @wire(getThreadId, { chatId: '$pageRefChatId' })
-    wireGetThreadId({ error, data }) {
-        if (error) {
-            console.error(error);
-        }
-        if (data) {
-            this.threadId = data;
+            this.threadId = data.Id;
             markasread({ threadId: this.threadId });
-        }
-    }
 
-    @wire(getmessages, { threadId: '$threadId' })
-    wiremessages(result) {
-        if (result.error) {
-            this.error = result.error;
-        } else if (result.data) {
-            this.messages = result.data;
-        }
-    }
-
-    handleModalButton() {
-        this.modalOpen = true;
-        this.termsModal.focusModal();
-        publish(this.messageContext, globalModalOpen, { status: 'true' });
-        getChatbotMessage({
-            chatId: this.pageRefChatId,
-            userId: userId,
-            isChatTranscript: this.recordType === 'LiveChatTranscript'
-        }).then((res) => {
-            this.chatbotMessage = res;
-            if (this.recordType === 'MessagingSession') {
-                // Add new lines to chatbot message for proper formatting for Messaging Session
-                this.chatbotMessage = this.chatbotMessage?.replace(/(?:\r\n|\r|\n)/g, '<br>');
+            this.themeGroup = data.CRM_Theme_Group_Name__c;
+            if (this.themeGroup) {
+                setDecoratorParams('Chat', `Chatsamtale - ${this.themeGroup}`, this.themeGroup);
             }
-        });
+        }
+    }
+
+    @wire(getGroupedMessagesFromThread, { threadId: '$threadId' })
+    wiredGroups(result) {
+        const { data, error } = result;
+        if (error) {
+            console.error(error);
+        } else if (data) {
+            this.messageGroups = data;
+        }
+    }
+
+    async handleModalButton() {
+        this.modalOpen = true;
+        publish(this.messageContext, globalModalOpen, { status: 'true' });
+        this.chatbotMessage = 'Laster inn samtale';
+        try {
+            this.chatbotMessage = await getChatbotMessage({ chatId: this.recordId, userId: userId });
+        } catch (e) {
+            this.chatbotMessage = 'Kunne ikke laste samtale';
+        }
+        logModalEvent(true, 'Chatbot samtale', getComponentName(this.template), 'Chatsamtale');
     }
 
     closeModal() {
         this.modalOpen = false;
         publish(this.messageContext, globalModalOpen, { status: 'false' });
-        const btn = this.template.querySelector('.focusBtn');
-        btn.focus();
-    }
-
-    handleKeyboardEvent(event) {
-        if (event.keyCode === 27 || event.code === 'Escape') {
-            this.closeModal();
-        } else if (event.keyCode === 9 || event.code === 'Tab') {
-            this.termsModal.focusLoop();
-        }
-    }
-
-    // Redirect for static user notifications links
-    redirect() {
-        if (this.recordId != null && this.recordId !== '') {
-            const link = basepath + '/chat?id=' + this.recordId;
-            // eslint-disable-next-line @locker/locker/distorted-xml-http-request-window-open
-            window.open(link, '_self');
-        }
-    }
-
-    get termsModal() {
-        return this.template.querySelector('c-community-modal');
+        const btn = this.template.querySelector('.frida-button');
+        if (btn) btn.focus();
+        logModalEvent(false, 'Chatbot samtale', getComponentName(this.template), 'Chatsamtale');
     }
 }

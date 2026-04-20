@@ -79,7 +79,7 @@
             completion. When the chat is over, you will find the transcript on Ditt Nav and it will
             be available to Nav for future case handling. You can read more about how Nav processes
             your personal data here (norwegian):
-            https://www.nav.no/no/nav-og-samfunn/om-nav/personvern-i-arbeids-og-velferdsetaten</value>
+            https://www.nav.no/personvern</value>
     </labels>
     <labels>
         <fullName>NKS_Chat_Login_Message_NO</fullName>
@@ -92,7 +92,7 @@
             tilgang til saken din. Samtalen blir lagret og kan ikke endres senere. Når samtalen er
             avsluttet, finner du chatloggen på Ditt Nav og den vil være tilgjengelig for Nav i
             videre saksgang. Du kan lese mer om hvordan Nav behandler dine personopplysninger her:
-            https://www.nav.no/no/nav-og-samfunn/om-nav/personvern-i-arbeids-og-velferdsetaten</value>
+            https://www.nav.no/personvern</value>
     </labels>
     <labels>
         <fullName>NKS_Chat_Send_Authentication_Request</fullName>

@@ -39,11 +39,10 @@
         });
     },
 
-    setTabColor: function (workspace, tabId, state) {
+    setTabColor: function (workspace, tabId) {
         workspace.setTabHighlighted({
             tabId: tabId,
-            highlighted: true,
-            options: { state: state }
+            highlighted: true
         });
     }
 });

@@ -152,8 +152,8 @@
         <picklistObject>Conversation_Note__c</picklistObject>
     </dynamicChoiceSets>
     <environments>Default</environments>
-    <interviewLabel>NKS Chat Set To Redaction v. 2 {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>NKS Chat Set To Redaction v. 2</label>
+    <interviewLabel>NKS Chat Set To Redaction {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>NKS Chat Set To Redaction</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>

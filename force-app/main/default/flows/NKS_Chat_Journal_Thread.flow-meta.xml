@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>53.0</apiVersion>
+    <apiVersion>59.0</apiVersion>
     <decisions>
-        <description>Check that the chat har been authenticated to be able to create a journal entry.</description>
+        <description>Check that the chat har been authenticated to be able to create a journal
+            entry.</description>
         <name>Verify_Authentication_Status</name>
         <label>Verify Authentication Status</label>
         <locationX>182</locationX>
-        <locationY>278</locationY>
+        <locationY>242</locationY>
         <defaultConnector>
             <targetReference>User_Not_Authenticated_Screen</targetReference>
         </defaultConnector>
@@ -34,8 +35,9 @@
             <label>Is Authenticated</label>
         </rules>
     </decisions>
-    <interviewLabel>Journal Chat Thread {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Journal Chat Thread - Screenflow</label>
+    <environments>Default</environments>
+    <interviewLabel>NKS Chat Journal Thread {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>NKS Chat Journal Thread</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -60,7 +62,7 @@
         <name>Get_Account</name>
         <label>Get Account</label>
         <locationX>50</locationX>
-        <locationY>398</locationY>
+        <locationY>350</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Get_Thread</targetReference>
@@ -81,7 +83,7 @@
         <name>Get_Chat_Transcript</name>
         <label>Get Chat Transcript</label>
         <locationX>182</locationX>
-        <locationY>158</locationY>
+        <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Verify_Authentication_Status</targetReference>
@@ -107,7 +109,7 @@
         <name>Get_Thread</name>
         <label>Get Thread</label>
         <locationX>50</locationX>
-        <locationY>518</locationY>
+        <locationY>458</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Journal_Entry_Screen</targetReference>
@@ -127,59 +129,10 @@
     </recordLookups>
     <runInMode>SystemModeWithoutSharing</runInMode>
     <screens>
-        <name>Finish_Screen</name>
-        <label>Finish Screen</label>
-        <locationX>50</locationX>
-        <locationY>878</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <fields>
-            <name>Success_toast</name>
-            <extensionName>c:fcFlowCloseWithToast</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>closeModal</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>mode</name>
-                <value>
-                    <stringValue>dismissible</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>message</name>
-                <value>
-                    <stringValue>Samtalen ble journalført</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>title</name>
-                <value>
-                    <stringValue>Journalpost opprettet</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>variant</name>
-                <value>
-                    <stringValue>success</stringValue>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
-    <screens>
         <name>Journal_Entry_Screen</name>
         <label>Journal Entry Screen</label>
         <locationX>50</locationX>
-        <locationY>638</locationY>
+        <locationY>566</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -202,9 +155,34 @@
                     <elementReference>Get_Account.CRM_Person__r.INT_ActorId__c</elementReference>
                 </value>
             </inputParameters>
+            <inputParameters>
+                <name>autoFocus</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <outputParameters>
+                <assignToReference>Selected_Theme_SF_Id</assignToReference>
+                <name>selectedCaseThemeSfId</name>
+            </outputParameters>
+            <outputParameters>
+                <assignToReference>Selected_Case_Legacy_System</assignToReference>
+                <name>selectedCaseLegacySystem</name>
+            </outputParameters>
+            <outputParameters>
+                <assignToReference>Selected_NAV_Case_Theme</assignToReference>
+                <name>selectedCaseTheme</name>
+            </outputParameters>
+            <outputParameters>
+                <assignToReference>Selected_NAV_Case_Id</assignToReference>
+                <name>selectedCaseId</name>
+            </outputParameters>
+            <outputParameters>
+                <assignToReference>Selected_Subtheme</assignToReference>
+                <name>selectedSubtheme</name>
+            </outputParameters>
         </fields>
         <nextOrFinishButtonLabel>Journalfør</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
@@ -214,7 +192,7 @@
         <name>User_Not_Authenticated_Screen</name>
         <label>User Not Authenticated Screen</label>
         <locationX>314</locationX>
-        <locationY>398</locationY>
+        <locationY>350</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -223,7 +201,7 @@
             <fieldText>&lt;p&gt;Brukeren må være logget inn for å kunne journalføre.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
-        <nextOrFinishButtonLabel>Oppdater</nextOrFinishButtonLabel>
+        <nextOrFinishButtonLabel>Ok</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
     </screens>
@@ -236,25 +214,21 @@
     </start>
     <status>Active</status>
     <subflows>
-        <description>Calls subflow to create a new journal entry.</description>
         <name>Create_Journal_Entry</name>
         <label>Create Journal Entry</label>
         <locationX>50</locationX>
-        <locationY>758</locationY>
-        <connector>
-            <targetReference>Finish_Screen</targetReference>
-        </connector>
+        <locationY>674</locationY>
         <flowName>CRM_Thread_Create_Journal_Entry</flowName>
         <inputAssignments>
             <name>Journal_Case_ID</name>
             <value>
-                <elementReference>Person_Case_Overview.selectedCaseId</elementReference>
+                <elementReference>Selected_NAV_Case_Id</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
             <name>Journal_Case_Legacy_System</name>
             <value>
-                <elementReference>Person_Case_Overview.selectedCaseLegacySystem</elementReference>
+                <elementReference>Selected_Case_Legacy_System</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -276,9 +250,15 @@
             </value>
         </inputAssignments>
         <inputAssignments>
+            <name>Journal_Subtheme_Code</name>
+            <value>
+                <elementReference>Selected_Subtheme</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
             <name>Journal_Theme_Code</name>
             <value>
-                <elementReference>Person_Case_Overview.selectedCaseTheme</elementReference>
+                <elementReference>Selected_NAV_Case_Theme</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -287,7 +267,35 @@
                 <elementReference>Get_Thread.Id</elementReference>
             </value>
         </inputAssignments>
+        <outputAssignments>
+            <assignToReference>Existing_Journal</assignToReference>
+            <name>Existing_Journal</name>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>Publish_Notification</assignToReference>
+            <name>Publish_Notification</name>
+        </outputAssignments>
     </subflows>
+    <variables>
+        <name>Existing_Journal</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <value>
+            <booleanValue>false</booleanValue>
+        </value>
+    </variables>
+    <variables>
+        <name>Publish_Notification</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <value>
+            <booleanValue>false</booleanValue>
+        </value>
+    </variables>
     <variables>
         <description>Id of the chat transcript record calling the flow</description>
         <name>recordId</name>
@@ -295,5 +303,40 @@
         <isCollection>false</isCollection>
         <isInput>true</isInput>
         <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>Selected_Case_Legacy_System</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>Selected_NAV_Case_Id</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>Selected_NAV_Case_Theme</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>Selected_Subtheme</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>Selected_Theme_SF_Id</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
     </variables>
 </Flow>
