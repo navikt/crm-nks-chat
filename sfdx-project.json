@@ -52,7 +52,7 @@
                 },
                 {
                     "package": "crm-henvendelse",
-                    "versionNumber": "0.182.0.LATEST"
+                    "versionNumber": "0.189.0.LATEST"
                 },
                 {
                     "package": "crm-sf-saf",
@@ -75,7 +75,7 @@
     ],
     "namespace": "",
     "sfdcLoginUrl": "https://login.salesforce.com",
-    "sourceApiVersion": "62.0",
+    "sourceApiVersion": "65.0",
     "packageAliases": {
         "crm-nks-chat": "0Ho7U000000000GSAQ",
         "crm-henvendelse-base": "0Ho7U000000000kSAA",
