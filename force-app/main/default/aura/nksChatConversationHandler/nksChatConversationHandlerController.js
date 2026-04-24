@@ -38,12 +38,8 @@
                 .getAllTabInfo()
                 .then((tabInfoList) => {
                     const eventTab = tabInfoList.find((tab) => tab.recordId === eventRecordId);
-                    if (eventTab) {
-                        // eslint-disable-next-line @lwc/lwc/no-async-operation, @locker/locker/distorted-window-set-timeout
-                        setTimeout(() => {
-                            helper.setTabColor(workspace, eventTab.tabId, 'success');
-                        }, 1000);
-                    }
+                    if (!eventTab) return;
+                    helper.setTabColor(workspace, eventTab.tabId);
                 })
                 .catch((error) => {
                     console.error('Error retrieving tab info for setting color:', error);

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>59.0</apiVersion>
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <decisions>
         <description>Check that the chat har been authenticated to be able to create a journal
             entry.</description>
@@ -16,14 +17,14 @@
             <name>Is_Authenticated</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>Get_Chat_Transcript.CRM_Authentication_Status__c</leftValueReference>
+                <leftValueReference>Get_MessagingSession.CRM_Authentication_Status__c</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <stringValue>Completed</stringValue>
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>Get_Chat_Transcript.AccountId</leftValueReference>
+                <leftValueReference>Get_MessagingSession.MessagingEndUser.AccountId</leftValueReference>
                 <operator>IsNull</operator>
                 <rightValue>
                     <booleanValue>false</booleanValue>
@@ -72,7 +73,7 @@
             <field>Id</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>Get_Chat_Transcript.AccountId</elementReference>
+                <elementReference>Get_MessagingSession.MessagingEndUser.AccountId</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
@@ -80,8 +81,8 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
-        <name>Get_Chat_Transcript</name>
-        <label>Get Chat Transcript</label>
+        <name>Get_MessagingSession</name>
+        <label>Get MessagingSession</label>
         <locationX>182</locationX>
         <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
@@ -97,10 +98,10 @@
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>LiveChatTranscript</object>
+        <object>MessagingSession</object>
         <queriedFields>Id</queriedFields>
         <queriedFields>CRM_Authentication_Status__c</queriedFields>
-        <queriedFields>AccountId</queriedFields>
+        <queriedFields>MessagingEndUser.AccountId</queriedFields>
         <queriedFields>NKS_Theme_Group__c</queriedFields>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
@@ -119,7 +120,7 @@
             <field>CRM_Related_Object__c</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>Get_Chat_Transcript.Id</elementReference>
+                <elementReference>Get_MessagingSession.Id</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
@@ -146,7 +147,7 @@
             <inputParameters>
                 <name>prefilledThemeGroup</name>
                 <value>
-                    <elementReference>Get_Chat_Transcript.NKS_Theme_Group__c</elementReference>
+                    <elementReference>Get_MessagingSession.NKS_Theme_Group__c</elementReference>
                 </value>
             </inputParameters>
             <inputParameters>
@@ -179,10 +180,14 @@
                 <assignToReference>Selected_NAV_Case_Id</assignToReference>
                 <name>selectedCaseId</name>
             </outputParameters>
-            <outputParameters>
-                <assignToReference>Selected_Subtheme</assignToReference>
-                <name>selectedSubtheme</name>
-            </outputParameters>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <nextOrFinishButtonLabel>Journalfør</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
@@ -200,6 +205,14 @@
             <name>User_Not_Logged_In_Error_Text</name>
             <fieldText>&lt;p&gt;Brukeren må være logget inn for å kunne journalføre.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <nextOrFinishButtonLabel>Ok</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
@@ -209,7 +222,7 @@
         <locationX>56</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Get_Chat_Transcript</targetReference>
+            <targetReference>Get_MessagingSession</targetReference>
         </connector>
     </start>
     <status>Active</status>

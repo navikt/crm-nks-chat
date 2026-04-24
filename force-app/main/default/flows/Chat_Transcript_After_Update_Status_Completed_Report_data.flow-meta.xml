@@ -60,10 +60,10 @@
             <field>Status</field>
             <operator>EqualTo</operator>
             <value>
-                <stringValue>Completed</stringValue>
+                <stringValue>Ended</stringValue>
             </value>
         </filters>
-        <object>LiveChatTranscript</object>
+        <object>MessagingSession</object>
         <recordTriggerType>Update</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>
     </start>

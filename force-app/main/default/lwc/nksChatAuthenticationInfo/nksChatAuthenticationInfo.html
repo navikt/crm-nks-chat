@@ -7,17 +7,6 @@
     ></c-nks-button-container-top>
 
     <div class="slds-border_bottom slds-var-p-horizontal_medium slds-var-p-bottom_medium slds-var-p-top_small">
-        <header class="slds-media slds-media_center slds-has-flexi-truncate slds-grid">
-            <div class="slds-media__figure">
-                <lightning-icon icon-name="standard:messaging_user" size="small"></lightning-icon>
-            </div>
-            <div class="slds-media__body">
-                <h2 class="slds-card__header-title">
-                    <span class="slds-text-heading_small slds-truncate">Chat</span>
-                </h2>
-            </div>
-        </header>
-
         <template lwc:if={showAuthInfo}>
             <div class="slds-no-flex slds-var-p-top_small">
                 <template lwc:if={isLoading}>
@@ -60,114 +49,6 @@
                         >
                             {flattenedLabels.SEND_AUTH_REQUEST}
                         </button>
-                    </template>
-
-                    <!-- START PROGRESS INDICATOR -->
-                    <template lwc:if={authenticationRequested}>
-                        <template lwc:if={authenticationComplete}>
-                            <div class="slds-var-p-top_small">
-                                <div class="slds-var-p-left_small">
-                                    <c-nks-person-badges
-                                        record-id={accountId}
-                                        object-api-name="Account"
-                                        person-relation-field="CRM_Person__c"
-                                        assistive-header="Sikkerhetstiltak og andre etiketter"
-                                    ></c-nks-person-badges>
-                                </div>
-
-                                <c-nks-record-info
-                                    record-id={accountId}
-                                    viewed-object-api-name="Person__c"
-                                    object-api-name="Account"
-                                    displayed-fields={personFields}
-                                    copy-fields={copyPersonFields}
-                                    card-label="Brukerinfo"
-                                    icon-name="standard:avatar"
-                                    relationship-field="CRM_Person__c"
-                                    num-cols="2"
-                                    show-link="false"
-                                ></c-nks-record-info>
-
-                                <c-nks-nav-unit-single
-                                    record-id={accountId}
-                                    card-layout="true"
-                                    relation-field="CRM_Person__c"
-                                    object-api-name="Account"
-                                    type="PERSON_LOCATION"
-                                ></c-nks-nav-unit-single>
-
-                                <c-nks-fagsystemer
-                                    title="Fagsystemer"
-                                    related-field="Id"
-                                    record-id={accountId}
-                                    object-api-name="Account"
-                                ></c-nks-fagsystemer>
-                            </div>
-                        </template>
-
-                        <template lwc:else>
-                            <nav aria-label="Autentiseringsstatus">
-                                <div class="slds-progress slds-progress_vertical">
-                                    <ol class="slds-progress__list" role="list">
-                                        <li class="slds-progress__item slds-is-completed" role="listitem">
-                                            <span
-                                                class="slds-icon_container slds-icon-utility-success slds-progress__marker slds-progress__marker_icon slds-progress__marker_icon-success"
-                                                title="Complete"
-                                            >
-                                                <lightning-icon
-                                                    icon-name="utility:success"
-                                                    size="x-small"
-                                                ></lightning-icon>
-                                            </span>
-                                            <div class="slds-progress__item_content slds-grid slds-grid_align-spread">
-                                                {labels.AUTH_REQUESTED}
-                                            </div>
-                                        </li>
-
-                                        <template lwc:if={authenticationStarted}>
-                                            <li class="slds-progress__item slds-is-completed" role="listitem">
-                                                <span
-                                                    class="slds-icon_container slds-icon-utility-success slds-progress__marker slds-progress__marker_icon slds-progress__marker_icon-success"
-                                                    title="Complete"
-                                                >
-                                                    <lightning-icon
-                                                        icon-name="utility:success"
-                                                        size="x-small"
-                                                    ></lightning-icon>
-                                                </span>
-                                                <div
-                                                    class="slds-progress__item_content slds-grid slds-grid_align-spread"
-                                                >
-                                                    {labels.AUTH_STARTED}
-                                                </div>
-                                            </li>
-                                        </template>
-
-                                        <template lwc:else>
-                                            <li
-                                                class="slds-progress__item slds-is-active"
-                                                role="listitem"
-                                                aria-current="true"
-                                            >
-                                                <div class="slds-progress__marker"></div>
-                                                <div
-                                                    class="slds-progress__item_content slds-grid slds-grid_align-spread"
-                                                >
-                                                    {labels.AUTH_STARTED}
-                                                </div>
-                                            </li>
-                                        </template>
-
-                                        <li class="slds-progress__item" role="listitem">
-                                            <div class="slds-progress__marker"></div>
-                                            <div class="slds-progress__item_content slds-grid slds-grid_align-spread">
-                                                {labels.IDENTITY_CONFIRMED}
-                                            </div>
-                                        </li>
-                                    </ol>
-                                </div>
-                            </nav>
-                        </template>
                     </template>
                 </template>
             </div>

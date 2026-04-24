@@ -4,7 +4,7 @@
         <name>Route_to_default_Queue_Arbeid</name>
         <label>Route to default Queue Arbeid</label>
         <locationX>534</locationX>
-        <locationY>1706</locationY>
+        <locationY>1922</locationY>
         <actionName>routeWork</actionName>
         <actionType>routeWork</actionType>
         <faultConnector>
@@ -20,6 +20,8 @@
         <inputParameters>
             <name>psrInteractionInfo</name>
         </inputParameters>
+        <!--This
+        ID is environment-specific and should be updated accordingly-->
         <inputParameters>
             <name>serviceChannelId</name>
             <value>
@@ -50,6 +52,8 @@
         <inputParameters>
             <name>routingConfigLabel</name>
         </inputParameters>
+        <!--This
+        ID is environment-specific and should be updated accordingly-->
         <inputParameters>
             <name>queueId</name>
             <value>
@@ -81,14 +85,25 @@
             <name>botLabel</name>
         </inputParameters>
         <inputParameters>
+            <name>externalConversationBotId</name>
+        </inputParameters>
+        <inputParameters>
+            <name>externalConversationBotLabel</name>
+        </inputParameters>
+        <inputParameters>
             <name>copilotId</name>
         </inputParameters>
         <inputParameters>
             <name>copilotLabel</name>
         </inputParameters>
+        <inputParameters>
+            <name>agentforceEmployeeAgentId</name>
+        </inputParameters>
+        <inputParameters>
+            <name>agentforceEmployeeAgentLabel</name>
+        </inputParameters>
         <nameSegment>routeWork</nameSegment>
         <offset>0</offset>
-        <versionSegment>1</versionSegment>
     </actionCalls>
     <actionCalls>
         <description>The Route Work action is used to input the routing requirements to
@@ -96,7 +111,7 @@
         <name>Route_to_Queue</name>
         <label>Route to Queue</label>
         <locationX>50</locationX>
-        <locationY>974</locationY>
+        <locationY>1082</locationY>
         <actionName>routeWork</actionName>
         <actionType>routeWork</actionType>
         <faultConnector>
@@ -115,7 +130,7 @@
         <inputParameters>
             <name>serviceChannelId</name>
             <value>
-                <stringValue>0N9KN0000008QWU0A2</stringValue>
+                <stringValue>0N9Pw000000KpUbKAK</stringValue>
             </value>
         </inputParameters>
         <inputParameters>
@@ -170,10 +185,22 @@
             <name>botLabel</name>
         </inputParameters>
         <inputParameters>
+            <name>externalConversationBotId</name>
+        </inputParameters>
+        <inputParameters>
+            <name>externalConversationBotLabel</name>
+        </inputParameters>
+        <inputParameters>
             <name>copilotId</name>
         </inputParameters>
         <inputParameters>
             <name>copilotLabel</name>
+        </inputParameters>
+        <inputParameters>
+            <name>agentforceEmployeeAgentId</name>
+        </inputParameters>
+        <inputParameters>
+            <name>agentforceEmployeeAgentLabel</name>
         </inputParameters>
         <inputParameters>
             <name>isQueueVariable</name>
@@ -183,14 +210,14 @@
         </inputParameters>
         <nameSegment>routeWork</nameSegment>
         <offset>0</offset>
-        <versionSegment>1</versionSegment>
     </actionCalls>
     <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
         <name>Assign_default_Queue</name>
         <label>Assign default Queue</label>
         <locationX>534</locationX>
-        <locationY>1490</locationY>
+        <locationY>1598</locationY>
         <assignmentItems>
             <assignToReference>input_record.Queue_Name__c</assignToReference>
             <operator>Assign</operator>
@@ -389,7 +416,7 @@
         <locationX>50</locationX>
         <locationY>866</locationY>
         <connector>
-            <targetReference>Route_to_Queue</targetReference>
+            <targetReference>Set_Theme_Group</targetReference>
         </connector>
         <inputReference>input_record</inputReference>
     </recordUpdates>
@@ -397,9 +424,9 @@
         <name>Update_to_default_Queue_Name_Arbeid</name>
         <label>Update to default Queue Name Arbeid</label>
         <locationX>534</locationX>
-        <locationY>1598</locationY>
+        <locationY>1706</locationY>
         <connector>
-            <targetReference>Route_to_default_Queue_Arbeid</targetReference>
+            <targetReference>Set_Theme_Group_2</targetReference>
         </connector>
         <inputReference>input_record</inputReference>
     </recordUpdates>
@@ -417,7 +444,7 @@
         <name>Messaging_Routing_Error_Log</name>
         <label>Messaging Routing Error Log</label>
         <locationX>314</locationX>
-        <locationY>1082</locationY>
+        <locationY>1190</locationY>
         <flowName>Flow_Create_Application_Log</flowName>
         <inputAssignments>
             <name>Application_Domain</name>
@@ -466,7 +493,7 @@
         <name>Messaging_Routing_Error_Log_Default_Queue</name>
         <label>Messaging Routing Error Log Default Queue</label>
         <locationX>930</locationX>
-        <locationY>1814</locationY>
+        <locationY>2030</locationY>
         <flowName>Flow_Create_Application_Log</flowName>
         <inputAssignments>
             <name>Application_Domain</name>
@@ -508,6 +535,38 @@
             <name>ReferenceID</name>
             <value>
                 <elementReference>recordId</elementReference>
+            </value>
+        </inputAssignments>
+    </subflows>
+    <subflows>
+        <name>Set_Theme_Group</name>
+        <label>Set Theme Group</label>
+        <locationX>50</locationX>
+        <locationY>974</locationY>
+        <connector>
+            <targetReference>Route_to_Queue</targetReference>
+        </connector>
+        <flowName>NKS_Messaging_Set_Theme_Group</flowName>
+        <inputAssignments>
+            <name>input_record</name>
+            <value>
+                <elementReference>input_record</elementReference>
+            </value>
+        </inputAssignments>
+    </subflows>
+    <subflows>
+        <name>Set_Theme_Group_2</name>
+        <label>Set Theme Group</label>
+        <locationX>534</locationX>
+        <locationY>1814</locationY>
+        <connector>
+            <targetReference>Route_to_default_Queue_Arbeid</targetReference>
+        </connector>
+        <flowName>NKS_Messaging_Set_Theme_Group</flowName>
+        <inputAssignments>
+            <name>input_record</name>
+            <value>
+                <elementReference>input_record</elementReference>
             </value>
         </inputAssignments>
     </subflows>
