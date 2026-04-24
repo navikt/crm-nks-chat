@@ -55,42 +55,91 @@ sfdx force:org:open
 ## Post scratch setup
 
 As some metadata have poor support for packaging and metadata deployment there are a few manual steps to perform to be able to test the chat solution.
+This is solid overall—clear structure and good sequencing—but it can be tightened up for consistency, grammar, and a bit of flow. Here’s a cleaned-up version with minimal changes to your intent:
 
-1.  - Run this command in the terminal
+---
+
+### Setup Steps
+
+1. **Run the setup command in the terminal**
 
     ```
     npm run scratchSetup
     ```
 
-2.  Create a Messaging Channel
+2. **Activate the "NKS Messaging" channel**
 
-    - Go to Setup -> Messaging Settings -> Make sure Messaging is ON. Then press New Channel -> Messaging for In-App and Web. Under Omni-Channel Routing set Routing Type to Omni-Queue and assign Scratch Chat Queue. Navigate back to Messaging Settings, click the channel name, then click Activate in the top right corner.
+    - Go to **Setup → Messaging Settings**
+    - Under _Channels_, click the channel name
+    - Click **Activate** (top right corner)
 
-3.  Create an Embedded Service Deployment
+3. **Create an Embedded Service Deployment**
 
-    - Go to Setup -> Embedded Service Deployments -> New Deployment -> Messaging for In-App and Web -> Web -> Add the domain name of the experience site. Make sure the domain name is without any prefixes (Example: enterprise-power-8072-dev-ed.scratch.my.site.com). Make sure to publish it after it is created.
-      Copy the SCRT-URL from the Embedded Service Deployment's Code Snippet "scrt2URL" before proceeding to the next step.
+    - Go to **Setup → Embedded Service Deployments → New Deployment**
+    - Select: _Enhanced Chat → Web_
+    - Add the domain name of the Experience Site
 
-4.  Add URL to Trusted URLs
+        - Use the domain **without prefixes**
+          _(Example: enterprise-power-8072-dev-ed.scratch.my.site.com)_
 
-    - Go to Setup -> Trusted URLs and add the SCRT-URL that you copied in the previous step from the Embedded Service Deployment's Code Snippet "scrt2URL" to Trusted URLs. Example: https://enterprise-power-8072-dev-ed.scratch.my.salesforce-scrt.com. Allow all CSP Directives.
+    - Publish the deployment after creation
+    - Copy the **SCRT URL** from the code snippet (`scrt2URL`) before proceeding
 
-5.  Add URL to CORS
+4. **Add the URL to Trusted URLs**
 
-    - Go to Setup -> CORS and add your experience site url.
+    - Go to **Setup → Trusted URLs**
+    - Add the SCRT URL copied in the previous step
+      _(Example: [https://enterprise-power-8072-dev-ed.scratch.my.salesforce-scrt.com](https://enterprise-power-8072-dev-ed.scratch.my.salesforce-scrt.com))_
+    - Allow all CSP directives
 
-6.  Experience Site
+5. **Add the URL to CORS**
 
-    - Go to the experience site scratch_innboks and into builder. Click on the "Embedded Messaging" component that is already on the page and set the Embedded Web Deployment, Enhanced Service URL and Site Endpoint.
+    - Go to **Setup → CORS**
+    - Add your Experience Site URL
 
-    - In the experience site builder, open settings -> Security and privacy and under the CSP Errors section allow the two sites that have been blocked from the live agent endpoints (if they are blocked - check CSP Errors and console log). Also make sure that Relaxed CSP is enabled.
+6. **Configure the Experience Site**
 
-7.  Add service presence status to permission set
+    - Open the _scratch_innboks_ site in Experience Builder
 
-    - Go to setup -> Permission sets -> Scratch Permission set and add access to the service presence statuses needed for chat.
+    - Select the **Embedded Messaging** component on the page
 
-8.  To start a chat find the Harry Potter Account and the use the Log In to Experience as User action.
-9.  To receive a chat go to an app with omni-console enabled, such as the scratch app, and change your omni-channel presence to Tilgjengelig for chat.
+    - Set:
+
+        - Embedded Web Deployment
+
+    - In **Settings → Security & Privacy**:
+
+        - Under _CSP Errors_, allow any blocked domains related to Live Agent endpoints (check console/CSP logs)
+        - Ensure **Relaxed CSP** is enabled
+
+7. **Add Service Presence Status to Permission Set (if not already added)**
+
+    - Go to **Setup → Permission Sets → Scratch Permission Set**
+    - Add access to the required service presence statuses for chat
+
+8. **Start a chat**
+
+    - Locate the _Harry Potter_ Account
+    - Use **Log In to Experience as User**
+
+9. **Receive a chat**
+
+    - Open an Omni-Channel-enabled app (e.g., _Scratch App_)
+    - Set your Omni-Channel presence status to **Messaging**
+
+---
+
+### Notes
+
+- After publishing the Experience Site, if the Embedded Messaging component is not visible, remove it and add it again.
+
+- Update the **Channel ID** and **Default Queue** in the _NKS Messaging Route to Queue_ Omnichannel flow, as these IDs may change. This ensures messaging sessions are routed correctly.
+
+- Ensure your user is a member of the relevant queues to receive chats.
+
+- Make sure **Change Data Capture** is enabled for _Messaging Session_.
+
+---
 
 Other useful commands included in this package:
 
@@ -109,6 +158,6 @@ Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på Git
 Eller:
 Spørsmål knyttet til koden eller prosjektet kan stilles til teamalias@nav.no
 
-## For NAV-ansatte
+## For Nav-ansatte
 
 Interne henvendelser kan sendes via Slack i kanalen #crm-nks.
