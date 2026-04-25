@@ -5,14 +5,13 @@
     <aura:attribute name="loggingEnabled" type="boolean" default="true" />
     <aura:attribute name="authenticated" type="boolean" default="false" />
     <aura:attribute name="conversation" type="object[]" />
-    <aura:attribute name="subscription" type="Map" />
     <aura:attribute name="chatRecord" type="Object" />
     <aura:attribute name="recordLoadError" type="String" />
     <aura:attribute name="authCompletedHandled" type="boolean" default="false" />
+    <aura:attribute name="chatEnded" type="boolean" default="false" />
 
     <lightning:conversationToolkitApi aura:id="chatToolkit" />
     <lightning:workspaceAPI aura:id="workspace" />
-    <lightning:empApi aura:id="empApi" />
 
     <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
     <aura:handler event="lightning:conversationChatEnded" action="{!c.handleChatEnded}" />
@@ -31,6 +30,7 @@
         loggingEnabled="{!v.loggingEnabled}"
         onrequestauthentication="{!c.requestAuthentication}"
         onauthenticationcomplete="{!c.handleAuthCompleted}"
+        onauthstatuschange="{!c.handleAuthStatusChange}"
         aura:id="chatAuthInfo"
     />
 </aura:component>

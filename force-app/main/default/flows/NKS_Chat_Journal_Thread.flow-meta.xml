@@ -73,7 +73,7 @@
             <field>Id</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>Get_MessagingSession.MessagingEndUser.AccountId</elementReference>
+                <elementReference>Get_MessagingSession.EndUserAccountId</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
@@ -99,10 +99,6 @@
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>MessagingSession</object>
-        <queriedFields>Id</queriedFields>
-        <queriedFields>CRM_Authentication_Status__c</queriedFields>
-        <queriedFields>MessagingEndUser.AccountId</queriedFields>
-        <queriedFields>NKS_Theme_Group__c</queriedFields>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>

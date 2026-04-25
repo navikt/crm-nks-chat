@@ -1,20 +1,8 @@
 ({
-    // Called when the component loads
     onInit: function (component, event, helper) {
-        const empApi = component.find('empApi');
-
-        // Register error listener
-        empApi.onError(
-            $A.getCallback((error) => {
-                console.error('EMP API error:', JSON.stringify(error));
-            })
-        );
-
-        // Subscribe to EMP API events
-        helper.subscribeEmpApi(component);
+        // No EMP API in Aura anymore. LWC owns CDC subscription.
     },
 
-    // Handles event from LWC to initiate authentication using the conversation toolkit API
     requestAuthentication: function (component, event) {
         const chatToolkit = component.find('chatToolkit');
         const recordId = component.get('v.recordId');
@@ -40,14 +28,14 @@
                     })
                     .catch((error) => {
                         console.error('Error sending message:', JSON.stringify(error));
+                        authInfoCmp.authRequestHandling(false);
                     });
             } else if (state === 'ERROR') {
-                const errors = response.getError();
-                if (errors && errors[0] && errors[0].message) {
-                    console.error('Error message:', errors[0].message);
-                } else {
-                    console.error('Unknown error occurred');
-                }
+                console.error('Apex error:', JSON.stringify(response.getError()));
+                authInfoCmp.authRequestHandling(false);
+            } else {
+                console.error('Unexpected apex state:', state);
+                authInfoCmp.authRequestHandling(false);
             }
         });
 
@@ -55,12 +43,16 @@
     },
 
     handleAuthCompleted: function (component, event, helper) {
-        if (component.get('v.authCompletedHandled')) {
-            return;
-        }
+        if (component.get('v.authCompletedHandled')) return;
 
         component.set('v.authCompletedHandled', true);
         helper.showLoginMsg(component, event);
+    },
+
+    handleAuthStatusChange: function (component, event, helper) {
+        // Fired by LWC whenever auth status changes
+        const status = event.getParam('status');
+        helper.updateTabIconForAuthStatus(component, status);
     },
 
     handleChatEnded: function (component, event, helper) {
@@ -68,10 +60,8 @@
         const recordId = component.get('v.recordId');
 
         if (eventFullId === recordId) {
-            const authInfoCmp = component.find('chatAuthInfo');
-            authInfoCmp.set('v.chatEnded', true);
-
-            component.set('v.authCompletedHandled', false); // Reset for future chats
+            component.set('v.chatEnded', true);
+            component.set('v.authCompletedHandled', false); // reset for future chats
         }
     }
 });

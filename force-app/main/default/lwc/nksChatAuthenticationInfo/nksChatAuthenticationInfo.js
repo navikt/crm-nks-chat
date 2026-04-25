@@ -17,6 +17,8 @@ import CHAT_LOGIN_MSG_EN from '@salesforce/label/c.NKS_Chat_Login_Message_EN';
 import CHAT_GETTING_AUTH_STATUS from '@salesforce/label/c.NKS_Chat_Getting_Authentication_Status';
 import CHAT_SENDING_AUTH_REQUEST from '@salesforce/label/c.NKS_Chat_Sending_Authentication_Request';
 
+const CHANNEL = '/data/MessagingSessionChangeEvent';
+
 const STATUSES = {
     NOT_STARTED: 'Not Started',
     COMPLETED: 'Completed',
@@ -46,6 +48,10 @@ export default class NksChatAuthenticationInfo extends LightningElement {
     chatLanguage;
     chatAuthUrl;
     empApiSubscription = null;
+    isSubscribing = false;
+    isUnsubscribing = false;
+    resubscribeTimer = null;
+
     loginEvtSent = false;
     endTime = null;
     wiredRecordResult;
@@ -56,6 +62,7 @@ export default class NksChatAuthenticationInfo extends LightningElement {
     }
 
     disconnectedCallback() {
+        this.clearResubscribeTimer();
         this.handleUnsubscribe();
     }
 
@@ -65,13 +72,27 @@ export default class NksChatAuthenticationInfo extends LightningElement {
         const { error, data } = result;
 
         if (data) {
+            const prevStatus = this.currentAuthenticationStatus;
+
             this.currentAuthenticationStatus = data.AUTH_STATUS;
             this.isActiveConversation = data.CONVERSATION_STATUS === STATUSES.ACTIVE;
             this.chatLanguage = data.CHAT_LANGUAGE;
             this.endTime = data.END_TIME;
 
+            // Notify Aura to update icon when status changes (including initial load)
+            if (this.currentAuthenticationStatus && this.currentAuthenticationStatus !== prevStatus) {
+                this.dispatchEvent(
+                    new CustomEvent('authstatuschange', {
+                        detail: { status: this.currentAuthenticationStatus }
+                    })
+                );
+            }
+
             if (this.isEmpSubscriptionNeeded) {
                 this.handleSubscribe();
+            } else if (this.authenticationComplete && this.isEmpSubscribed) {
+                this.clearResubscribeTimer();
+                this.handleUnsubscribe();
             }
         } else if (error) {
             this.currentAuthenticationStatus = STATUSES.NOT_STARTED;
@@ -81,48 +102,92 @@ export default class NksChatAuthenticationInfo extends LightningElement {
 
     registerErrorListener() {
         onError((error) => {
-            this.handleError(error);
+            this.handleError(error, 'EMP API error');
+            this.clearResubscribeTimer();
             this.handleUnsubscribe();
-            this.handleSubscribe();
+
+            // eslint-disable-next-line @locker/locker/distorted-window-set-timeout, @lwc/lwc/no-async-operation
+            this.resubscribeTimer = window.setTimeout(() => {
+                if (this.isEmpSubscriptionNeeded) {
+                    this.handleSubscribe();
+                }
+            }, 500);
         });
     }
 
+    clearResubscribeTimer() {
+        if (this.resubscribeTimer) {
+            clearTimeout(this.resubscribeTimer);
+            this.resubscribeTimer = null;
+        }
+    }
+
     handleSubscribe() {
-        subscribe('/data/MessagingSessionChangeEvent', -1, this.handleCdcEvent.bind(this))
+        if (this.isSubscribing || this.isUnsubscribing || this.isEmpSubscribed) return;
+        if (!this.recordId) return;
+        if (this.authenticationComplete) return;
+
+        this.isSubscribing = true;
+
+        subscribe(CHANNEL, -1, this.handleCdcEvent.bind(this))
             .then((response) => {
                 this.empApiSubscription = response;
                 this.log(`Subscribed to: ${response.channel}`);
             })
-            .catch((error) => this.handleError(error, 'Failed to subscribe'));
+            .catch((error) => this.handleError(error, 'Failed to subscribe'))
+            .finally(() => {
+                this.isSubscribing = false;
+            });
     }
 
     handleUnsubscribe() {
-        if (!this.isEmpSubscribed) return;
+        if (this.isSubscribing || this.isUnsubscribing || !this.empApiSubscription) return;
 
-        unsubscribe(this.empApiSubscription)
+        this.isUnsubscribing = true;
+
+        const sub = this.empApiSubscription;
+        this.empApiSubscription = null;
+
+        unsubscribe(sub)
             .then(() => {
-                this.empApiSubscription = null;
                 this.log('Unsubscribed successfully');
             })
-            .catch((error) => this.handleError(error, 'Failed to unsubscribe'));
+            .catch((error) => this.handleError(error, 'Failed to unsubscribe'))
+            .finally(() => {
+                this.isUnsubscribing = false;
+            });
     }
 
     handleCdcEvent(response) {
-        const eventRecordIds = response.data.payload.ChangeEventHeader.recordIds;
-        const changedFields = response.data.payload.ChangeEventHeader.changedFields;
+        const payload = response?.data?.payload;
+        const header = payload?.ChangeEventHeader;
+
+        const eventRecordIds = header?.recordIds || [];
+        const changedFields = header?.changedFields || [];
 
         if (eventRecordIds.includes(this.recordId) && changedFields.includes('CRM_Authentication_Status__c')) {
-            this.updateAuthStatus(response.data.payload.CRM_Authentication_Status__c);
+            this.updateAuthStatus(payload.CRM_Authentication_Status__c);
         }
     }
 
     updateAuthStatus(newStatus) {
+        const prevStatus = this.currentAuthenticationStatus;
         this.currentAuthenticationStatus = newStatus;
+
+        // notify Aura to update tab icon
+        if (newStatus && newStatus !== prevStatus) {
+            this.dispatchEvent(
+                new CustomEvent('authstatuschange', {
+                    detail: { status: newStatus }
+                })
+            );
+        }
 
         if (this.authenticationComplete) {
             this.sendLoginEvent();
             getRecordNotifyChange([{ recordId: this.recordId }]);
             this.refreshData();
+            this.clearResubscribeTimer();
             this.handleUnsubscribe();
         }
     }
