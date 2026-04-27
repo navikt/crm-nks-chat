@@ -72,6 +72,9 @@
         },
         "surveySettings": {
             "enableSurvey": true
+        },
+        "sharingSettings": {
+            "opportunitySharingModel": "ReadWrite"
         }
     },
     "objectSettings": {
