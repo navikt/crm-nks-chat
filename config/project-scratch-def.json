@@ -77,9 +77,6 @@
     "objectSettings": {
         "case": {
             "sharingModel": "private"
-        },
-        "opportunity": {
-            "sharingModel": "private"
         }
     }
 }
