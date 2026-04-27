@@ -79,7 +79,7 @@
             "sharingModel": "private"
         },
         "opportunity": {
-            "sharingModel": "ReadWrite"
+            "sharingModel": "private"
         }
     }
 }
