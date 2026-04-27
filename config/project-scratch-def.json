@@ -77,6 +77,9 @@
     "objectSettings": {
         "case": {
             "sharingModel": "private"
+        },
+        "opportunity": {
+            "sharingModel": "ReadWrite"
         }
     }
 }
