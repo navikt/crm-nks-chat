@@ -459,4 +459,24 @@
         <isInput>true</isInput>
         <isOutput>false</isOutput>
     </variables>
+    <variables>
+        <name>Selected_Unit_Name</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <value>
+            <elementReference>Work_Allocation.selectedUnitName</elementReference>
+        </value>
+    </variables>
+    <variables>
+        <name>Selected_Unit_Number</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <value>
+            <elementReference>Work_Allocation.selectedUnitNumber</elementReference>
+        </value>
+    </variables>
 </Flow>
