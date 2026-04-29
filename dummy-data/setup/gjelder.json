@@ -10,6 +10,7 @@
             "CRM_Parent_Code__c": "@DAGRef",
             "CRM_Subtheme__c": "@PermitteringRef",
             "CRM_Active__c": true,
+            "CRM_Available__c": true,
             "CRM_Code_Set__c": "Gjelder"
         },
         {
@@ -22,6 +23,7 @@
             "CRM_Parent_Code__c": "@DAGRef",
             "CRM_Subtype__c": "@BehandleVedtakRef",
             "CRM_Active__c": true,
+            "CRM_Available__c": true,
             "CRM_Code_Set__c": "Gjelder"
         },
         {
@@ -35,6 +37,7 @@
             "CRM_Subtheme__c": "@SubDagpengerRef",
             "CRM_Subtype__c": "@KlageRef",
             "CRM_Active__c": true,
+            "CRM_Available__c": true,
             "CRM_Code_Set__c": "Gjelder"
         }
     ]

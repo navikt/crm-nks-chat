@@ -62,6 +62,10 @@
         <object>MessagingSession</object>
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
+    <servicePresenceStatusAccesses>
+        <enabled>true</enabled>
+        <servicePresenceStatus>Messaging</servicePresenceStatus>
+    </servicePresenceStatusAccesses>
     <userPermissions>
         <enabled>true</enabled>
         <name>CanAccessCE</name>

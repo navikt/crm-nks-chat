@@ -8,6 +8,7 @@
             "Name": "Arbeid",
             "CRM_Code__c": "ARBD",
             "CRM_Active__c": true,
+            "CRM_Available__c": true,
             "CRM_Code_Set__c": "Temagrupper"
         },
         {
@@ -18,6 +19,7 @@
             "Name": "Familie",
             "CRM_Code__c": "FMLI",
             "CRM_Active__c": true,
+            "CRM_Available__c": true,
             "CRM_Code_Set__c": "Temagrupper"
         }
     ]

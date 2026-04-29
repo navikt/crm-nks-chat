@@ -14,16 +14,18 @@
         <name>header</name>
         <type>Region</type>
     </flexiPageRegions>
-
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
+                <componentInstanceProperties>
+                    <name>cardLabel</name>
+                </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>copyFields</name>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>displayedFields</name>
-                    <value>Description</value>
+                    <value>CRM_Additional_Information__c</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>enableRefresh</name>
@@ -34,12 +36,15 @@
                     <value>true</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
+                    <name>iconName</name>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>numCols</name>
                     <value>1</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>relationshipField</name>
-                    <value>CaseId</value>
+                    <value>CRM_Related_Object__c</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>showLink</name>
@@ -47,7 +52,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>viewedObjectApiName</name>
-                    <value>Case</value>
+                    <value>Thread__c</value>
                 </componentInstanceProperties>
                 <componentName>nksRecordInformation</componentName>
                 <identifier>c_nksRecordInformation4</identifier>
@@ -56,7 +61,6 @@
         <name>Facet-9d8e5f07-db38-4b02-99cb-c27499260806</name>
         <type>Facet</type>
     </flexiPageRegions>
-
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
@@ -79,7 +83,6 @@
         <name>Facet-0b650cf3-f6d3-4859-94ac-7e055c1383c4</name>
         <type>Facet</type>
     </flexiPageRegions>
-
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
@@ -110,13 +113,12 @@
         <name>Facet-9eab6cf7-77f2-47a3-9c95-6c88c9a9f26b</name>
         <type>Facet</type>
     </flexiPageRegions>
-    <!--
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
                     <name>parentFieldApiName</name>
-                    <value>MessagingSession.MessagingEndUser.AccountId</value>
+                    <value>MessagingSession.EndUserAccountId</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>relatedListApiName</name>
@@ -124,7 +126,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>relatedListComponentOverride</name>
-                    <value>ADVGRID</value>
+                    <value>NONE</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>rowsToDisplay</name>
@@ -138,10 +140,9 @@
                 <identifier>force_relatedListSingleContainer</identifier>
             </componentInstance>
         </itemInstances>
-        <name>Facet-8h14tprazox</name>
+        <name>Facet-916b4cb2-10ad-4cd7-81d1-e36298687a16</name>
         <type>Facet</type>
     </flexiPageRegions>
--->
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
@@ -176,7 +177,6 @@
         <name>Facet-f264e040-1759-46d8-a04a-d39c734e4cb5</name>
         <type>Facet</type>
     </flexiPageRegions>
-
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
@@ -195,7 +195,6 @@
         <name>Facet-f2734e52-7f49-4ede-a8c9-9ce134ed72a4</name>
         <type>Facet</type>
     </flexiPageRegions>
-
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
@@ -210,7 +209,6 @@
         <name>Facet-58c10bc8-e6b5-4a69-ad70-3eaab5bc57a0</name>
         <type>Facet</type>
     </flexiPageRegions>
-
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
@@ -230,22 +228,20 @@
                 <identifier>overviewTab</identifier>
             </componentInstance>
         </itemInstances>
-        <!--
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
                     <name>body</name>
-                    <value>Facet-8h14tprazox</value>
+                    <value>Facet-916b4cb2-10ad-4cd7-81d1-e36298687a16</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>title</name>
                     <value>Oppgaver</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:tab</componentName>
-                <identifier>taskTab</identifier>
+                <identifier>flexipage_tab</identifier>
             </componentInstance>
         </itemInstances>
-        -->
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
@@ -291,10 +287,13 @@
         <name>Facet-b030d591-08ce-48a2-9826-240b7f54fad5</name>
         <type>Facet</type>
     </flexiPageRegions>
-
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
+                <componentInstanceProperties>
+                    <name>label</name>
+                    <value>Tabs</value>
+                </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>tabs</name>
                     <value>Facet-0b650cf3-f6d3-4859-94ac-7e055c1383c4</value>
@@ -310,9 +309,12 @@
                 </visibilityRule>
             </componentInstance>
         </itemInstances>
-
         <itemInstances>
             <componentInstance>
+                <componentInstanceProperties>
+                    <name>label</name>
+                    <value>Tabs</value>
+                </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>tabs</name>
                     <value>Facet-b030d591-08ce-48a2-9826-240b7f54fad5</value>
@@ -328,7 +330,6 @@
                 </visibilityRule>
             </componentInstance>
         </itemInstances>
-
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
@@ -339,18 +340,9 @@
                 <identifier>c_nksAccessErrorMessage</identifier>
             </componentInstance>
         </itemInstances>
-
-        <itemInstances>
-            <componentInstance>
-                <componentName>nksChatPageTransparentContainer</componentName>
-                <identifier>c_nksChatPageTransparentContainer2</identifier>
-            </componentInstance>
-        </itemInstances>
-
         <name>main</name>
         <type>Region</type>
     </flexiPageRegions>
-
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
@@ -358,29 +350,23 @@
                 <identifier>c_nksChatAfterWork</identifier>
             </componentInstance>
         </itemInstances>
-
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
                     <name>maxEARContainerHeight</name>
                     <value>500</value>
                 </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>shouldDisplayFiltersOnRight</name>
+                    <value>false</value>
+                </componentInstanceProperties>
                 <componentName>forceKnowledge:articleSearchDesktop</componentName>
                 <identifier>forceKnowledge_articleSearchDesktop</identifier>
             </componentInstance>
         </itemInstances>
-
-        <itemInstances>
-            <componentInstance>
-                <componentName>nksChatPageTransparentContainer</componentName>
-                <identifier>c_nksChatPageTransparentContainer3</identifier>
-            </componentInstance>
-        </itemInstances>
-
         <name>rightsidebar</name>
         <type>Region</type>
     </flexiPageRegions>
-
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
@@ -392,7 +378,64 @@
                 <identifier>c_nksChatAuthenticationInfoContainer</identifier>
             </componentInstance>
         </itemInstances>
-
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>blurImagePreview</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>hideAudioNoteRecorderButton</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>hideConferenceButton</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>hideConversationHistory</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>hideEmojiButton</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>hideFilePickerButton</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>hideInactiveButton</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>hideQuickTextButton</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>hideQuickTextRecommendations</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>hideRichContentPickerButton</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>hideTransferButton</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>hideWhisperFlagButton</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>newLineOnEnter</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentName>scrt:conversationBody</componentName>
+                <identifier>scrt_conversationBody</identifier>
+            </componentInstance>
+        </itemInstances>
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
@@ -419,7 +462,6 @@
                 <identifier>c_nksButtonContainerBottom</identifier>
             </componentInstance>
         </itemInstances>
-
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
@@ -430,7 +472,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>displayedFields</name>
-                    <value>CaseId, Name</value>
+                    <value>Name</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>enableRefresh</name>
@@ -461,25 +503,9 @@
                 <identifier>nksRecordInformation2</identifier>
             </componentInstance>
         </itemInstances>
-
-        <itemInstances>
-            <componentInstance>
-                <componentName>nksPersonInformation</componentName>
-                <identifier>c_nksPersonInformation</identifier>
-            </componentInstance>
-        </itemInstances>
-
-        <itemInstances>
-            <componentInstance>
-                <componentName>nksChatPageTransparentContainer</componentName>
-                <identifier>c_nksChatPageTransparentContainer</identifier>
-            </componentInstance>
-        </itemInstances>
-
         <name>leftsidebar</name>
         <type>Region</type>
     </flexiPageRegions>
-
     <masterLabel>Messaging Session Record Page</masterLabel>
     <sobjectType>MessagingSession</sobjectType>
     <template>

@@ -8,6 +8,7 @@
             "Name": "Behandle henvendelse",
             "CRM_Code__c": "BEH_HENV",
             "CRM_Active__c": true,
+            "CRM_Available__c": true,
             "CRM_Code_Set__c": "Oppgavetyper"
         },
         {
@@ -18,6 +19,7 @@
             "Name": "Vurder konsekvens for ytelse",
             "CRM_Code__c": "VUR_KONS_YTE",
             "CRM_Active__c": true,
+            "CRM_Available__c": true,
             "CRM_Code_Set__c": "Oppgavetyper"
         },
         {
@@ -28,6 +30,7 @@
             "Name": "Kontakt bruker",
             "CRM_Code__c": "KONT_BRUK",
             "CRM_Active__c": true,
+            "CRM_Available__c": true,
             "CRM_Code_Set__c": "Oppgavetyper"
         },
         {
@@ -38,6 +41,7 @@
             "Name": "Vurder henvendelse",
             "CRM_Code__c": "VURD_HENV",
             "CRM_Active__c": true,
+            "CRM_Available__c": true,
             "CRM_Code_Set__c": "Oppgavetyper"
         }
     ]
