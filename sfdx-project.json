@@ -117,7 +117,7 @@
         "platform-data-model": "0HoKB00000000010AA",
         "custom-metadata-dao": "0HoKB000000000B0AQ",
         "custom-permission-helper": "0HoKB000000000f0AA",
-        "feature-toggle": "0HoKB000000000V0AQ",
+        "feature-toggle": "0HoKB000000000V0AQ"
     },
     "packageKeyConfig": {
         "platform-data-model": false,
