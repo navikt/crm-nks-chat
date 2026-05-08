@@ -99,6 +99,9 @@
                 <booleanValue>true</booleanValue>
             </value>
         </assignmentItems>
+        <connector>
+            <targetReference>Publish_Oppgave_created_LMS_event</targetReference>
+        </connector>
     </assignments>
     <decisions>
         <name>Check_If_Has_Thread</name>
@@ -432,6 +435,31 @@
         </fields>
         <nextOrFinishButtonLabel>Ok</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>Publish_Oppgave_created_LMS_event</name>
+        <label>Publish Oppgave created LMS event</label>
+        <locationX>50</locationX>
+        <locationY>782</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>nksOppgaveCreatedPublisher</name>
+            <extensionName>c:nksOppgaveCreatedPublisher</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>actorId</name>
+                <value>
+                    <elementReference>Get_Thread.CRM_Account__r.CRM_Person__r.INT_ActorId__c</elementReference>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>false</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <start>
