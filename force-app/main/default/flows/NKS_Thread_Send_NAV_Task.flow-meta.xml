@@ -442,6 +442,12 @@
                     <elementReference>Get_Thread.CRM_Account__r.CRM_Person__r.INT_ActorId__c</elementReference>
                 </value>
             </inputParameters>
+            <inputParameters>
+                <name>assignedResource</name>
+                <value>
+                    <elementReference>Work_Allocation.assignedResource</elementReference>
+                </value>
+            </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
