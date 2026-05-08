@@ -48,11 +48,11 @@
                 },
                 {
                     "package": "crm-platform-integration",
-                    "versionNumber": "0.153.0.LATEST"
+                    "versionNumber": "0.170.0.LATEST"
                 },
                 {
                     "package": "crm-shared-user-notification",
-                    "versionNumber": "0.23.0.LATEST"
+                    "versionNumber": "0.27.0.LATEST"
                 },
                 {
                     "package": "crm-thread-view",
