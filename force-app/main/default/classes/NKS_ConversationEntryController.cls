@@ -15,34 +15,9 @@ public class NKS_ConversationEntryController {
         String queryDirection,
         Integer recordLimit
     ) {
-        logger.info(
-            LOG_PREFIX +
-                '.convertConversationEntries START' +
-                ' | inputSessions=' +
-                (msgSessions == null ? null : msgSessions.size()) +
-                ' | startTimestamp=' +
-                startTimestamp +
-                ' | endTimestamp=' +
-                endTimestamp +
-                ' | queryDirection=' +
-                queryDirection +
-                ' | recordLimit=' +
-                recordLimit +
-                ' | runningUserId=' +
-                UserInfo.getUserId() +
-                ' | runningUserName=' +
-                UserInfo.getUserName(),
-            null,
-            CRM_ApplicationDomain.Domain.NKS
-        );
 
         try {
             if (msgSessions == null || msgSessions.isEmpty()) {
-                logger.info(
-                    LOG_PREFIX + '.convertConversationEntries EXIT | No messaging sessions provided',
-                    null,
-                    CRM_ApplicationDomain.Domain.NKS
-                );
                 return;
             }
 
@@ -54,11 +29,6 @@ public class NKS_ConversationEntryController {
             }
 
             if (messagingSessionIds.isEmpty()) {
-                logger.info(
-                    LOG_PREFIX + '.convertConversationEntries EXIT | No valid messaging session ids',
-                    null,
-                    CRM_ApplicationDomain.Domain.NKS
-                );
                 return;
             }
 
@@ -79,27 +49,9 @@ public class NKS_ConversationEntryController {
                 WHERE Id IN :messagingSessionIds
             ];
 
-            logger.info(
-                LOG_PREFIX +
-                    '.convertConversationEntries | queriedMessagingSessions=' +
-                    JSON.serialize(messagingSessions),
-                null,
-                CRM_ApplicationDomain.Domain.NKS
-            );
-
             for (MessagingSession session : messagingSessions) {
                 try {
                     if (session.CRM_Authentication_Status__c != 'Completed') {
-                        logger.info(
-                            LOG_PREFIX +
-                                '.convertConversationEntries | Skipping non-authenticated session' +
-                                ' | sessionId=' +
-                                session.Id +
-                                ' | authStatus=' +
-                                session.CRM_Authentication_Status__c,
-                            null,
-                            CRM_ApplicationDomain.Domain.NKS
-                        );
                         continue;
                     }
 
@@ -110,7 +62,7 @@ public class NKS_ConversationEntryController {
                     if (conversationIdentifier == null) {
                         logger.error(
                             LOG_PREFIX +
-                                '.convertConversationEntries | Skipping session because conversationIdentifier is null' +
+                                '.convertConversationEntries | conversationIdentifier is null' +
                                 ' | sessionId=' +
                                 session.Id,
                             null,
@@ -145,7 +97,6 @@ public class NKS_ConversationEntryController {
         } catch (Exception e) {
             logger.exception(e, CRM_ApplicationDomain.Domain.NKS);
         } finally {
-            logger.info(LOG_PREFIX + '.convertConversationEntries END', null, CRM_ApplicationDomain.Domain.NKS);
             logger.publish();
         }
     }
@@ -158,17 +109,6 @@ public class NKS_ConversationEntryController {
         String queryDirection,
         Integer recordLimit
     ) {
-        logger.info(
-            LOG_PREFIX +
-                '.processConversationEntry START' +
-                ' | sessionId=' +
-                session.Id +
-                ' | conversationIdentifier=' +
-                conversationIdentifier,
-            null,
-            CRM_ApplicationDomain.Domain.NKS
-        );
-
         try {
             HttpResponse response = NKS_ConversationEntryService.getConversationEntryMessages(
                 conversationIdentifier,
@@ -178,41 +118,7 @@ public class NKS_ConversationEntryController {
                 recordLimit
             );
 
-            logger.info(
-                LOG_PREFIX +
-                    '.processConversationEntry | HTTP response' +
-                    ' | sessionId=' +
-                    session.Id +
-                    ' | statusCode=' +
-                    response.getStatusCode() +
-                    ' | body=' +
-                    response.getBody(),
-                null,
-                CRM_ApplicationDomain.Domain.NKS
-            );
-
-            if (response.getStatusCode() == 200) {
-                ConversationEntryWrapper wrapper = (ConversationEntryWrapper) JSON.deserialize(
-                    response.getBody(),
-                    ConversationEntryWrapper.class
-                );
-
-                logger.info(
-                    LOG_PREFIX +
-                        '.processConversationEntry | wrapper deserialized' +
-                        ' | sessionId=' +
-                        session.Id +
-                        ' | conversationEntriesSize=' +
-                        (wrapper == null ||
-                            wrapper.conversationEntries == null
-                            ? 0
-                            : wrapper.conversationEntries.size()),
-                    null,
-                    CRM_ApplicationDomain.Domain.NKS
-                );
-
-                createThreadMessages(wrapper, session);
-            } else {
+            if (response.getStatusCode() != 200) {
                 logger.httpError(
                     'Failed to get conversation entries for session: ' +
                         session.Id +
@@ -224,7 +130,15 @@ public class NKS_ConversationEntryController {
                     null,
                     CRM_ApplicationDomain.Domain.NKS
                 );
+                return;
             }
+
+            ConversationEntryWrapper wrapper = (ConversationEntryWrapper) JSON.deserialize(
+                response.getBody(),
+                ConversationEntryWrapper.class
+            );
+
+            createThreadMessages(wrapper, session);
         } catch (Exception e) {
             logger.error(
                 LOG_PREFIX +
@@ -260,40 +174,41 @@ public class NKS_ConversationEntryController {
 
         List<ConversationEntry> normalizedEntries = normalizeConversationEntries(wrapper.conversationEntries);
 
-        List<ConversationEntry> chatbotMessages = new List<ConversationEntry>();
-        List<ConversationEntry> userMessages = new List<ConversationEntry>();
-
-        splitChatbotMessagesFromConversation(normalizedEntries, chatbotMessages, userMessages);
-
-        if (!chatbotMessages.isEmpty()) {
-            thread.CRM_Additional_Information__c = formatChatbotMessagesAsString(chatbotMessages);
-        }
-
+        List<String> additionalInfoLines = new List<String>();
         List<Message__c> messagesToInsert = new List<Message__c>();
 
-        if (session.NKS_Authentication_Timestamp__c != null) {
-            messagesToInsert.add(createAuthEventMessage(session, thread));
-        }
+        Boolean agentChatStarted = false;
 
-        for (ConversationEntry entry : userMessages) {
-            if (entry != null && !String.isBlank(entry.messageText)) {
+        for (ConversationEntry entry : normalizedEntries) {
+            if (entry == null || String.isBlank(entry.messageText)) {
+                continue;
+            }
+
+            String senderRole = entry.sender == null ? null : entry.sender.role;
+
+            if (!agentChatStarted && 'Agent'.equalsIgnoreCase(senderRole)) {
+                agentChatStarted = true;
+            }
+
+            if (!agentChatStarted) {
+                additionalInfoLines.add(normalizeAdditionalInfoLine(entry));
+                continue;
+            }
+
+            if (isMessageEntry(entry)) {
                 messagesToInsert.add(createMessage(entry, session, thread));
+            } else {
+                additionalInfoLines.add(normalizeAdditionalInfoLine(entry));
             }
         }
 
-        logger.info(
-            LOG_PREFIX +
-                '.createThreadMessages | normalizedEntries.size=' +
-                normalizedEntries.size() +
-                ' | chatbotMessages.size=' +
-                chatbotMessages.size() +
-                ' | userMessages.size=' +
-                userMessages.size() +
-                ' | messagesToInsert.size=' +
-                messagesToInsert.size(),
-            null,
-            CRM_ApplicationDomain.Domain.NKS
-        );
+        if (!additionalInfoLines.isEmpty()) {
+            thread.CRM_Additional_Information__c = String.join(additionalInfoLines, '\n');
+        }
+
+        if (session.NKS_Authentication_Timestamp__c != null) {
+            messagesToInsert.add(0, createAuthEventMessage(session, thread));
+        }
 
         if (!messagesToInsert.isEmpty()) {
             insertMessages(messagesToInsert);
@@ -306,12 +221,12 @@ public class NKS_ConversationEntryController {
         List<ConversationEntry> normalizedEntries = new List<ConversationEntry>();
 
         for (ConversationEntry entry : entries) {
-            if (entry == null || entry.messageText == null) {
+            if (entry == null || String.isBlank(entry.messageText)) {
                 normalizedEntries.add(entry);
                 continue;
             }
 
-            String unescapedText = entry.messageText.unescapeHtml4();
+            String unescapedText = entry.messageText.unescapeHtml4().replace('\r\n', '\n');
             List<String> splitLines = unescapedText.split('\n');
 
             Boolean containsTranscriptLines = false;
@@ -329,7 +244,7 @@ public class NKS_ConversationEntryController {
             }
 
             if (!containsTranscriptLines || splitLines.size() == 1) {
-                entry.messageText = unescapedText;
+                entry.messageText = unescapedText.trim();
                 normalizedEntries.add(entry);
                 continue;
             }
@@ -351,16 +266,6 @@ public class NKS_ConversationEntryController {
                 lineIndex++;
             }
         }
-
-        logger.info(
-            LOG_PREFIX +
-                '.normalizeConversationEntries | inputSize=' +
-                (entries == null ? 0 : entries.size()) +
-                ' | normalizedSize=' +
-                normalizedEntries.size(),
-            null,
-            CRM_ApplicationDomain.Domain.NKS
-        );
 
         return normalizedEntries;
     }
@@ -405,40 +310,37 @@ public class NKS_ConversationEntryController {
         return sender;
     }
 
-    private static void splitChatbotMessagesFromConversation(
-        List<ConversationEntry> entries,
-        List<ConversationEntry> chatbotMessages,
-        List<ConversationEntry> userMessages
-    ) {
-        for (ConversationEntry entry : entries) {
-            if (entry == null || String.isBlank(entry.messageText)) {
-                continue;
-            }
-
-            String senderRole = entry.sender == null ? null : entry.sender.role;
-
-            logger.info(
-                LOG_PREFIX +
-                    '.splitChatbotMessagesFromConversation | identifier=' +
-                    entry.identifier +
-                    ' | senderRole=' +
-                    senderRole +
-                    ' | messageText=' +
-                    entry.messageText,
-                null,
-                CRM_ApplicationDomain.Domain.NKS
-            );
-
-            if (entry.messageText.startsWith(PREFIX_BRUKER) || entry.messageText.startsWith(PREFIX_VEILEDER)) {
-                userMessages.add(entry);
-            } else if (entry.messageText.startsWith(PREFIX_FRIDA)) {
-                chatbotMessages.add(entry);
-            } else if ('Agent'.equalsIgnoreCase(senderRole) || 'EndUser'.equalsIgnoreCase(senderRole)) {
-                userMessages.add(entry);
-            } else {
-                chatbotMessages.add(entry);
-            }
+    private static Boolean isMessageEntry(ConversationEntry entry) {
+        if (entry == null || String.isBlank(entry.messageText)) {
+            return false;
         }
+
+        String senderRole = entry.sender == null ? null : entry.sender.role;
+
+        return 'Agent'.equalsIgnoreCase(senderRole) || 'EndUser'.equalsIgnoreCase(senderRole);
+    }
+
+    private static String normalizeAdditionalInfoLine(ConversationEntry entry) {
+        if (entry == null || String.isBlank(entry.messageText)) {
+            return null;
+        }
+
+        String text = entry.messageText.trim();
+
+        if (text.startsWith(PREFIX_FRIDA) || text.startsWith(PREFIX_BRUKER) || text.startsWith(PREFIX_VEILEDER)) {
+            return text;
+        }
+
+        String senderRole = entry.sender == null ? null : entry.sender.role;
+
+        if ('EndUser'.equalsIgnoreCase(senderRole)) {
+            return PREFIX_BRUKER + ' ' + text;
+        }
+        if ('Agent'.equalsIgnoreCase(senderRole)) {
+            return PREFIX_VEILEDER + ' ' + text;
+        }
+
+        return PREFIX_FRIDA + ' ' + text;
     }
 
     private static Message__c createAuthEventMessage(MessagingSession msgSession, Thread__c thread) {
@@ -465,7 +367,9 @@ public class NKS_ConversationEntryController {
         message.CRM_Read__c = true;
         message.CRM_Type__c = 'Message';
 
-        if (entry.messageText != null && entry.messageText.startsWith(PREFIX_VEILEDER)) {
+        String senderRole = entry.sender == null ? null : entry.sender.role;
+
+        if ('Agent'.equalsIgnoreCase(senderRole)) {
             String senderSubject = normalizeUserId(entry.sender == null ? null : entry.sender.subject);
             User navUser = senderSubject == null ? null : navUserInfoByUserId.get(senderSubject);
 
@@ -494,7 +398,8 @@ public class NKS_ConversationEntryController {
         if (messageText.startsWith(PREFIX_VEILEDER)) {
             return messageText.substring(PREFIX_VEILEDER.length()).trim();
         }
-        return messageText;
+
+        return messageText.trim();
     }
 
     private static void insertMessages(List<Message__c> messages) {
@@ -533,18 +438,6 @@ public class NKS_ConversationEntryController {
                 CRM_ApplicationDomain.Domain.NKS
             );
         }
-    }
-
-    private static String formatChatbotMessagesAsString(List<ConversationEntry> entries) {
-        List<String> formattedMessages = new List<String>();
-
-        for (ConversationEntry entry : entries) {
-            if (!String.isBlank(entry.messageText)) {
-                formattedMessages.add(entry.messageText);
-            }
-        }
-
-        return String.join(formattedMessages, '\n');
     }
 
     private static Map<String, User> getNavUserInfoByUserId() {
