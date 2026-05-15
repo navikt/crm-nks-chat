@@ -3,6 +3,7 @@ private class NKS_ConversationEntryController_Test {
     @TestSetup
     static void makeData() {
         User thisUser = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
+
         System.runAs(thisUser) {
             MessagingChannel msgChannel = new MessagingChannel();
             msgChannel.MasterLabel = 'TestChannel';
@@ -32,56 +33,181 @@ private class NKS_ConversationEntryController_Test {
     }
 
     @isTest
-    static void testConvertConversationEntries() {
+    static void testConvertConversationEntries_authenticatedChat_createsOnlyAgentChatMessages() {
         MessagingSession messagingSession = [
-            SELECT Id, CRM_Authentication_Status__c
+            SELECT Id, CRM_Authentication_Status__c, NKS_Authentication_Timestamp__c
             FROM MessagingSession
             LIMIT 1
         ];
+
         messagingSession.CRM_Authentication_Status__c = 'Completed';
+        messagingSession.NKS_Authentication_Timestamp__c = Datetime.now();
+        update messagingSession;
+
         String messagingSessionId = messagingSession.Id;
 
         String jsonResponse =
             '{' +
-            '"conversationEntries":[{' +
-            '"clientDuration":0,"clientTimestamp":1732111810339,"identifier":"f895ea81-4e7a-4630-94d5-3de815cdaa95","messageText":"Frida: Første chatbotmelding fra Frida.","relatedRecords":["' +
+            '"conversationEntries":[' +
+            '{' +
+            '"clientDuration":0,' +
+            '"clientTimestamp":1732111810339,' +
+            '"identifier":"entry1",' +
+            '"messageText":"Frida: Hei! Jeg heter Frida og er NAVs chatbot.\\nFrida: Hva lurer du på?\\nBruker: menneske\\nFrida: Det er mange som trenger hjelp fra oss nå.",' +
+            '"relatedRecords":["' +
             messagingSessionId +
-            '"],"sender":{"appType":"iamessage","role":"EndUser","subject":"v2/iamessage/UNAUTH/NA/uid:66823427-6991-4b41-b932-605b3ad2dd7c"},"serverReceivedTimestamp":1732111810339},' +
-            '{"clientDuration":0,"clientTimestamp":1732111810439,"identifier":"f895ea81-4e7a-4630-94d5-3de815cdaa95","messageText":"Tidligere melding fra bruker.","relatedRecords":["' +
+            '"],' +
+            '"sender":{"appType":"iamessage","role":"EndUser","subject":"v2/iamessage/UNAUTH/NA/uid:66823427-6991-4b41-b932-605b3ad2dd7c"},' +
+            '"serverReceivedTimestamp":1732111810339' +
+            '},' +
+            '{' +
+            '"clientDuration":0,' +
+            '"clientTimestamp":1732111810707,' +
+            '"identifier":"entry2",' +
+            '"messageText":"Frida: Jeg setter deg over, et øyeblikk.\\nFrida: Det er mange som vil snakke med oss nå. Hold chatten åpen og følg med, så svarer vi deg så snart vi kan.",' +
+            '"relatedRecords":["' +
             messagingSessionId +
-            '"],"sender":{"appType":"iamessage","role":"EndUser","subject":"v2/iamessage/UNAUTH/NA/uid:66823427-6991-4b41-b932-605b3ad2dd7c"},"serverReceivedTimestamp":1732111810439},' +
-            '{"clientDuration":0,"clientTimestamp":1732111810607,"identifier":"f895ea81-4e7a-4630-94d5-3de815cdaa95","messageText":"Tidligere melding fra bruker.","relatedRecords":["' +
+            '"],' +
+            '"sender":{"appType":"iamessage","role":"System","subject":"system-user"},' +
+            '"serverReceivedTimestamp":1732111810707' +
+            '},' +
+            '{' +
+            '"clientDuration":0,' +
+            '"clientTimestamp":1732111834844,' +
+            '"identifier":"entry3",' +
+            '"messageText":"Melding fra veileder.",' +
+            '"relatedRecords":["' +
             messagingSessionId +
-            '"],"sender":{"appType":"iamessage","role":"Agent","subject":"v2/iamessage/UNAUTH/NA/uid:66823427-6991-4b41-b932-605b3ad2dd7c"},"serverReceivedTimestamp":1732111810607},' +
-            '{"clientDuration":0,"clientTimestamp":1732111810707,"identifier":"f895ea81-4e7a-4630-94d5-3de815cdaa95","messageText":"Velkommen til chat med NAV","relatedRecords":["' +
+            '"],' +
+            '"sender":{"appType":"agent","role":"Agent","subject":"0052o000009d7J9"},' +
+            '"serverReceivedTimestamp":1732111834844' +
+            '},' +
+            '{' +
+            '"clientDuration":0,' +
+            '"clientTimestamp":1732111856855,' +
+            '"identifier":"entry4",' +
+            '"messageText":"Melding fra bruker.",' +
+            '"relatedRecords":["' +
             messagingSessionId +
-            '"],"sender":{"appType":"iamessage","role":"System","subject":"v2/iamessage/UNAUTH/NA/uid:66823427-6991-4b41-b932-605b3ad2dd7c"},"serverReceivedTimestamp":1732111810707},' +
-            '{"clientDuration":0,"clientTimestamp":1732111834844,"identifier":"adcf753e-bb2b-4a00-a6c6-7ebcf683df2c","messageText":"Melding fra veileder.","relatedRecords":["' +
-            messagingSessionId +
-            '"],"sender":{"appType":"agent","role":"Agent","subject":"0052o000009d7J9"},"serverReceivedTimestamp":1732111834844},' +
-            '{"clientDuration":0,"clientTimestamp":1732111856855,"identifier":"ae84faf0-7cd5-4870-a860-5698c8508b7c","messageText":"Melding fra bruker.","relatedRecords":["' +
-            messagingSessionId +
-            '"],"sender":{"appType":"iamessage","role":"EndUser","subject":"v2/iamessage/UNAUTH/NA/uid:66823427-6991-4b41-b932-605b3ad2dd7c"},"serverReceivedTimestamp":1732111856855}' +
+            '"],' +
+            '"sender":{"appType":"iamessage","role":"EndUser","subject":"v2/iamessage/UNAUTH/NA/uid:66823427-6991-4b41-b932-605b3ad2dd7c"},' +
+            '"serverReceivedTimestamp":1732111856855' +
+            '}' +
             ']}';
 
         Test.setMock(HttpCalloutMock.class, new SingleRequestMock(200, 'OK', jsonResponse, null));
 
         Test.startTest();
+        NKS_ConversationEntryController.convertConversationEntries(
+            new List<MessagingSession>{ messagingSession },
+            null,
+            null,
+            'FromStart',
+            1000
+        );
+        Test.stopTest();
+
+        Thread__c thread = [
+            SELECT Id, CRM_Additional_Information__c, CRM_isActive__c, CRM_Closed_Date__c
+            FROM Thread__c
+            WHERE CRM_Related_Object__c = :messagingSessionId
+            LIMIT 1
+        ];
+
+        List<Message__c> messages = [
+            SELECT Id, CRM_Message_Text__c, CRM_Type__c, CRM_From_Contact__c, CRM_From_User__c
+            FROM Message__c
+            WHERE CRM_Thread__c = :thread.Id
+            ORDER BY CreatedDate ASC
+        ];
+
+        Assert.areEqual(3, messages.size(), 'Expected 3 messages: 1 auth event + 2 real chat messages.');
+
+        Assert.areEqual('Event', messages[0].CRM_Type__c, 'First message should be auth event.');
+        Assert.areEqual('Startet innlogget chat', messages[0].CRM_Message_Text__c, 'Expected Norwegian auth text.');
+
+        Assert.areEqual('Message', messages[1].CRM_Type__c, 'Second record should be a chat message.');
+        Assert.areEqual('Melding fra veileder.', messages[1].CRM_Message_Text__c, 'Agent message should be created.');
+
+        Assert.areEqual('Message', messages[2].CRM_Type__c, 'Third record should be a chat message.');
+        Assert.areEqual('Melding fra bruker.', messages[2].CRM_Message_Text__c, 'User message should be created.');
+
+        Assert.isTrue(
+            thread.CRM_Additional_Information__c.contains('Frida: Hei! Jeg heter Frida og er NAVs chatbot.'),
+            'Frida history should be stored in additional information.'
+        );
+        Assert.isTrue(
+            thread.CRM_Additional_Information__c.contains('Bruker: menneske'),
+            'Pre-chat user lines should remain in additional information.'
+        );
+        Assert.isTrue(
+            !thread.CRM_Additional_Information__c.contains('Melding fra veileder.'),
+            'Actual agent chat should not be stored in additional information.'
+        );
+        Assert.isTrue(
+            !thread.CRM_Additional_Information__c.contains('Melding fra bruker.'),
+            'Actual user chat with agent should not be stored in additional information.'
+        );
+        Assert.areEqual(false, thread.CRM_isActive__c, 'Thread should be closed after processing.');
+        Assert.areEqual(true, thread.CRM_Closed_Date__c != null, 'Thread closed date should be set.');
+    }
+
+    @isTest
+    static void testConvertConversationEntries_skipsNonAuthenticatedSession() {
+        MessagingSession messagingSession = [
+            SELECT Id, CRM_Authentication_Status__c
+            FROM MessagingSession
+            LIMIT 1
+        ];
+
+        messagingSession.CRM_Authentication_Status__c = 'Not Started';
         update messagingSession;
+
+        String messagingSessionId = messagingSession.Id;
+
+        String jsonResponse =
+            '{' +
+            '"conversationEntries":[' +
+            '{' +
+            '"clientDuration":0,' +
+            '"clientTimestamp":1732111810339,' +
+            '"identifier":"entry1",' +
+            '"messageText":"Frida: Hei",' +
+            '"relatedRecords":["' +
+            messagingSessionId +
+            '"],' +
+            '"sender":{"appType":"iamessage","role":"System","subject":"system-user"},' +
+            '"serverReceivedTimestamp":1732111810339' +
+            '}' +
+            ']}';
+
+        Test.setMock(HttpCalloutMock.class, new SingleRequestMock(200, 'OK', jsonResponse, null));
+
+        Test.startTest();
+        NKS_ConversationEntryController.convertConversationEntries(
+            new List<MessagingSession>{ messagingSession },
+            null,
+            null,
+            'FromStart',
+            1000
+        );
         Test.stopTest();
 
         Thread__c thread = [
             SELECT Id, CRM_Additional_Information__c
             FROM Thread__c
             WHERE CRM_Related_Object__c = :messagingSessionId
+            LIMIT 1
         ];
-        List<Message__c> messages = [SELECT Id FROM Message__c WHERE CRM_Thread__c = :thread.Id];
 
-        Assert.isTrue(messages.size() == 4, '4 messages should be inserted (including auth event message).');
-        Assert.isTrue(
-            thread.CRM_Additional_Information__c.contains('Frida: Første chatbotmelding fra Frida.'),
-            'Fridalog should be added to the field.'
-        );
+        List<Message__c> messages = [
+            SELECT Id
+            FROM Message__c
+            WHERE CRM_Thread__c = :thread.Id
+        ];
+
+        Assert.areEqual(0, messages.size(), 'No messages should be created for non-authenticated chats.');
+        Assert.areEqual(null, thread.CRM_Additional_Information__c, 'Thread should not be processed.');
     }
 
     @isTest
@@ -101,25 +227,18 @@ private class NKS_ConversationEntryController_Test {
 
         String jsonResponse =
             '{' +
-            '"conversationEntries":[{' +
-            '"clientDuration":0,"clientTimestamp":1732111810339,"identifier":"f895ea81-4e7a-4630-94d5-3de815cdaa95","messageText":"Frida: Første chatbotmelding fra Frida.","relatedRecords":["' +
+            '"conversationEntries":[' +
+            '{' +
+            '"clientDuration":0,' +
+            '"clientTimestamp":1732111810339,' +
+            '"identifier":"entry1",' +
+            '"messageText":"Frida: Første chatbotmelding fra Frida.",' +
+            '"relatedRecords":["' +
             messagingSessionId +
-            '"],"sender":{"appType":"iamessage","role":"EndUser","subject":"v2/iamessage/UNAUTH/NA/uid:66823427-6991-4b41-b932-605b3ad2dd7c"},"serverReceivedTimestamp":1732111810339},' +
-            '{"clientDuration":0,"clientTimestamp":1732111810439,"identifier":"f895ea81-4e7a-4630-94d5-3de815cdaa95","messageText":"Tidligere melding fra bruker.","relatedRecords":["' +
-            messagingSessionId +
-            '"],"sender":{"appType":"iamessage","role":"EndUser","subject":"v2/iamessage/UNAUTH/NA/uid:66823427-6991-4b41-b932-605b3ad2dd7c"},"serverReceivedTimestamp":1732111810439},' +
-            '{"clientDuration":0,"clientTimestamp":1732111810607,"identifier":"f895ea81-4e7a-4630-94d5-3de815cdaa95","messageText":"Tidligere melding fra bruker.","relatedRecords":["' +
-            messagingSessionId +
-            '"],"sender":{"appType":"iamessage","role":"Agent","subject":"v2/iamessage/UNAUTH/NA/uid:66823427-6991-4b41-b932-605b3ad2dd7c"},"serverReceivedTimestamp":1732111810607},' +
-            '{"clientDuration":0,"clientTimestamp":1732111810707,"identifier":"f895ea81-4e7a-4630-94d5-3de815cdaa95","messageText":"Velkommen til chat med NAV","relatedRecords":["' +
-            messagingSessionId +
-            '"],"sender":{"appType":"iamessage","role":"System","subject":"v2/iamessage/UNAUTH/NA/uid:66823427-6991-4b41-b932-605b3ad2dd7c"},"serverReceivedTimestamp":1732111810707},' +
-            '{"clientDuration":0,"clientTimestamp":1732111834844,"identifier":"adcf753e-bb2b-4a00-a6c6-7ebcf683df2c","messageText":"Melding fra veileder.","relatedRecords":["' +
-            messagingSessionId +
-            '"],"sender":{"appType":"agent","role":"Agent","subject":"0052o000009d7J9"},"serverReceivedTimestamp":1732111834844},' +
-            '{"clientDuration":0,"clientTimestamp":1732111856855,"identifier":"ae84faf0-7cd5-4870-a860-5698c8508b7c","messageText":"Melding fra bruker.","relatedRecords":["' +
-            messagingSessionId +
-            '"],"sender":{"appType":"iamessage","role":"EndUser","subject":"v2/iamessage/UNAUTH/NA/uid:66823427-6991-4b41-b932-605b3ad2dd7c"},"serverReceivedTimestamp":1732111856855}' +
+            '"],' +
+            '"sender":{"appType":"iamessage","role":"System","subject":"system-user"},' +
+            '"serverReceivedTimestamp":1732111810339' +
+            '}' +
             ']}';
 
         Test.setMock(HttpCalloutMock.class, new SingleRequestMock(200, 'OK', jsonResponse, null));

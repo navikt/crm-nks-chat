@@ -15,7 +15,6 @@ public class NKS_ConversationEntryController {
         String queryDirection,
         Integer recordLimit
     ) {
-
         try {
             if (msgSessions == null || msgSessions.isEmpty()) {
                 return;
