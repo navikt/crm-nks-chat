@@ -3,26 +3,21 @@ global with sharing class NKS_MessagingSessionHandler extends MyTriggers {
     private static final String LOG_PREFIX = 'NKS_MessagingSessionHandler';
 
     global override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
+        List<String> fieldNamesToCheck = new List<String>{ 'EndTime', 'Status', 'CRM_Authentication_Status__c' };
         List<Id> messagingSessionIdsToConvert = new List<Id>();
 
         try {
             for (MessagingSession newRecord : (List<MessagingSession>) records) {
                 MessagingSession oldRecord = (MessagingSession) triggerOldMap.get(newRecord.Id);
 
-                Boolean relevantFieldChanged =
-                    newRecord.EndTime != oldRecord.EndTime ||
-                    newRecord.Status != oldRecord.Status ||
-                    newRecord.CRM_Authentication_Status__c != oldRecord.CRM_Authentication_Status__c;
-
-                Boolean shouldConvert =
-                    relevantFieldChanged &&
+                if (
+                    MyTriggers.hasChangedFields(fieldNamesToCheck, newRecord, oldRecord) &&
                     newRecord.EndTime != null &&
                     newRecord.EndTime <= Datetime.now() &&
                     newRecord.CRM_Authentication_Status__c == 'Completed' &&
                     (newRecord.Status == 'Ended' ||
-                    newRecord.Status == 'Inactive');
-
-                if (shouldConvert) {
+                    newRecord.Status == 'Inactive')
+                ) {
                     messagingSessionIdsToConvert.add(newRecord.Id);
                 }
             }

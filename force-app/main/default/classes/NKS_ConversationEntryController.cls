@@ -221,7 +221,6 @@ public class NKS_ConversationEntryController {
 
         for (ConversationEntry entry : entries) {
             if (entry == null || String.isBlank(entry.messageText)) {
-                normalizedEntries.add(entry);
                 continue;
             }
 
@@ -465,15 +464,12 @@ public class NKS_ConversationEntryController {
     }
 
     private static Thread__c getThreadDetails(Id messagingSessionId) {
-        List<Thread__c> threads = [
-            SELECT Id, CRM_Related_Object__c, CRM_Additional_Information__c, CRM_isActive__c, CRM_Closed_Date__c
+        return [
+            SELECT Id, CRM_Additional_Information__c, CRM_isActive__c, CRM_Closed_Date__c
             FROM Thread__c
             WHERE CRM_Related_Object__c = :messagingSessionId
-            ORDER BY CreatedDate DESC
-            LIMIT 1
+            FOR UPDATE
         ];
-
-        return threads.isEmpty() ? null : threads[0];
     }
 
     public class ConversationEntryWrapper {
