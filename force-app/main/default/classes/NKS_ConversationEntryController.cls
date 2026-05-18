@@ -209,6 +209,8 @@ public class NKS_ConversationEntryController {
             messagesToInsert.add(0, createAuthEventMessage(session, thread));
         }
 
+        // Disable henvendelses cache for message insert as thread update will handle that
+        MyTriggers.disable(MessageCacheHandler.class);
         if (!messagesToInsert.isEmpty()) {
             insertMessages(messagesToInsert);
         }
