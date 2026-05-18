@@ -7,16 +7,16 @@
             "versionNumber": "0.74.0.NEXT",
             "dependencies": [
                 {
-                    "package": "crm-platform-base",
-                    "versionNumber": "0.295.0.LATEST"
-                },
-                {
                     "package": "platform-data-model",
                     "versionNumber": "0.1.2.LATEST"
                 },
                 {
                     "package": "custom-metadata-dao",
                     "versionNumber": "0.1.2.LATEST"
+                },
+                {
+                    "package": "crm-platform-base",
+                    "versionNumber": "0.295.0.LATEST"
                 },
                 {
                     "package": "crm-platform-access-control",
