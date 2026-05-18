@@ -1,27 +1,45 @@
 global with sharing class NKS_MessagingSessionHandler extends MyTriggers {
     private static LoggerUtility logger = new LoggerUtility('Messaging');
+    private static final String LOG_PREFIX = 'NKS_MessagingSessionHandler';
 
     global override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
         List<String> fieldNamesToCheck = new List<String>{ 'EndTime', 'Status', 'CRM_Authentication_Status__c' };
-        List<MessagingSession> messagingSessionsToConvert = new List<MessagingSession>();
+        List<Id> messagingSessionIdsToConvert = new List<Id>();
 
-        for (MessagingSession newRecord : (List<MessagingSession>) records) {
-            MessagingSession oldRecord = (MessagingSession) triggerOldMap.get(newRecord.Id);
-            if (
-                MyTriggers.hasChangedFields(fieldNamesToCheck, newRecord, oldRecord) &&
-                newRecord.EndTime <= Datetime.now() &&
-                newRecord.CRM_Authentication_Status__c == 'Completed' &&
-                (newRecord.Status == 'Ended' ||
-                newRecord.Status == 'Inactive')
-            ) {
-                messagingSessionsToConvert.add(newRecord);
+        try {
+            for (MessagingSession newRecord : (List<MessagingSession>) records) {
+                MessagingSession oldRecord = (MessagingSession) triggerOldMap.get(newRecord.Id);
+
+                if (
+                    MyTriggers.hasChangedFields(fieldNamesToCheck, newRecord, oldRecord) &&
+                    newRecord.EndTime != null &&
+                    newRecord.EndTime <= Datetime.now() &&
+                    newRecord.CRM_Authentication_Status__c == 'Completed' &&
+                    (newRecord.Status == 'Ended' ||
+                    newRecord.Status == 'Inactive')
+                ) {
+                    messagingSessionIdsToConvert.add(newRecord.Id);
+                }
             }
-        }
 
-        if (messagingSessionsToConvert.size() > 0) {
-            System.enqueueJob(
-                new NKS_ConversationEntryQueueable(messagingSessionsToConvert, null, null, 'FromStart', 1000)
+            if (!messagingSessionIdsToConvert.isEmpty()) {
+                System.enqueueJob(
+                    new NKS_ConversationEntryQueueable(messagingSessionIdsToConvert, null, null, 'FromStart', 1000)
+                );
+            }
+        } catch (Exception e) {
+            logger.error(
+                LOG_PREFIX +
+                    '.onAfterUpdate ERROR' +
+                    ' | message=' +
+                    e.getMessage() +
+                    ' | stack=' +
+                    e.getStackTraceString(),
+                null,
+                CRM_ApplicationDomain.Domain.NKS
             );
+        } finally {
+            logger.publish();
         }
     }
 }

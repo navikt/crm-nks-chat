@@ -1,18 +1,18 @@
-public with sharing class NKS_ConversationEntryQueueable implements Queueable, Database.AllowsCallouts {
-    List<MessagingSession> messagingSessions;
-    Long startTimestamp;
-    Long endTimestamp;
-    String queryDirection;
-    Integer recordLimit;
+public class NKS_ConversationEntryQueueable implements Queueable, Database.AllowsCallouts {
+    private List<Id> messagingSessionIds;
+    private Long startTimestamp;
+    private Long endTimestamp;
+    private String queryDirection;
+    private Integer recordLimit;
 
     public NKS_ConversationEntryQueueable(
-        List<MessagingSession> messagingSessions,
+        List<Id> messagingSessionIds,
         Long startTimestamp,
         Long endTimestamp,
         String queryDirection,
         Integer recordLimit
     ) {
-        this.messagingSessions = messagingSessions;
+        this.messagingSessionIds = messagingSessionIds;
         this.startTimestamp = startTimestamp;
         this.endTimestamp = endTimestamp;
         this.queryDirection = queryDirection;
@@ -20,8 +20,14 @@ public with sharing class NKS_ConversationEntryQueueable implements Queueable, D
     }
 
     public void execute(QueueableContext context) {
+        List<MessagingSession> sessions = [
+            SELECT Id
+            FROM MessagingSession
+            WHERE Id IN :messagingSessionIds
+        ];
+
         NKS_ConversationEntryController.convertConversationEntries(
-            messagingSessions,
+            sessions,
             startTimestamp,
             endTimestamp,
             queryDirection,
