@@ -79,10 +79,6 @@
         <viewAllFields>false</viewAllFields>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
-    <servicePresenceStatusAccesses>
-        <enabled>true</enabled>
-        <servicePresenceStatus>Messaging</servicePresenceStatus>
-    </servicePresenceStatusAccesses>
     <userPermissions>
         <enabled>true</enabled>
         <name>CanAccessCE</name>
