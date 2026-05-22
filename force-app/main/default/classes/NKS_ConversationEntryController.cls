@@ -171,6 +171,12 @@ public class NKS_ConversationEntryController {
             return;
         }
 
+        for (ConversationEntry entry : wrapper.conversationEntries) {
+            if (entry != null && entry.entryPayload?.abstractMessage?.staticContent != null) {
+                entry.messageText = entry.entryPayload.abstractMessage.staticContent.text;
+            }
+        }
+
         List<ConversationEntry> normalizedEntries = normalizeConversationEntries(wrapper.conversationEntries);
 
         List<String> additionalInfoLines = new List<String>();
@@ -277,7 +283,7 @@ public class NKS_ConversationEntryController {
         cloneEntry.identifier = entry.identifier;
         cloneEntry.messageText = entry.messageText;
         cloneEntry.relatedRecords = entry.relatedRecords;
-        cloneEntry.serverReceivedTimestamp = entry.serverReceivedTimestamp;
+        cloneEntry.transcriptedTimestamp = entry.transcriptedTimestamp;
 
         if (entry.sender != null) {
             cloneEntry.sender = new Sender();
@@ -361,9 +367,9 @@ public class NKS_ConversationEntryController {
         Message__c message = new Message__c();
         message.CRM_Thread__c = thread.Id;
         message.CRM_Message_Text__c = removeKnownPrefix(entry.messageText);
-        message.CRM_Sent_Date__c = entry.serverReceivedTimestamp == null
+        message.CRM_Sent_Date__c = entry.transcriptedTimestamp == null
             ? null
-            : DateTime.newInstance(entry.serverReceivedTimestamp);
+            : DateTime.newInstance(entry.transcriptedTimestamp);
         message.CRM_Read__c = true;
         message.CRM_Type__c = 'Message';
 
@@ -485,7 +491,20 @@ public class NKS_ConversationEntryController {
         public String messageText;
         public List<String> relatedRecords;
         public Sender sender;
-        public Long serverReceivedTimestamp;
+        public Long transcriptedTimestamp;
+        public EntryPayload entryPayload;
+    }
+
+    public class EntryPayload {
+        public AbstractMessage abstractMessage;
+    }
+
+    public class AbstractMessage {
+        public StaticContent staticContent;
+    }
+
+    public class StaticContent {
+        public String text;
     }
 
     public class Sender {
