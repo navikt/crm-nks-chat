@@ -1,8 +1,8 @@
 global class NKS_ChatTranscriptService {
     @TestVisible
     private static Map<String, String> authTexts = new Map<String, String>{
-        'norwegian' => 'Trykk for å logge inn på nav.no og gi veilederen tilgang til saken din. ',
-        'english' => 'Click to log in to nav.no and grant your advisor access to your case. '
+        'norwegian' => 'TEST - Trykk for å logge inn på nav.no og gi veilederen tilgang til saken din. ',
+        'english' => 'TEST - Click to log in to nav.no and grant your advisor access to your case. '
     };
 
     //INITIATE INTERNAL MAP OF NAV IDENT --> User ID
