@@ -118,20 +118,18 @@ private class NKS_ChatTranscriptService_Test {
     }
 
     @isTest
-    static void testGenerateAuthMessageMessagingSessionEnglish() {
+    static void testGenerateAuthMessageMessagingSessionFallback() {
         MessagingSession testSession = [
-            SELECT Id, CRM_Language__c
+            SELECT Id
             FROM MessagingSession
             LIMIT 1
         ];
-        testSession.CRM_Language__c = 'en_US';
-        update testSession;
 
         Test.startTest();
         String result = NKS_ChatTranscriptService.generateAuthMessage(testSession.Id);
         Test.stopTest();
 
-        String expectedText = NKS_ChatTranscriptService.authTexts.get('english');
+        String expectedText = NKS_ChatTranscriptService.authTexts.get('norwegian');
         Assert.areEqual(expectedText, result);
     }
 }
