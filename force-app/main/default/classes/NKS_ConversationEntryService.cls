@@ -47,4 +47,18 @@ public class NKS_ConversationEntryService {
 
         return url;
     }
+
+    public static HttpResponse deleteConversationParticipantData(List<String> participantEntityIds) {
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint(
+            'callout:Conversation_Data_API' +
+                '/conversation-participants?participantEntityId=' +
+                String.join(participantEntityIds, ',') +
+                '&cascadeLevel=FULL_CASCADE'
+        );
+        request.setMethod('DELETE');
+        request.setHeader('Content-Type', 'application/json');
+
+        return new Http().send(request);
+    }
 }
