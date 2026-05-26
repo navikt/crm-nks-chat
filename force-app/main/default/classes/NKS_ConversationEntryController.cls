@@ -173,7 +173,8 @@ public class NKS_ConversationEntryController {
 
         for (ConversationEntry entry : wrapper.conversationEntries) {
             if (entry != null && entry.entryPayload?.abstractMessage?.staticContent != null) {
-                entry.messageText = entry.entryPayload.abstractMessage.staticContent.text;
+                StaticContent sc = entry.entryPayload.abstractMessage.staticContent;
+                entry.messageText = sc.formatType == 'RichLink' ? sc.linkItem?.url : sc.text;
             }
         }
 
@@ -504,7 +505,13 @@ public class NKS_ConversationEntryController {
     }
 
     public class StaticContent {
+        public String formatType;
         public String text;
+        public LinkItem linkItem;
+    }
+
+    public class LinkItem {
+        public String url;
     }
 
     public class Sender {
