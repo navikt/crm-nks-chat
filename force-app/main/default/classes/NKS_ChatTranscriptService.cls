@@ -277,11 +277,7 @@ global class NKS_ChatTranscriptService {
     @AuraEnabled
     public static string generateAuthMessage(Id recordId) {
         try {
-            return [SELECT Id, LiveChatButton.WindowLanguage FROM LiveChatTranscript WHERE id = :recordId LIMIT 1]
-                    ?.LiveChatButton
-                    ?.WindowLanguage == 'en_US'
-                ? authTexts.get('english')
-                : authTexts.get('norwegian');
+            return [SELECT CRM_Language__c FROM MessagingSession WHERE Id = :recordId LIMIT 1]?.CRM_Language__c == 'en_US' ? authTexts.get('english') : authTexts.get('norwegian');
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }

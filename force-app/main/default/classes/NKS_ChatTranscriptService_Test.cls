@@ -116,4 +116,20 @@ private class NKS_ChatTranscriptService_Test {
         Assert.areEqual('NKS_Messaging_Arbeid', result.Queue_Name__c, 'The Queue_Name__c field should match');
         Assert.areEqual('Active', result.Status, 'The Status field should match');
     }
+
+    @isTest
+    static void testGenerateAuthMessageMessagingSessionFallback() {
+        MessagingSession testSession = [
+            SELECT Id
+            FROM MessagingSession
+            LIMIT 1
+        ];
+
+        Test.startTest();
+        String result = NKS_ChatTranscriptService.generateAuthMessage(testSession.Id);
+        Test.stopTest();
+
+        String expectedText = NKS_ChatTranscriptService.authTexts.get('norwegian');
+        Assert.areEqual(expectedText, result);
+    }
 }
