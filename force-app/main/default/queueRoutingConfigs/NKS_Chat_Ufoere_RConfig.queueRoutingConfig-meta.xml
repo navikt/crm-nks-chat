@@ -5,6 +5,6 @@
     <isAttributeBased>false</isAttributeBased>
     <label>Chat Uføre RConfig</label>
     <pushTimeout>30</pushTimeout>
-    <routingModel>MOST_AVAILABLE</routingModel>
+    <routingModel>EXTERNAL_ROUTING</routingModel>
     <routingPriority>5</routingPriority>
 </QueueRoutingConfig>
