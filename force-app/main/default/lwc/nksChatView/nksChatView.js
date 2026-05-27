@@ -1,4 +1,5 @@
 import { LightningElement, api, wire } from 'lwc';
+import { CurrentPageReference } from 'lightning/navigation';
 import getThread from '@salesforce/apex/nksChatView.getThread';
 import markasread from '@salesforce/apex/CRM_MessageHelperExperience.markAsRead';
 import getChatbotMessage from '@salesforce/apex/nksChatView.getChatbotMessage';
@@ -12,6 +13,7 @@ export default class NksChatView extends LightningElement {
     @api recordId;
 
     threadId;
+    isChatTranscript = false;
     modalOpen = false;
     chatbotMessage = 'Laster inn samtale';
     messageGroups;
@@ -20,14 +22,22 @@ export default class NksChatView extends LightningElement {
     @wire(MessageContext)
     messageContext;
 
+    @wire(CurrentPageReference)
+    setCurrentPageReference(pageRef) {
+        if (!this.recordId && pageRef?.state?.id) {
+            this.recordId = pageRef.state.id;
+        }
+    }
+
     @wire(getThread, { chatId: '$recordId' })
     wiredThread(result) {
         const { error, data } = result;
         if (error) {
-            console.error(error);
+            console.error('Error retrieving thread: ', error);
         }
         if (data) {
             this.threadId = data.Id;
+            this.isChatTranscript = data.CRM_Related_Object__c.startsWith('570');
             markasread({ threadId: this.threadId });
 
             this.themeGroup = data.CRM_Theme_Group_Name__c;
@@ -41,7 +51,7 @@ export default class NksChatView extends LightningElement {
     wiredGroups(result) {
         const { data, error } = result;
         if (error) {
-            console.error(error);
+            console.error('Error retrieving grouped messages: ', error);
         } else if (data) {
             this.messageGroups = data;
         }
@@ -52,9 +62,14 @@ export default class NksChatView extends LightningElement {
         publish(this.messageContext, globalModalOpen, { status: 'true' });
         this.chatbotMessage = 'Laster inn samtale';
         try {
-            this.chatbotMessage = await getChatbotMessage({ chatId: this.recordId, userId: userId });
+            this.chatbotMessage = await getChatbotMessage({
+                chatId: this.recordId,
+                userId: userId,
+                isChatTranscript: this.isChatTranscript
+            });
         } catch (e) {
             this.chatbotMessage = 'Kunne ikke laste samtale';
+            console.error('Error retrieving chatbot message: ', e);
         }
         logModalEvent(true, 'Chatbot samtale', getComponentName(this.template), 'Chatsamtale');
     }
