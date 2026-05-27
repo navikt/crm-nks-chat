@@ -1,4 +1,4 @@
-public with sharing class NKS_DeleteChatsBatch implements Database.Batchable<sObject>, Schedulable {
+public with sharing class NKS_DeleteConvDataApiBatch implements Database.Batchable<sObject>, Schedulable {
     private static final String QUERY = 'SELECT Id, MessagingEndUserId FROM MessagingSession WHERE CreatedDate = TODAY AND EndUserAccountId = NULL AND CRM_Authentication_Status__c != \'Completed\' AND (Status IN (\'Ended\', \'Inactive\')) AND Queue_Name__c IN (\'NKS_Messaging_Gjeldsraadgivning\', \'NKS_Messaging_Sosiale_Tjenester\')';
 
     public Database.QueryLocator start(Database.BatchableContext context) {
@@ -22,6 +22,6 @@ public with sharing class NKS_DeleteChatsBatch implements Database.Batchable<sOb
 
     // Should run every hour. Cron exp: 0 0 * * * ?
     public void execute(SchedulableContext context) {
-        Database.executeBatch(new NKS_DeleteChatsBatch());
+        Database.executeBatch(new NKS_DeleteConvDataApiBatch());
     }
 }

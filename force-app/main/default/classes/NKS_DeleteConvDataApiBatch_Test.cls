@@ -1,5 +1,5 @@
 @isTest
-public class NKS_DeleteChatsBatch_Test {
+public class NKS_DeleteConvDataApiBatch_Test {
     @testSetup
     static void setupTestData() {
         User thisUser = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
@@ -40,7 +40,7 @@ public class NKS_DeleteChatsBatch_Test {
     /*@isTest
     static void testBatchExecution() {
         Test.startTest();
-        NKS_DeleteChatsBatch batch = new NKS_DeleteChatsBatch();
+        NKS_DeleteConvDataApiBatch batch = new NKS_DeleteConvDataApiBatch();
         Database.executeBatch(batch);
         Test.stopTest();
 
@@ -51,7 +51,11 @@ public class NKS_DeleteChatsBatch_Test {
     static void testSchedulerExecution() {
         Test.startTest();
         String cron = '0 0 * * * ?';
-        String jobId = System.schedule('Test Delete Chats Batch', cron, new NKS_DeleteChatsBatch());
+        String jobId = System.schedule(
+            'Test Delete From Conversation Data API Batch',
+            cron,
+            new NKS_DeleteConvDataApiBatch()
+        );
         Test.stopTest();
 
         CronTrigger ct = [SELECT Id, CronExpression, TimesTriggered FROM CronTrigger WHERE id = :jobId];
