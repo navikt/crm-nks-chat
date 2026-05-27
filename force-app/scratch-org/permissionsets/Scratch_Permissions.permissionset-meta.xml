@@ -496,10 +496,6 @@
         <viewAllFields>false</viewAllFields>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
-    <servicePresenceStatusAccesses>
-        <enabled>true</enabled>
-        <servicePresenceStatus>Messaging</servicePresenceStatus>
-    </servicePresenceStatusAccesses>
     <tabSettings>
         <tab>standard-MessagingSession</tab>
         <visibility>Visible</visibility>
