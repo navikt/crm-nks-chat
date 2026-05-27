@@ -37,7 +37,7 @@ export default class NksChatView extends LightningElement {
         }
         if (data) {
             this.threadId = data.Id;
-            this.isChatTranscript = data.CRM_Related_Object__c.startsWith('570');
+            this.isChatTranscript = data.CRM_Related_Object__c?.startsWith('570');
             markasread({ threadId: this.threadId });
 
             this.themeGroup = data.CRM_Theme_Group_Name__c;
@@ -51,7 +51,7 @@ export default class NksChatView extends LightningElement {
     wiredGroups(result) {
         const { data, error } = result;
         if (error) {
-            console.error('Error retrieving grouped messages: ', error);
+            console.error('Error retrieving grouped messages: ', JSON.stringify(error));
         } else if (data) {
             this.messageGroups = data;
         }
@@ -62,14 +62,16 @@ export default class NksChatView extends LightningElement {
         publish(this.messageContext, globalModalOpen, { status: 'true' });
         this.chatbotMessage = 'Laster inn samtale';
         try {
-            this.chatbotMessage = await getChatbotMessage({
+            const message = await getChatbotMessage({
                 chatId: this.recordId,
                 userId: userId,
                 isChatTranscript: this.isChatTranscript
             });
+
+            this.chatbotMessage = message || 'Ingen samtale tilgjengelig';
         } catch (e) {
             this.chatbotMessage = 'Kunne ikke laste samtale';
-            console.error('Error retrieving chatbot message: ', e);
+            console.error('Error retrieving chatbot message: ', JSON.stringify(e));
         }
         logModalEvent(true, 'Chatbot samtale', getComponentName(this.template), 'Chatsamtale');
     }
@@ -78,7 +80,9 @@ export default class NksChatView extends LightningElement {
         this.modalOpen = false;
         publish(this.messageContext, globalModalOpen, { status: 'false' });
         const btn = this.template.querySelector('.frida-button');
-        if (btn) btn.focus();
+        if (btn) {
+            btn.focus();
+        }
         logModalEvent(false, 'Chatbot samtale', getComponentName(this.template), 'Chatsamtale');
     }
 }
