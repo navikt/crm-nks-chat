@@ -519,4 +519,33 @@ public class NKS_ConversationEntryController {
         public String role;
         public String subject;
     }
+
+    public static void retryDeleteParticipantData(List<String> participantEntityIds) {
+        List<MessagingSession> sessions = [
+            SELECT Id
+            FROM MessagingSession
+            WHERE MessagingEndUserId IN :participantEntityIds
+        ];
+        Set<Id> sessionIds = new Set<Id>();
+        for (MessagingSession session : sessions) {
+            sessionIds.add(session.Id);
+        }
+
+        deleteSessionDataAndEnqueueCallout(sessionIds, participantEntityIds);
+    }
+
+    public static void deleteSessionDataAndEnqueueCallout(Set<Id> sessionIds, List<String> participantEntityIds) {
+        List<EngagementAttendee> attendees = [SELECT Id FROM EngagementAttendee WHERE EngagementId IN :sessionIds];
+        if (!attendees.isEmpty()) {
+            delete attendees;
+        }
+        List<EngagementTopic> topics = [SELECT Id FROM EngagementTopic WHERE EngagementId IN :sessionIds];
+        if (!topics.isEmpty()) {
+            delete topics;
+        }
+
+        if (!participantEntityIds.isEmpty()) {
+            System.enqueueJob(new NKS_DeleteConvParticipantDataQueueable(participantEntityIds));
+        }
+    }
 }
