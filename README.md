@@ -125,7 +125,7 @@ This is solid overall—clear structure and good sequencing—but it can be tigh
 9. **Receive a chat**
 
     - Open an Omni-Channel-enabled app (e.g., _Scratch App_)
-    - Set your Omni-Channel presence status to **Messaging**
+    - Set your Omni-Channel presence status to **Tilgjengelig for chat**
 
 ---
 
