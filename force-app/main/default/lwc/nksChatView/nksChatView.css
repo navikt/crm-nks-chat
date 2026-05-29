@@ -16,12 +16,12 @@
     background-color: transparent;
 }
 
-.frida-button:hover, 
+.frida-button:hover,
 .frida-button:focus {
     text-decoration: none;
 }
 
-.frida-button:active, 
+.frida-button:active,
 .frida-button:focus {
     background-color: #014486;
 }
@@ -29,10 +29,15 @@
 .frida-button:focus {
     color: #ffffff;
 }
- 
+
 .frida-button:active,
 .frida-button:hover {
     outline: none;
+}
+
+.chatbot-text {
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
 @media only screen and (max-width: 576px) {
