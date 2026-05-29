@@ -24,7 +24,7 @@ global with sharing class NKS_MessagingSessionHandler extends MyTriggers {
 
             if (!messagingSessionIdsToConvert.isEmpty()) {
                 System.enqueueJob(
-                    new NKS_ConversationEntryQueueable(messagingSessionIdsToConvert, null, null, 'FromStart', 1000)
+                    new NKS_ConversationEntryQueueable(messagingSessionIdsToConvert, null, null, 'FROMSTART', 1000)
                 );
             }
         } catch (Exception e) {
