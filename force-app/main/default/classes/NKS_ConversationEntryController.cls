@@ -190,9 +190,7 @@ public class NKS_ConversationEntryController {
                 continue;
             }
 
-            String senderRole = entry.sender == null ? null : entry.sender.role;
-
-            if (!agentChatStarted && 'Agent'.equalsIgnoreCase(senderRole)) {
+            if (!agentChatStarted && hasAgentChatStarted(entry)) {
                 agentChatStarted = true;
             }
 
@@ -201,10 +199,9 @@ public class NKS_ConversationEntryController {
                 continue;
             }
 
-            if (isMessageEntry(entry)) {
-                messagesToInsert.add(createMessage(entry, session, thread));
-            } else {
-                additionalInfoLines.add(normalizeAdditionalInfoLine(entry));
+            ConversationEntry messageEntry = normalizeEntryForMessageCreation(entry);
+            if (isMessageEntry(messageEntry)) {
+                messagesToInsert.add(createMessage(messageEntry, session, thread));
             }
         }
 
@@ -315,6 +312,41 @@ public class NKS_ConversationEntryController {
         }
 
         return sender;
+    }
+
+    private static Boolean hasAgentChatStarted(ConversationEntry entry) {
+        if (entry == null) {
+            return false;
+        }
+
+        String senderRole = entry.sender == null ? null : entry.sender.role;
+        return 'Agent'.equalsIgnoreCase(senderRole) || isAgentWelcomeMessage(entry);
+    }
+
+    private static Boolean isAgentWelcomeMessage(ConversationEntry entry) {
+        if (entry == null || String.isBlank(entry.messageText)) {
+            return false;
+        }
+
+        String text = removeKnownPrefix(entry.messageText).unescapeHtml4().toLowerCase();
+
+        return (text.contains('velkommen til chat med nav') && text.contains('du snakker med')) ||
+            (text.contains('welcome to chat with nav') && text.contains('you\'re chatting with'));
+    }
+
+    private static ConversationEntry normalizeEntryForMessageCreation(ConversationEntry entry) {
+        if (entry == null) {
+            return null;
+        }
+
+        if (isAgentWelcomeMessage(entry)) {
+            if (entry.sender == null) {
+                entry.sender = new Sender();
+            }
+            entry.sender.role = 'Agent';
+        }
+
+        return entry;
     }
 
     private static Boolean isMessageEntry(ConversationEntry entry) {
