@@ -463,7 +463,7 @@
         <inputAssignments>
             <name>Log_Category</name>
             <value>
-                <elementReference>Missing_queue_log_message</elementReference>
+                <stringValue>Messaging</stringValue>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -475,7 +475,7 @@
         <inputAssignments>
             <name>Log_Message</name>
             <value>
-                <elementReference>queueApiName</elementReference>
+                <elementReference>Missing_queue_log_message</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
