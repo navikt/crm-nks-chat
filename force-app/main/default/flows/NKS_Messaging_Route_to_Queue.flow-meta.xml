@@ -3,7 +3,7 @@
     <actionCalls>
         <name>Route_to_default_Queue_Arbeid</name>
         <label>Route to default Queue Arbeid</label>
-        <locationX>534</locationX>
+        <locationX>578</locationX>
         <locationY>1922</locationY>
         <actionName>routeWork</actionName>
         <actionType>routeWork</actionType>
@@ -25,7 +25,7 @@
         <inputParameters>
             <name>serviceChannelId</name>
             <value>
-                <stringValue>0N9KN0000008QWU0A2</stringValue>
+                <stringValue>0N95t000000H43ICAS</stringValue>
             </value>
         </inputParameters>
         <inputParameters>
@@ -130,7 +130,7 @@
         <inputParameters>
             <name>serviceChannelId</name>
             <value>
-                <stringValue>0N9Pw000000KpUbKAK</stringValue>
+                <stringValue>0N95t000000H43ICAS</stringValue>
             </value>
         </inputParameters>
         <inputParameters>
@@ -216,7 +216,7 @@
     <assignments>
         <name>Assign_default_Queue</name>
         <label>Assign default Queue</label>
-        <locationX>534</locationX>
+        <locationX>578</locationX>
         <locationY>1598</locationY>
         <assignmentItems>
             <assignToReference>input_record.Queue_Name__c</assignToReference>
@@ -248,7 +248,7 @@
     <assignments>
         <name>Set_english_language</name>
         <label>Set english language</label>
-        <locationX>402</locationX>
+        <locationX>446</locationX>
         <locationY>242</locationY>
         <assignmentItems>
             <assignToReference>input_record.EndUserLanguage</assignToReference>
@@ -264,7 +264,7 @@
     <assignments>
         <name>Set_norwegian_language</name>
         <label>Set norwegian language</label>
-        <locationX>666</locationX>
+        <locationX>710</locationX>
         <locationY>242</locationY>
         <assignmentItems>
             <assignToReference>input_record.EndUserLanguage</assignToReference>
@@ -281,7 +281,7 @@
         <description>Checks if we get the Queue API Name from the api</description>
         <name>Is_Queue_Api_Name_null</name>
         <label>Is Queue Api Name null?</label>
-        <locationX>534</locationX>
+        <locationX>578</locationX>
         <locationY>434</locationY>
         <defaultConnector>
             <targetReference>Assign_default_Queue</targetReference>
@@ -309,7 +309,7 @@
         <locationX>314</locationX>
         <locationY>650</locationY>
         <defaultConnector>
-            <targetReference>Assign_default_Queue</targetReference>
+            <targetReference>Log_missing_queue</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Yes</defaultConnectorLabel>
         <rules>
@@ -331,7 +331,7 @@
     <decisions>
         <name>Set_language</name>
         <label>Set language</label>
-        <locationX>534</locationX>
+        <locationX>578</locationX>
         <locationY>134</locationY>
         <defaultConnector>
             <targetReference>Set_norwegian_language</targetReference>
@@ -361,6 +361,12 @@
         <dataType>String</dataType>
         <expression>RIGHT( {!input_queue}, LEN({!input_queue}) - FIND( &quot;|&quot; ,
             {!input_queue}))</expression>
+    </formulas>
+    <formulas>
+        <description>Log message if queue is not found</description>
+        <name>Missing_queue_log_message</name>
+        <dataType>String</dataType>
+        <expression>&quot;Could not find queue with api name &quot; + {!queueApiName} + &quot; while routing Messaging: &quot; + {!recordId}</expression>
     </formulas>
     <formulas>
         <name>queueApiName</name>
@@ -423,7 +429,7 @@
     <recordUpdates>
         <name>Update_to_default_Queue_Name_Arbeid</name>
         <label>Update to default Queue Name Arbeid</label>
-        <locationX>534</locationX>
+        <locationX>578</locationX>
         <locationY>1706</locationY>
         <connector>
             <targetReference>Set_Theme_Group_2</targetReference>
@@ -431,15 +437,54 @@
         <inputReference>input_record</inputReference>
     </recordUpdates>
     <runInMode>DefaultMode</runInMode>
-    <sourceTemplate>omnichannel_messaging__MsgRouting</sourceTemplate>
     <start>
-        <locationX>408</locationX>
+        <locationX>452</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Set_language</targetReference>
         </connector>
     </start>
     <status>Active</status>
+    <subflows>
+        <name>Log_missing_queue</name>
+        <label>Log missing queue</label>
+        <locationX>578</locationX>
+        <locationY>758</locationY>
+        <connector>
+            <targetReference>Assign_default_Queue</targetReference>
+        </connector>
+        <flowName>Flow_Create_Application_Log</flowName>
+        <inputAssignments>
+            <name>Application_Domain</name>
+            <value>
+                <stringValue>NKS</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>Log_Category</name>
+            <value>
+                <elementReference>Missing_queue_log_message</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>Log_Level</name>
+            <value>
+                <stringValue>Error</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>Log_Message</name>
+            <value>
+                <elementReference>queueApiName</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>ReferenceID</name>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </inputAssignments>
+    </subflows>
     <subflows>
         <name>Messaging_Routing_Error_Log</name>
         <label>Messaging Routing Error Log</label>
@@ -492,7 +537,7 @@
     <subflows>
         <name>Messaging_Routing_Error_Log_Default_Queue</name>
         <label>Messaging Routing Error Log Default Queue</label>
-        <locationX>930</locationX>
+        <locationX>1018</locationX>
         <locationY>2030</locationY>
         <flowName>Flow_Create_Application_Log</flowName>
         <inputAssignments>
@@ -557,7 +602,7 @@
     <subflows>
         <name>Set_Theme_Group_2</name>
         <label>Set Theme Group</label>
-        <locationX>534</locationX>
+        <locationX>578</locationX>
         <locationY>1814</locationY>
         <connector>
             <targetReference>Route_to_default_Queue_Arbeid</targetReference>
