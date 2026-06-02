@@ -535,13 +535,19 @@ public class NKS_ConversationEntryController {
     }
 
     public static void deleteSessionDataAndEnqueueCallout(Set<Id> sessionIds, List<String> participantEntityIds) {
-        List<EngagementAttendee> attendees = [SELECT Id FROM EngagementAttendee WHERE EngagementId IN :sessionIds];
-        if (!attendees.isEmpty()) {
-            delete attendees;
+        if (Type.forName('EngagementAttendee') != null) {
+            List<SObject> attendees = Database.query(
+                'SELECT Id FROM EngagementAttendee WHERE EngagementId IN :sessionIds'
+            );
+            if (!attendees.isEmpty()) {
+                delete attendees;
+            }
         }
-        List<EngagementTopic> topics = [SELECT Id FROM EngagementTopic WHERE EngagementId IN :sessionIds];
-        if (!topics.isEmpty()) {
-            delete topics;
+        if (Type.forName('EngagementTopic') != null) {
+            List<SObject> topics = Database.query('SELECT Id FROM EngagementTopic WHERE EngagementId IN :sessionIds');
+            if (!topics.isEmpty()) {
+                delete topics;
+            }
         }
 
         if (!participantEntityIds.isEmpty()) {
