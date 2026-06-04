@@ -40,10 +40,6 @@ private class NKS_ConversationEntryController_Test {
             LIMIT 1
         ];
 
-        messagingSession.CRM_Authentication_Status__c = 'Completed';
-        messagingSession.NKS_Authentication_Timestamp__c = Datetime.now();
-        update messagingSession;
-
         String messagingSessionId = messagingSession.Id;
 
         String jsonResponse =
@@ -98,13 +94,9 @@ private class NKS_ConversationEntryController_Test {
         Test.setMock(HttpCalloutMock.class, new SingleRequestMock(200, 'OK', jsonResponse, null));
 
         Test.startTest();
-        NKS_ConversationEntryController.convertConversationEntries(
-            new List<MessagingSession>{ messagingSession },
-            null,
-            null,
-            'FromStart',
-            1000
-        );
+        messagingSession.CRM_Authentication_Status__c = 'Completed';
+        messagingSession.NKS_Authentication_Timestamp__c = Datetime.now();
+        update messagingSession;
         Test.stopTest();
 
         Thread__c thread = [
@@ -254,5 +246,188 @@ private class NKS_ConversationEntryController_Test {
         Test.stopTest();
 
         Assert.areEqual(200, response.getStatusCode(), 'Expected status code 200');
+    }
+
+    @isTest
+    static void testConvertConversationEntries_nullInput_noError() {
+        Test.startTest();
+        NKS_ConversationEntryController.convertConversationEntries(null, null, null, 'FromStart', 1000);
+        Test.stopTest();
+
+        Assert.isTrue(true, 'Should handle null session list without throwing an exception.');
+    }
+
+    @isTest
+    static void testConvertConversationEntries_emptyList_noError() {
+        Test.startTest();
+        NKS_ConversationEntryController.convertConversationEntries(
+            new List<MessagingSession>(),
+            null,
+            null,
+            'FromStart',
+            1000
+        );
+        Test.stopTest();
+
+        Assert.isTrue(true, 'Should handle empty session list without throwing an exception.');
+    }
+
+    @isTest
+    static void testConvertConversationEntries_httpError_noMessagesCreated() {
+        MessagingSession messagingSession = [
+            SELECT Id, CRM_Authentication_Status__c
+            FROM MessagingSession
+            LIMIT 1
+        ];
+
+        String messagingSessionId = messagingSession.Id;
+
+        Test.setMock(HttpCalloutMock.class, new SingleRequestMock(500, 'Internal Server Error', '{}', null));
+
+        Test.startTest();
+        messagingSession.CRM_Authentication_Status__c = 'Completed';
+        update messagingSession;
+        Test.stopTest();
+
+        Thread__c thread = [
+            SELECT Id
+            FROM Thread__c
+            WHERE CRM_Related_Object__c = :messagingSessionId
+            LIMIT 1
+        ];
+
+        List<Message__c> messages = [SELECT Id FROM Message__c WHERE CRM_Thread__c = :thread.Id];
+
+        Assert.areEqual(0, messages.size(), 'No messages should be created when the HTTP callout returns an error.');
+    }
+
+    @isTest
+    static void testConvertConversationEntries_richLinkEntry_usesUrlAsMessageText() {
+        MessagingSession messagingSession = [
+            SELECT Id, CRM_Authentication_Status__c
+            FROM MessagingSession
+            LIMIT 1
+        ];
+
+        String messagingSessionId = messagingSession.Id;
+
+        String jsonResponse =
+            '{"conversationEntries":[' +
+            '{' +
+            '"clientDuration":0,"clientTimestamp":1732111810339,"identifier":"entry1",' +
+            '"relatedRecords":["' +
+            messagingSessionId +
+            '"],' +
+            '"sender":{"appType":"agent","role":"Agent","subject":"0052o000009d7J9"},' +
+            '"serverReceivedTimestamp":1732111810339,' +
+            '"entryPayload":{"abstractMessage":{"staticContent":{"formatType":"RichLink","linkItem":{"url":"https://www.nav.no/syk/sykefravaer"}}}}' +
+            '}' +
+            ']}';
+
+        Test.setMock(HttpCalloutMock.class, new SingleRequestMock(200, 'OK', jsonResponse, null));
+
+        Test.startTest();
+        messagingSession.CRM_Authentication_Status__c = 'Completed';
+        update messagingSession;
+        Test.stopTest();
+
+        Thread__c thread = [
+            SELECT Id
+            FROM Thread__c
+            WHERE CRM_Related_Object__c = :messagingSessionId
+            LIMIT 1
+        ];
+
+        List<Message__c> messages = [
+            SELECT Id, CRM_Message_Text__c
+            FROM Message__c
+            WHERE CRM_Thread__c = :thread.Id
+        ];
+
+        Assert.areEqual(1, messages.size(), 'Expected 1 message created for the RichLink entry.');
+        Assert.areEqual(
+            'https://www.nav.no/syk/sykefravaer',
+            messages[0].CRM_Message_Text__c,
+            'Message text should be the URL from the RichLink static content.'
+        );
+    }
+
+    @isTest
+    static void testConvertConversationEntries_staticContentTextEntry_usesTextAsMessageText() {
+        MessagingSession messagingSession = [
+            SELECT Id, CRM_Authentication_Status__c
+            FROM MessagingSession
+            LIMIT 1
+        ];
+
+        String messagingSessionId = messagingSession.Id;
+
+        String jsonResponse =
+            '{"conversationEntries":[' +
+            '{' +
+            '"clientDuration":0,"clientTimestamp":1732111810339,"identifier":"entry1",' +
+            '"relatedRecords":["' +
+            messagingSessionId +
+            '"],' +
+            '"sender":{"appType":"agent","role":"Agent","subject":"0052o000009d7J9"},' +
+            '"serverReceivedTimestamp":1732111810339,' +
+            '"entryPayload":{"abstractMessage":{"staticContent":{"formatType":"Text","text":"Hei! Kan jeg hjelpe deg?"}}}' +
+            '}' +
+            ']}';
+
+        Test.setMock(HttpCalloutMock.class, new SingleRequestMock(200, 'OK', jsonResponse, null));
+
+        Test.startTest();
+        messagingSession.CRM_Authentication_Status__c = 'Completed';
+        update messagingSession;
+        Test.stopTest();
+
+        Thread__c thread = [
+            SELECT Id
+            FROM Thread__c
+            WHERE CRM_Related_Object__c = :messagingSessionId
+            LIMIT 1
+        ];
+
+        List<Message__c> messages = [
+            SELECT Id, CRM_Message_Text__c
+            FROM Message__c
+            WHERE CRM_Thread__c = :thread.Id
+        ];
+
+        Assert.areEqual(1, messages.size(), 'Expected 1 message created for the Text static content entry.');
+        Assert.areEqual(
+            'Hei! Kan jeg hjelpe deg?',
+            messages[0].CRM_Message_Text__c,
+            'Message text should come from the staticContent text field for non-RichLink format.'
+        );
+    }
+
+    @isTest
+    static void testRetryDeleteParticipantData_executesWithoutError() {
+        MessagingEndUser endUser = [SELECT Id FROM MessagingEndUser LIMIT 1];
+
+        Test.setMock(HttpCalloutMock.class, new SingleRequestMock(200, 'OK', '{}', null));
+
+        Test.startTest();
+        NKS_ConversationEntryController.retryDeleteParticipantData(new List<String>{ endUser.Id });
+        Test.stopTest();
+
+        Assert.isTrue(true, 'retryDeleteParticipantData should complete without throwing an exception.');
+    }
+
+    @isTest
+    static void testDeleteSessionDataAndEnqueueCallout_executesWithoutError() {
+        MessagingSession msgSession = [SELECT Id, MessagingEndUserId FROM MessagingSession LIMIT 1];
+        Set<Id> sessionIds = new Set<Id>{ msgSession.Id };
+        List<String> participantEntityIds = new List<String>{ String.valueOf(msgSession.MessagingEndUserId) };
+
+        Test.setMock(HttpCalloutMock.class, new SingleRequestMock(200, 'OK', '{}', null));
+
+        Test.startTest();
+        NKS_ConversationEntryController.deleteSessionDataAndEnqueueCallout(sessionIds, participantEntityIds);
+        Test.stopTest();
+
+        Assert.isTrue(true, 'deleteSessionDataAndEnqueueCallout should complete without throwing an exception.');
     }
 }
