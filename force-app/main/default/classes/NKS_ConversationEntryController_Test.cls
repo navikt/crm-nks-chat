@@ -258,6 +258,23 @@ private class NKS_ConversationEntryController_Test {
     }
 
     @isTest
+    static void testConvertConversationEntries_sessionWithNullId_noError() {
+        MessagingSession sessionWithNullId = new MessagingSession();
+
+        Test.startTest();
+        NKS_ConversationEntryController.convertConversationEntries(
+            new List<MessagingSession>{ sessionWithNullId },
+            null,
+            null,
+            'FromStart',
+            1000
+        );
+        Test.stopTest();
+
+        Assert.isTrue(true, 'Should return early without error when all sessions have null Ids.');
+    }
+
+    @isTest
     static void testConvertConversationEntries_emptyList_noError() {
         Test.startTest();
         NKS_ConversationEntryController.convertConversationEntries(
