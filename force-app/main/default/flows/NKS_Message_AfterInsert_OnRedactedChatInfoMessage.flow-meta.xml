@@ -60,20 +60,8 @@
         <name>Create_Innboks_Event</name>
         <label>Create Innboks Event</label>
         <locationX>176</locationX>
-        <locationY>335</locationY>
+        <locationY>323</locationY>
         <flowName>CRMHenvendelse_Thread_Subflow_CreateInnboksUserNotification</flowName>
-        <inputAssignments>
-            <name>ExternalNotification</name>
-            <value>
-                <booleanValue>false</booleanValue>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <name>MessageDateTime</name>
-            <value>
-                <elementReference>$Record.CRM_Sent_date__c</elementReference>
-            </value>
-        </inputAssignments>
         <inputAssignments>
             <name>NotificationMessageText</name>
             <value>

@@ -6,7 +6,6 @@ import { publish, MessageContext } from 'lightning/messageService';
 import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
 import userId from '@salesforce/user/Id';
 import getGroupedMessagesFromThread from '@salesforce/apex/CRM_MessageHelperExperience.getGroupedMessagesFromThread';
-import getContactId from '@salesforce/apex/CRM_MessageHelperExperience.getUserContactId';
 import { logModalEvent, setDecoratorParams, getComponentName } from 'c/inboxAmplitude';
 
 export default class NksChatView extends LightningElement {
@@ -16,22 +15,11 @@ export default class NksChatView extends LightningElement {
     errorList = { title: '', errors: [] };
     modalOpen = false;
     chatbotMessage = 'Laster inn samtale';
-    userContactId;
     messageGroups;
     themeGroup;
 
     @wire(MessageContext)
     messageContext;
-
-    connectedCallback() {
-        getContactId({})
-            .then((contactId) => {
-                this.userContactId = contactId;
-            })
-            .catch((error) => {
-                console.error('Error retrieving contactId: ', error);
-            });
-    }
 
     @wire(getThread, { chatId: '$recordId' })
     wiredThread(result) {
