@@ -108,6 +108,41 @@ public with sharing class nksChatView_Test {
     }
 
     @isTest
+    static void testGetThread_noMatchingThread_returnsNull() {
+        User thisUser = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
+        MessagingChannel channel = [SELECT Id FROM MessagingChannel LIMIT 1];
+        MessagingEndUser endUser = [SELECT Id FROM MessagingEndUser LIMIT 1];
+
+        MessagingSession msgSession;
+        System.runAs(thisUser) {
+            msgSession = new MessagingSession();
+            msgSession.MessagingEndUserId = endUser.Id;
+            msgSession.MessagingChannelId = channel.Id;
+            msgSession.Status = 'Ended';
+            msgSession.EndTime = Datetime.now();
+            insert msgSession;
+        }
+
+        Test.startTest();
+        Thread__c result = nksChatView.getThread(msgSession.Id);
+        Test.stopTest();
+
+        Assert.isNull(result, 'Should return null when no thread is linked to the given ID');
+    }
+
+    @isTest
+    static void testGetObjectInfo_withNullId_throwsAuraHandledException() {
+        Test.startTest();
+        try {
+            nksChatView.getObjectInfo(null);
+            Assert.fail('Expected AuraHandledException to be thrown');
+        } catch (AuraHandledException e) {
+            Assert.isTrue(true, 'AuraHandledException should be thrown for null recordId');
+        }
+        Test.stopTest();
+    }
+
+    @isTest
     static void testGetObjectInfo() {
         MessagingSession msgSession = [
             SELECT Id

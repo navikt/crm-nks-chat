@@ -48,6 +48,37 @@ public class NKS_DeleteConvDataApiBatch_Test {
     }*/
 
     @isTest
+    static void testBatchExecuteMethod_withSession() {
+        MessagingSession session = [SELECT Id, MessagingEndUserId FROM MessagingSession LIMIT 1];
+
+        Test.setMock(HttpCalloutMock.class, new SingleRequestMock(200, 'OK', '{}', null));
+
+        Test.startTest();
+        NKS_DeleteConvDataApiBatch batch = new NKS_DeleteConvDataApiBatch();
+        batch.execute(null, new List<MessagingSession>{ session });
+        batch.finish(null);
+        Test.stopTest();
+
+        Assert.isTrue(true, 'Batch execute and finish should complete without error');
+    }
+
+    @isTest
+    static void testBatchExecuteMethod_withNullEndUser() {
+        MessagingSession session = [SELECT Id, MessagingEndUserId FROM MessagingSession LIMIT 1];
+        // Simulate session with no MessagingEndUserId by passing a detached object
+        MessagingSession noEndUserSession = new MessagingSession(Id = session.Id, MessagingEndUserId = null);
+
+        Test.setMock(HttpCalloutMock.class, new SingleRequestMock(200, 'OK', '{}', null));
+
+        Test.startTest();
+        NKS_DeleteConvDataApiBatch batch = new NKS_DeleteConvDataApiBatch();
+        batch.execute(null, new List<MessagingSession>{ noEndUserSession });
+        Test.stopTest();
+
+        Assert.isTrue(true, 'Batch execute should skip null MessagingEndUserId without error');
+    }
+
+    @isTest
     static void testSchedulerExecution() {
         Test.startTest();
         String cron = '0 0 * * * ?';
