@@ -95,7 +95,7 @@
     ],
     "namespace": "",
     "sfdcLoginUrl": "https://login.salesforce.com",
-    "sourceApiVersion": "59.0",
+    "sourceApiVersion": "66.0",
     "packageAliases": {
         "crm-nks-chat": "0Ho7U000000000GSAQ",
         "crm-henvendelse-base": "0Ho7U000000000kSAA",
