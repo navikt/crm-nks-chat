@@ -4,7 +4,7 @@
             "path": "force-app",
             "default": true,
             "package": "crm-nks-chat",
-            "versionNumber": "0.76.0.NEXT",
+            "versionNumber": "0.77.0.NEXT",
             "dependencies": [
                 {
                     "package": "platform-data-model",
@@ -96,7 +96,7 @@
     ],
     "namespace": "",
     "sfdcLoginUrl": "https://login.salesforce.com",
-    "sourceApiVersion": "65.0",
+    "sourceApiVersion": "66.0",
     "packageAliases": {
         "crm-nks-chat": "0Ho7U000000000GSAQ",
         "crm-henvendelse-base": "0Ho7U000000000kSAA",
