@@ -6,6 +6,10 @@ public class NKS_ConversationEntryController {
     private static final String PREFIX_BRUKER = 'Bruker:';
     private static final String PREFIX_VEILEDER = 'Veileder:';
 
+    private static final String WELCOME_MARKER_NO = 'du snakker med ';
+    private static final String WELCOME_MARKER_EN = 'you\'re chatting with ';
+
+    private static Map<String, User> navUserInfoByNavIdent = new Map<String, User>();
     private static Map<String, User> navUserInfoByUserId = getNavUserInfoByUserId();
 
     public static void convertConversationEntries(
@@ -328,10 +332,14 @@ public class NKS_ConversationEntryController {
             return false;
         }
 
+        if ('EndUser'.equalsIgnoreCase(entry.sender?.role)) {
+            return false;
+        }
+
         String text = removeKnownPrefix(entry.messageText).unescapeHtml4().toLowerCase();
 
-        return (text.contains('velkommen til chat med nav') && text.contains('du snakker med')) ||
-            (text.contains('welcome to chat with nav') && text.contains('you\'re chatting with'));
+        return (text.contains('velkommen til chat med nav') && text.contains(WELCOME_MARKER_NO)) ||
+            (text.contains('welcome to chat with nav') && text.contains(WELCOME_MARKER_EN));
     }
 
     private static ConversationEntry normalizeEntryForMessageCreation(ConversationEntry entry) {
@@ -344,6 +352,14 @@ public class NKS_ConversationEntryController {
                 entry.sender = new Sender();
             }
             entry.sender.role = 'Agent';
+
+            if (entry.sender.subject == null) {
+                String navIdent = extractAgentIdentFromWelcomeMessage(entry.messageText);
+                User navUser = navIdent == null ? null : navUserInfoByNavIdent.get(navIdent.toLowerCase());
+                if (navUser != null) {
+                    entry.sender.subject = navUser.Id;
+                }
+            }
         }
 
         return entry;
@@ -492,9 +508,29 @@ public class NKS_ConversationEntryController {
                 AND CRM_NAV_Ident__c != ''
         ]) {
             result.put(normalizeUserId(String.valueOf(usr.Id)), usr);
+            navUserInfoByNavIdent.put(usr.CRM_NAV_Ident__c.toLowerCase(), usr);
         }
 
         return result;
+    }
+
+    private static String extractAgentIdentFromWelcomeMessage(String messageText) {
+        if (String.isBlank(messageText)) {
+            return null;
+        }
+
+        String lower = messageText.toLowerCase();
+        String marker = lower.contains(WELCOME_MARKER_NO)
+            ? WELCOME_MARKER_NO
+            : (lower.contains(WELCOME_MARKER_EN) ? WELCOME_MARKER_EN : null);
+
+        if (marker == null) {
+            return null;
+        }
+
+        Integer idx = lower.indexOf(marker);
+        Matcher m = Pattern.compile('(\\S+)').matcher(messageText.substring(idx + marker.length()).trim());
+        return m.find() ? m.group(1) : null;
     }
 
     private static String normalizeUserId(String userIdValue) {
