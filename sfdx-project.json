@@ -8,23 +8,19 @@
             "dependencies": [
                 {
                     "package": "platform-data-model",
-                    "versionNumber": "0.1.33.LATEST",
-                    "branch": ""
+                    "versionNumber": "0.1.33.LATEST"
                 },
                 {
                     "package": "custom-metadata-dao",
-                    "versionNumber": "0.1.33.LATEST",
-                    "branch": ""
+                    "versionNumber": "0.1.33.LATEST"
                 },
-                {
+                 {
                     "package": "custom-permission-helper",
-                    "versionNumber": "0.1.33.LATEST",
-                    "branch": ""
+                    "versionNumber": "0.1.33.LATEST"
                 },
                 {
                     "package": "feature-toggle",
-                    "versionNumber": "0.1.34.LATEST",
-                    "branch": ""
+                    "versionNumber": "0.1.34.LATEST"
                 },
                 {
                     "package": "crm-platform-base",
@@ -46,6 +42,7 @@
                     "package": "crm-henvendelse-base",
                     "versionNumber": "0.36.0.LATEST"
                 },
+               
                 {
                     "package": "crm-platform-integration",
                     "versionNumber": "0.170.0.LATEST"
@@ -68,11 +65,11 @@
                 },
                 {
                     "package": "crm-community-base",
-                    "versionNumber": "0.92.0.LATEST"
+                    "versionNumber": "0.119.0.LATEST"
                 },
                 {
                     "package": "crm-henvendelse",
-                    "versionNumber": "0.182.0.LATEST"
+                    "versionNumber": "0.189.0.LATEST"
                 },
                 {
                     "package": "crm-sf-saf",
@@ -88,7 +85,11 @@
                 },
                 {
                     "package": "crm-nks-base-components",
-                    "versionNumber": "0.104.0.LATEST"
+                    "versionNumber": "0.124.0.LATEST"
+                },
+                {
+                    "package": "henvendelse-cache",
+                    "versionNumber": "0.5.0.LATEST"
                 }
             ]
         }
@@ -114,6 +115,7 @@
         "crm-community-base": "0Ho2o0000008OSzCAM",
         "crm-platform-access-control": "0Ho2o0000008OR3CAM",
         "crm-nks-survey": "0Ho7U0000000014SAA",
+        "henvendelse-cache": "0HoKB000000000G0AQ",
         "platform-data-model": "0HoKB00000000010AA",
         "custom-metadata-dao": "0HoKB000000000B0AQ",
         "custom-permission-helper": "0HoKB000000000f0AA",

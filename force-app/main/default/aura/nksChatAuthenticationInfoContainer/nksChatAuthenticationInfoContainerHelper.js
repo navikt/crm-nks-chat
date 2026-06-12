@@ -20,78 +20,41 @@
         const recordId = component.get('v.recordId');
         const loginMsg = event.getParam('loginMessage');
 
-        if (component.get('v.authCompletedHandled')) {
-            chatToolkit
-                .sendMessage({
-                    recordId: recordId,
-                    message: {
-                        text: loginMsg
-                    }
-                })
-                .then(function () {
-                    console.log('Succesfully sent login message to chat');
-                })
-                .catch(function (error) {
-                    console.error('Error sending login message:', error);
-                });
-        }
-    },
-
-    setTabIcon: function (component, newTabId, iconName, iconAlt) {
-        let workspace = component.find('workspace');
-        workspace.setTabIcon({
-            tabId: newTabId,
-            icon: iconName,
-            iconAlt: iconAlt
-        });
-    },
-
-    subscribeEmpApi: function (component) {
-        const empApi = component.find('empApi');
-        const channel = '/topic/Chat_Auth_Status_Changed';
-        const replayId = -1;
-
-        empApi
-            .subscribe(
-                channel,
-                replayId,
-                $A.getCallback((eventReceived) => {
-                    this.onEmpApiEvent(component, eventReceived);
-                })
-            )
-            .then((subscription) => {
-                component.set('v.subscription', subscription);
+        chatToolkit
+            .sendMessage({
+                recordId,
+                message: { text: loginMsg }
+            })
+            .then(() => {
+                console.log('Login message sent successfully');
+            })
+            .catch((error) => {
+                console.error('Error sending login message:', JSON.stringify(error));
             });
     },
 
-    unsubscribeEmpApi: function (component) {
-        const empApi = component.find('empApi');
-        const subscription = component.get('v.subscription');
+    updateTabIconForAuthStatus: function (component, authStatus) {
+        const workspace = component.find('workspace');
 
-        empApi.unsubscribe(
-            subscription,
-            $A.getCallback(() => {
-                component.set('v.subscription', null);
-            })
-        );
-    },
+        workspace
+            .getEnclosingTabId()
+            .then((tabId) => {
+                if (authStatus === 'Completed') {
+                    return workspace.setTabIcon({
+                        tabId,
+                        icon: 'utility:lock',
+                        iconAlt: 'Innlogget chat'
+                    });
+                }
 
-    onEmpApiEvent: function (component, eventReceived) {
-        const authStatus = eventReceived.data.sobject.CRM_Authentication_Status__c;
-        const changedRecordId = eventReceived.data.sobject.Id;
-        const recordId = component.get('v.recordId');
-
-        if (changedRecordId === recordId) {
-            component
-                .find('workspace')
-                .getEnclosingTabId()
-                .then((tabId) => {
-                    if (authStatus === 'Completed') {
-                        this.setTabIcon(component, tabId, 'utility:lock', 'Innlogget chat');
-                    } else {
-                        this.setTabIcon(component, tabId, 'standard:live_chat', 'Uinnlogget chat');
-                    }
+                return workspace.setTabIcon({
+                    tabId,
+                    icon: 'standard:live_chat',
+                    iconAlt: 'Uinnlogget chat'
                 });
-        }
+            })
+            .catch((e) => {
+                console.error('Failed to set tab icon:', JSON.stringify(e));
+            });
     }
 });

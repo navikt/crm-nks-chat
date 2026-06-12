@@ -1,11 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>59.0</apiVersion>
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <decisions>
-        <description>Check that the chat har been authenticated to be able to create a journal entry.</description>
+        <name>Check_if_account_and_thread_ID_is_null</name>
+        <label>Check if account and thread ID is null</label>
+        <locationX>50</locationX>
+        <locationY>566</locationY>
+        <defaultConnector>
+            <targetReference>Journal_Entry_Screen</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Is_Null</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Account.Id</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Thread.Id</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>User_Not_Authenticated_Screen</targetReference>
+            </connector>
+            <label>Is Null</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <description>Check that the chat har been authenticated to be able to create a journal
+            entry.</description>
         <name>Verify_Authentication_Status</name>
         <label>Verify Authentication Status</label>
-        <locationX>182</locationX>
+        <locationX>226</locationX>
         <locationY>242</locationY>
         <defaultConnector>
             <targetReference>User_Not_Authenticated_Screen</targetReference>
@@ -15,14 +49,14 @@
             <name>Is_Authenticated</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>Get_Chat_Transcript.CRM_Authentication_Status__c</leftValueReference>
+                <leftValueReference>Get_MessagingSession.CRM_Authentication_Status__c</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <stringValue>Completed</stringValue>
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>Get_Chat_Transcript.AccountId</leftValueReference>
+                <leftValueReference>Get_MessagingSession.MessagingEndUser.AccountId</leftValueReference>
                 <operator>IsNull</operator>
                 <rightValue>
                     <booleanValue>false</booleanValue>
@@ -71,7 +105,7 @@
             <field>Id</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>Get_Chat_Transcript.AccountId</elementReference>
+                <elementReference>Get_MessagingSession.EndUserAccountId</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
@@ -79,9 +113,9 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
-        <name>Get_Chat_Transcript</name>
-        <label>Get Chat Transcript</label>
-        <locationX>182</locationX>
+        <name>Get_MessagingSession</name>
+        <label>Get MessagingSession</label>
+        <locationX>226</locationX>
         <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -96,11 +130,7 @@
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>LiveChatTranscript</object>
-        <queriedFields>Id</queriedFields>
-        <queriedFields>CRM_Authentication_Status__c</queriedFields>
-        <queriedFields>AccountId</queriedFields>
-        <queriedFields>NKS_Theme_Group__c</queriedFields>
+        <object>MessagingSession</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
@@ -111,14 +141,14 @@
         <locationY>458</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Journal_Entry_Screen</targetReference>
+            <targetReference>Check_if_account_and_thread_ID_is_null</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
             <field>CRM_Related_Object__c</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>Get_Chat_Transcript.Id</elementReference>
+                <elementReference>Get_MessagingSession.Id</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
@@ -130,8 +160,8 @@
     <screens>
         <name>Journal_Entry_Screen</name>
         <label>Journal Entry Screen</label>
-        <locationX>50</locationX>
-        <locationY>566</locationY>
+        <locationX>138</locationX>
+        <locationY>674</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -145,7 +175,7 @@
             <inputParameters>
                 <name>prefilledThemeGroup</name>
                 <value>
-                    <elementReference>Get_Chat_Transcript.NKS_Theme_Group__c</elementReference>
+                    <elementReference>Get_MessagingSession.NKS_Theme_Group__c</elementReference>
                 </value>
             </inputParameters>
             <inputParameters>
@@ -178,10 +208,14 @@
                 <assignToReference>Selected_NAV_Case_Id</assignToReference>
                 <name>selectedCaseId</name>
             </outputParameters>
-            <outputParameters>
-                <assignToReference>Selected_Subtheme</assignToReference>
-                <name>selectedSubtheme</name>
-            </outputParameters>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <nextOrFinishButtonLabel>Journalfør</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
@@ -190,8 +224,8 @@
     <screens>
         <name>User_Not_Authenticated_Screen</name>
         <label>User Not Authenticated Screen</label>
-        <locationX>314</locationX>
-        <locationY>350</locationY>
+        <locationX>226</locationX>
+        <locationY>1166</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -199,24 +233,32 @@
             <name>User_Not_Logged_In_Error_Text</name>
             <fieldText>&lt;p&gt;Brukeren må være logget inn for å kunne journalføre.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <nextOrFinishButtonLabel>Ok</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>56</locationX>
+        <locationX>100</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Get_Chat_Transcript</targetReference>
+            <targetReference>Get_MessagingSession</targetReference>
         </connector>
     </start>
     <status>Active</status>
     <subflows>
         <name>Create_Journal_Entry</name>
         <label>Create Journal Entry</label>
-        <locationX>50</locationX>
-        <locationY>674</locationY>
+        <locationX>138</locationX>
+        <locationY>782</locationY>
         <flowName>CRM_Thread_Create_Journal_Entry</flowName>
         <inputAssignments>
             <name>Journal_Case_ID</name>

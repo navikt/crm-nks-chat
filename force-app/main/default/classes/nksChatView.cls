@@ -2,7 +2,7 @@ public with sharing class nksChatView {
     @AuraEnabled(cacheable=true)
     public static Thread__c getThread(String chatId) {
         List<Thread__c> thread = [
-            SELECT Id, CRM_Theme_Group_Name__c
+            SELECT Id, CRM_Theme_Group_Name__c, CRM_Related_Object__c
             FROM Thread__c
             WHERE CRM_Related_Object__c = :chatId
             LIMIT 1
@@ -14,11 +14,20 @@ public with sharing class nksChatView {
     }
 
     @AuraEnabled(cacheable=true)
-    public static String getChatbotMessage(Id chatId, Id userId) {
+    public static String getChatbotMessage(Id chatId, Id userId, Boolean isChatTranscript) {
         List<User> user = [SELECT accountId FROM User WHERE id = :userId LIMIT 1];
         if (user.size() == 0) {
             return 'Det oppstod en feil';
         }
-        return nksFridaLog.getChatbotMessage(chatId, user[0].accountId);
+        return nksFridaLog.getChatbotMessage(chatId, user[0].accountId, isChatTranscript);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static String getObjectInfo(Id recordId) {
+        try {
+            return recordId.getSObjectType().getDescribe().getName();
+        } catch (Exception e) {
+            throw new AuraHandledException('Unable to determine object type: ' + e.getMessage());
+        }
     }
 }

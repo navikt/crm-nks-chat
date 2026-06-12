@@ -1,42 +1,48 @@
 ({
     handleChatEnded: function (component, event, helper) {
-        var type = event.getParam('type');
-        if (type === 'startTimer') {
-            var recordId = component.get('v.recordId');
-            var eventRecordId = event.getParam('recordId');
-            if (recordId === eventRecordId) {
-                helper.startTimer(component, eventRecordId);
-            }
+        const recordId = component.get('v.recordId');
+        const eventRecordId = event.getParam('recordId');
+
+        if (recordId !== eventRecordId) {
+            return;
         }
+
+        helper.startTimer(component, eventRecordId);
+
+        const sessionEnded = $A.get('e.c:afterworkEvent');
+        sessionEnded.setParams({
+            recordId: eventRecordId,
+            type: 'sessionEnded'
+        });
+        sessionEnded.fire();
     },
 
     stopTimer: function (component) {
         component.set('v.stopped', true);
-        var action = component.get('c.reportThreatClick');
-        action.setCallback(this, function (response) {
-            var state = response.getState();
-            if (state === 'SUCCESS') {
-                var reportingId = response.getReturnValue();
-                var appEvent = $A.get('e.c:afterworkEvent');
-                const recordId = component.get('v.recordId');
-                appEvent.setParams({ reportingId: reportingId });
-                appEvent.setParams({ recordId: recordId });
-                appEvent.setParams({ type: 'createdThreatReport' });
-                appEvent.fire();
 
-                // You would typically fire a event here to trigger
-                // client-side notification that the server-side
-                // action is complete
-            } else if (state === 'INCOMPLETE') {
-                // do something
-            } else if (state === 'ERROR') {
-                var errors = response.getError();
-                if (errors) {
-                    if (errors[0] && errors[0].message) {
-                        console.log('Error message: ' + errors[0].message);
-                    }
+        const action = component.get('c.reportThreatClick');
+        action.setCallback(this, function (response) {
+            const responseState = response.getState();
+
+            if (responseState === 'SUCCESS') {
+                const reportingId = response.getReturnValue();
+                const recordId = component.get('v.recordId');
+
+                const appEvent = $A.get('e.c:afterworkEvent');
+                appEvent.setParams({
+                    reportingId: reportingId,
+                    recordId: recordId,
+                    type: 'createdThreatReport'
+                });
+                appEvent.fire();
+            } else if (responseState === 'INCOMPLETE') {
+                console.warn('Action incomplete: No response from server.');
+            } else if (responseState === 'ERROR') {
+                const errors = response.getError();
+                if (errors && errors[0] && errors[0].message) {
+                    console.error('Error message:', errors[0].message);
                 } else {
-                    console.log('Unknown error');
+                    console.error('Unknown error');
                 }
             }
         });

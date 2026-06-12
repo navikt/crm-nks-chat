@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MessagingChannel xmlns="http://soap.sforce.com/2006/04/metadata">
+    <automatedResponses>
+        <autoResponseContentType>TextResponse</autoResponseContentType>
+        <language>en_US</language>
+        <response>You&apos;ve opted out of receiving messages from us, so we won&apos;t contact you
+            again.</response>
+        <type>OptOutConfirmation</type>
+    </automatedResponses>
+    <automatedResponses>
+        <autoResponseContentType>TextResponse</autoResponseContentType>
+        <language>en_US</language>
+        <response>Text STOP to opt out of further messages.</response>
+        <type>HelpResponse</type>
+    </automatedResponses>
+    <customParameters>
+        <actionParameterMappings>
+            <actionParameterName>input_queue</actionParameterName>
+        </actionParameterMappings>
+        <externalParameterName>queue</externalParameterName>
+        <masterLabel>queue</masterLabel>
+        <maxLength>50</maxLength>
+        <name>queue</name>
+        <parameterDataType>String</parameterDataType>
+    </customParameters>
+    <masterLabel>NKS Messaging</masterLabel>
+    <messagingChannelType>EmbeddedMessaging</messagingChannelType>
+    <sessionHandlerFlow>NKS_Messaging_Route_to_Queue</sessionHandlerFlow>
+    <sessionHandlerQueue>NKS_Messaging_Arbeid</sessionHandlerQueue>
+    <sessionHandlerType>Flow</sessionHandlerType>
+</MessagingChannel>

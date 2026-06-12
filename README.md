@@ -8,13 +8,13 @@ Repository containing core components for the nks-chat functionality
 
 This package is dependant on the following packages
 
--   [crm-platform-base](https://github.com/navikt/crm-platform-base)
--   [crm-platform-integration](https://github.com/navikt/crm-platform-integration)
--   [crm-nks-base-components](https://github.com/navikt/crm-nks-base-components)
--   [crm-journal-utilities](https://github.com/navikt/crm-journal-utilities)
--   [crm-shared-user-notification](https://github.com/navikt/crm-shared-user-notification)
--   [crm-shared-flowComponents](https://github.com/navikt/crm-shared-flowComponents)
--   [crm-henvendelse](https://github.com/navikt/crm-henvendelse)
+- [crm-platform-base](https://github.com/navikt/crm-platform-base)
+- [crm-platform-integration](https://github.com/navikt/crm-platform-integration)
+- [crm-nks-base-components](https://github.com/navikt/crm-nks-base-components)
+- [crm-journal-utilities](https://github.com/navikt/crm-journal-utilities)
+- [crm-shared-user-notification](https://github.com/navikt/crm-shared-user-notification)
+- [crm-shared-flowComponents](https://github.com/navikt/crm-shared-flowComponents)
+- [crm-henvendelse](https://github.com/navikt/crm-henvendelse)
 
 ## Installation
 
@@ -54,25 +54,92 @@ sfdx force:org:open
 
 ## Post scratch setup
 
-As some metadata have poor support for packaging and metadata deployment there are a few manual steps to perform to be able to test the chat solution:
+As some metadata have poor support for packaging and metadata deployment there are a few manual steps to perform to be able to test the chat solution.
+This is solid overall—clear structure and good sequencing—but it can be tightened up for consistency, grammar, and a bit of flow. Here’s a cleaned-up version with minimal changes to your intent:
 
-1. Create a LiveChatButton
-    - Go to setup > .. Chat Buttons & Invitations. Create a new chat button with omni-channel routing connected to the scratch chat queue
-2. Create a embedded service deployment and configuration
-    - Go to setup > .. Embedded Service Deployments and click new deployment, chose embedded chat and and deploy to default experience site
-    - Under chat settings click start and and then save with the prefilled config.
-3. Go to the experience site scratch_innboks and into builder. Find the embedded service chat component and update the chat deployment to the one newly created.
-4. In the builder, open settings > Security and privacy and Enable relaxed csp (if not already enabled). Then under the CSP Errors section allow the two sites that have been blocked from the live agent endpoints.
-5. Navigate to the workspace of scratch-innboks. The easiest way to get there is the hamburger in the top left of the builder. Go to Administration > Members and add customer profile Scratch Community Profile and save.
-6. Go to setup > Permission sets > Scratch Permission set and add access to the service presence statuses needed for chat.
-7. Run this command in the terminal
+---
 
-```
-npm run scratchSetup
-```
+### Setup Steps
 
-7. To start a chat find the Harry Potter Account and the use the Log In to Experience as User action.
-8. To receive a chat go to an app with omni-console enabled, such as the scratch app, and change your omni-channel presence to Tilgjengelig for chat.
+1. **Run the setup command in the terminal**
+
+    ```
+    npm run scratchSetup
+    ```
+
+2. **Activate the "NKS Messaging" channel**
+
+    - Go to **Setup → Messaging Settings**
+    - Under _Channels_, click the channel name
+    - Click **Activate** (top right corner)
+
+3. **Create an Embedded Service Deployment**
+
+    - Go to **Setup → Embedded Service Deployments → New Deployment**
+    - Select: _Enhanced Chat → Web_
+    - Add the domain name of the Experience Site
+
+        - Use the domain **without prefixes**
+          _(Example: enterprise-power-8072-dev-ed.scratch.my.site.com)_
+
+    - Publish the deployment after creation
+    - Copy the **SCRT URL** from the code snippet (`scrt2URL`) before proceeding
+
+4. **Add the URL to Trusted URLs**
+
+    - Go to **Setup → Trusted URLs**
+    - Add the SCRT URL copied in the previous step
+      _(Example: [https://enterprise-power-8072-dev-ed.scratch.my.salesforce-scrt.com](https://enterprise-power-8072-dev-ed.scratch.my.salesforce-scrt.com))_
+    - Allow all CSP directives
+
+5. **Add the URL to CORS**
+
+    - Go to **Setup → CORS**
+    - Add your Experience Site URL
+
+6. **Configure the Experience Site**
+
+    - Open the _scratch_innboks_ site in Experience Builder
+
+    - Select the **Embedded Messaging** component on the page
+
+    - Set:
+
+        - Embedded Web Deployment
+
+    - In **Settings → Security & Privacy**:
+
+        - Under _CSP Errors_, allow any blocked domains related to Live Agent endpoints (check console/CSP logs)
+        - Ensure **Relaxed CSP** is enabled
+
+7. **Add Service Presence Status to Permission Set (if not already added)**
+
+    - Go to **Setup → Permission Sets → Scratch Permission Set**
+    - Add access to the required service presence statuses for chat
+
+8. **Start a chat**
+
+    - Locate the _Harry Potter_ Account
+    - Use **Log In to Experience as User**
+
+9. **Receive a chat**
+
+    - Open an Omni-Channel-enabled app (e.g., _Scratch App_)
+    - Set your Omni-Channel presence status to **Tilgjengelig for chat**
+
+---
+
+### Notes
+
+- After publishing the Experience Site, if the Embedded Messaging component is not visible, remove it and add it again.
+
+- Update the **Channel ID** and **Default Queue** in the _NKS Messaging Route to Queue_ Omnichannel flow, as these IDs may change. This ensures messaging sessions are routed correctly.
+
+- Ensure your user is a member of the relevant queues to receive chats.
+
+- Make sure **Change Data Capture** is enabled for _Messaging Session_.
+
+---
 
 Other useful commands included in this package:
 
@@ -91,6 +158,6 @@ Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på Git
 Eller:
 Spørsmål knyttet til koden eller prosjektet kan stilles til teamalias@nav.no
 
-## For NAV-ansatte
+## For Nav-ansatte
 
 Interne henvendelser kan sendes via Slack i kanalen #crm-nks.
