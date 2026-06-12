@@ -187,6 +187,7 @@ public class NKS_ConversationEntryController {
         List<Message__c> messagesToInsert = new List<Message__c>();
 
         Boolean agentChatStarted = false;
+        Message__c welcomeMessageWithoutUser = null;
 
         for (ConversationEntry entry : normalizedEntries) {
             if (entry == null || String.isBlank(entry.messageText)) {
@@ -204,7 +205,21 @@ public class NKS_ConversationEntryController {
 
             ConversationEntry messageEntry = normalizeEntryForMessageCreation(entry);
             if (isMessageEntry(messageEntry)) {
-                messagesToInsert.add(createMessage(messageEntry, session, thread));
+                Message__c msg = createMessage(messageEntry, session, thread);
+                if (welcomeMessageWithoutUser == null && isAgentWelcomeMessage(entry) && msg.CRM_From_User__c == null) {
+                    welcomeMessageWithoutUser = msg;
+                }
+                messagesToInsert.add(msg);
+            }
+        }
+
+        if (welcomeMessageWithoutUser != null) {
+            for (Message__c msg : messagesToInsert) {
+                if (msg !== welcomeMessageWithoutUser && msg.CRM_From_User__c != null) {
+                    welcomeMessageWithoutUser.CRM_From_User__c = msg.CRM_From_User__c;
+                    welcomeMessageWithoutUser.CRM_From_NAV_Unit__c = msg.CRM_From_NAV_Unit__c;
+                    break;
+                }
             }
         }
 
