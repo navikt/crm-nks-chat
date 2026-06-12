@@ -6,7 +6,14 @@ public with sharing class NKS_MessagingSetup {
         return [
             SELECT Id
             FROM User
-            WHERE Id IN (SELECT UserOrGroupId FROM GroupMember WHERE Group.DeveloperName LIKE 'NKS_Skill_%')
+            WHERE
+                Id IN (
+                    SELECT UserOrGroupId
+                    FROM GroupMember
+                    WHERE
+                        Group.DeveloperName LIKE 'NKS_Skill_%'
+                        OR Group.DeveloperName LIKE 'HOT_ServicetjenestenVeiledere%'
+                )
         ];
     }
 
@@ -15,7 +22,13 @@ public with sharing class NKS_MessagingSetup {
             SELECT Id, Name, Profile.UserLicense.Name
             FROM User
             WHERE
-                Id IN (SELECT UserOrGroupId FROM GroupMember WHERE Group.DeveloperName LIKE 'NKS_Skill_%')
+                Id IN (
+                    SELECT UserOrGroupId
+                    FROM GroupMember
+                    WHERE
+                        Group.DeveloperName LIKE 'NKS_Skill_%'
+                        OR Group.DeveloperName LIKE 'HOT_ServicetjenestenVeiledere%'
+                )
                 AND Id NOT IN (
                     SELECT AssigneeId
                     FROM PermissionSetLicenseAssign
