@@ -7,6 +7,7 @@ public class NKS_ConversationEntryController {
     private static final String PREFIX_VEILEDER = 'Veileder:';
 
     private static final String WELCOME_MARKER_NO = 'du snakker med ';
+    private static final String CONVERSATION_TERMINATED_BY_END_USER = '---conversation terminated by end-user---';
     private static final String WELCOME_MARKER_EN = 'you\'re chatting with ';
 
     private static Map<String, User> navUserInfoByUserId = getNavUserInfoByUserId();
@@ -377,6 +378,10 @@ public class NKS_ConversationEntryController {
         }
 
         String senderRole = entry.sender == null ? null : entry.sender.role;
+
+        if (CONVERSATION_TERMINATED_BY_END_USER.equalsIgnoreCase(entry.messageText.trim())) {
+            return false;
+        }
 
         return 'Agent'.equalsIgnoreCase(senderRole) || 'EndUser'.equalsIgnoreCase(senderRole);
     }
