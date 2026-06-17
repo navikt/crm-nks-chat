@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <MessagingChannel xmlns="http://soap.sforce.com/2006/04/metadata">
     <automatedResponses>
+        <autoResponseContentType>MessageDefinition</autoResponseContentType>
+        <messageDefinitionName>Automatic_Greeting</messageDefinitionName>
+        <type>AgentEngagedResponse</type>
+    </automatedResponses>
+    <automatedResponses>
         <autoResponseContentType>TextResponse</autoResponseContentType>
         <language>en_US</language>
         <response>You&apos;ve opted out of receiving messages from us, so we won&apos;t contact you
@@ -23,8 +28,27 @@
         <name>queue</name>
         <parameterDataType>String</parameterDataType>
     </customParameters>
+    <isEstimatedWaitTimeEnabled>false</isEstimatedWaitTimeEnabled>
+    <isQueuePositionEnabled>false</isQueuePositionEnabled>
+    <isSynchronousChatEnabled>false</isSynchronousChatEnabled>
+    <isVoiceModeEnabled>false</isVoiceModeEnabled>
     <masterLabel>NKS Messaging</masterLabel>
     <messagingChannelType>EmbeddedMessaging</messagingChannelType>
+    <messagingKeywords>
+        <keyword>cancel</keyword>
+        <keyword>end</keyword>
+        <keyword>quit</keyword>
+        <keyword>stop</keyword>
+        <keyword>stopall</keyword>
+        <keyword>unsubscribe</keyword>
+        <keywordType>OptOut</keywordType>
+        <language>en_US</language>
+    </messagingKeywords>
+    <messagingKeywords>
+        <keyword>help</keyword>
+        <keywordType>Help</keywordType>
+        <language>en_US</language>
+    </messagingKeywords>
     <sessionHandlerFlow>NKS_Messaging_Route_to_Queue</sessionHandlerFlow>
     <sessionHandlerQueue>NKS_Messaging_Arbeid</sessionHandlerQueue>
     <sessionHandlerType>Flow</sessionHandlerType>
