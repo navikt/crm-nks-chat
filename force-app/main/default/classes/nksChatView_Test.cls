@@ -37,22 +37,36 @@ public with sharing class nksChatView_Test {
             msgChannel.MessagingPlatformKey = 'TestChannel';
             insert msgChannel;
 
-            MessagingEndUser msgEndUser = new MessagingEndUser();
-            msgEndUser.Name = 'Messaging User';
-            msgEndUser.MessagingChannelId = msgChannel.Id;
-            msgEndUser.MessageType = 'EmbeddedMessaging';
-            msgEndUser.MessagingPlatformKey = 'TestChannel';
-            insert msgEndUser;
+            MessagingEndUser msgEndUser_hasThread = new MessagingEndUser();
+            msgEndUser_hasThread.Name = 'Messaging User With Thread';
+            msgEndUser_hasThread.MessagingChannelId = msgChannel.Id;
+            msgEndUser_hasThread.MessageType = 'EmbeddedMessaging';
+            msgEndUser_hasThread.MessagingPlatformKey = 'TestChannel';
+            insert msgEndUser_hasThread;
 
-            MessagingSession msgSession = new MessagingSession();
-            msgSession.MessagingEndUserId = msgEndUser.Id;
-            msgSession.MessagingChannelId = msgChannel.Id;
-            msgSession.Status = 'Ended';
-            msgSession.EndTime = Datetime.now();
-            insert msgSession;
+            MessagingSession msgSession_hasThread = new MessagingSession();
+            msgSession_hasThread.MessagingEndUserId = msgEndUser_hasThread.Id;
+            msgSession_hasThread.MessagingChannelId = msgChannel.Id;
+            msgSession_hasThread.Status = 'Ended';
+            msgSession_hasThread.EndTime = Datetime.now();
+            insert msgSession_hasThread;
 
-            Thread__c thread = new Thread__c(CRM_Related_Object__c = msgSession.Id);
+            Thread__c thread = new Thread__c(CRM_Related_Object__c = msgSession_hasThread.Id);
             insert thread;
+
+            MessagingEndUser msgEndUser_noThread = new MessagingEndUser();
+            msgEndUser_noThread.Name = 'Messaging User without Thread';
+            msgEndUser_noThread.MessagingChannelId = msgChannel.Id;
+            msgEndUser_noThread.MessageType = 'EmbeddedMessaging';
+            msgEndUser_noThread.MessagingPlatformKey = 'TestChannel2';
+            insert msgEndUser_noThread;
+
+            MessagingSession msgSession_noThread = new MessagingSession();
+            msgSession_noThread.MessagingEndUserId = msgEndUser_noThread.Id;
+            msgSession_noThread.MessagingChannelId = msgChannel.Id;
+            msgSession_noThread.Status = 'Ended';
+            msgSession_noThread.EndTime = Datetime.now();
+            insert msgSession_noThread;
         }
     }
 
@@ -61,6 +75,7 @@ public with sharing class nksChatView_Test {
         MessagingSession msgSession = [
             SELECT Id
             FROM MessagingSession
+            WHERE MessagingEndUser.Name = 'Messaging User With Thread'
             LIMIT 1
         ];
 
@@ -84,10 +99,11 @@ public with sharing class nksChatView_Test {
     @isTest
     static void testGetChatbotMessageMessagingSession() {
         createUser();
-        MessagingEndUser user = [SELECT Id FROM MessagingEndUser WHERE Name = 'Messaging User'];
+        MessagingEndUser user = [SELECT Id FROM MessagingEndUser WHERE Name = 'Messaging User With Thread'];
         MessagingSession msgSession = [
             SELECT Id
             FROM MessagingSession
+            WHERE MessagingEndUser.Name = 'Messaging User With Thread'
             LIMIT 1
         ];
         Test.startTest();
@@ -110,14 +126,18 @@ public with sharing class nksChatView_Test {
     @isTest
     static void testGetThread_noMatchingThread_returnsNull() {
         User thisUser = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
-        MessagingChannel channel = [SELECT Id FROM MessagingChannel LIMIT 1];
-        MessagingEndUser endUser = [SELECT Id FROM MessagingEndUser LIMIT 1];
+        MessagingEndUser endUser = [
+            SELECT Id, MessagingChannelId
+            FROM MessagingEndUser
+            WHERE Name = 'Messaging User without Thread'
+            LIMIT 1
+        ];
 
         MessagingSession msgSession;
         System.runAs(thisUser) {
             msgSession = new MessagingSession();
             msgSession.MessagingEndUserId = endUser.Id;
-            msgSession.MessagingChannelId = channel.Id;
+            msgSession.MessagingChannelId = endUser.MessagingChannelId;
             msgSession.Status = 'Ended';
             msgSession.EndTime = Datetime.now();
             insert msgSession;
@@ -147,6 +167,7 @@ public with sharing class nksChatView_Test {
         MessagingSession msgSession = [
             SELECT Id
             FROM MessagingSession
+            WHERE MessagingEndUser.Name = 'Messaging User With Thread'
             LIMIT 1
         ];
         Test.startTest();
