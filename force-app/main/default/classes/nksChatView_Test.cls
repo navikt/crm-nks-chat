@@ -125,23 +125,12 @@ public with sharing class nksChatView_Test {
 
     @isTest
     static void testGetThread_noMatchingThread_returnsNull() {
-        User thisUser = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
-        MessagingEndUser endUser = [
-            SELECT Id, MessagingChannelId
-            FROM MessagingEndUser
-            WHERE Name = 'Messaging User without Thread'
+        MessagingSession msgSession = [
+            SELECT Id
+            FROM MessagingSession
+            WHERE MessagingEndUser.Name = 'Messaging User without Thread'
             LIMIT 1
         ];
-
-        MessagingSession msgSession;
-        System.runAs(thisUser) {
-            msgSession = new MessagingSession();
-            msgSession.MessagingEndUserId = endUser.Id;
-            msgSession.MessagingChannelId = endUser.MessagingChannelId;
-            msgSession.Status = 'Ended';
-            msgSession.EndTime = Datetime.now();
-            insert msgSession;
-        }
 
         Test.startTest();
         Thread__c result = nksChatView.getThread(msgSession.Id);
