@@ -447,4 +447,45 @@ private class NKS_ConversationEntryController_Test {
 
         Assert.isTrue(true, 'deleteSessionDataAndEnqueueCallout should complete without throwing an exception.');
     }
+
+    @IsTest
+    static void createThreadMessages_NoWrapper() {
+        NKS_ConversationEntryController.ConversationEntryWrapper wrapper = new NKS_ConversationEntryController.ConversationEntryWrapper();
+        MessagingSession session = new MessagingSession();
+
+        List<Application_Log__c> logsBefore = [SELECT Id FROM Application_Log__c];
+        Test.startTest();
+        NKS_ConversationEntryController.createThreadMessages(wrapper, session);
+        Test.stopTest();
+        List<Application_Log__c> logsAfter = [SELECT Id, Log_level__c, log_message__c FROM Application_Log__c];
+        Assert.areEqual(0, logsBefore.size(), 'Expected no logs before execution');
+        Assert.areEqual(1, logsAfter.size(), 'Expected 1 error log due to missing wrapper');
+        Assert.isTrue(
+            logsAfter[0].Log_message__c.contains('Wrapper not found '),
+            'Expected error log message about missing wrapper'
+        );
+        Assert.isFalse(logsAfter[0].Log_level__c == 'Info', 'Expected log level to be higher than Info');
+    }
+
+    @IsTest
+    static void createThreadMessages_NoThread() {
+        NKS_ConversationEntryController.ConversationEntryWrapper wrapper = (NKS_ConversationEntryController.ConversationEntryWrapper) JSON.deserialize(
+            '{"conversationEntries":[{"clientDuration":0,"clientTimestamp":1732111810339,"identifier":"entry1","messageText":"Frida: Hei! Jeg heter Frida og er NAVs chatbot.\\nFrida: Hva lurer du på?\\nBruker: menneske\\nFrida: Det er mange som trenger hjelp fra oss nå.","relatedRecords":["sessionId"],"sender":{"appType":"iamessage","role":"EndUser","subject":"v2/iamessage/UNAUTH/NA/uid:66823427-6991-4b41-b932-605b3ad2dd7c"},"serverReceivedTimestamp":1732111810339}]}',
+            NKS_ConversationEntryController.ConversationEntryWrapper.class
+        );
+        MessagingSession session = new MessagingSession();
+
+        List<Application_Log__c> logsBefore = [SELECT Id FROM Application_Log__c];
+        Test.startTest();
+        NKS_ConversationEntryController.createThreadMessages(wrapper, session);
+        Test.stopTest();
+        List<Application_Log__c> logsAfter = [SELECT Id, Log_level__c, log_message__c FROM Application_Log__c];
+        Assert.areEqual(0, logsBefore.size(), 'Expected no logs before execution');
+        Assert.areEqual(1, logsAfter.size(), 'Expected 1 error log due to missing thread');
+        Assert.isTrue(
+            logsAfter[0].Log_message__c.contains('Thread not found '),
+            'Expected error log message about missing thread'
+        );
+        Assert.isFalse(logsAfter[0].Log_level__c == 'Info', 'Expected log level to be higher than Info');
+    }
 }

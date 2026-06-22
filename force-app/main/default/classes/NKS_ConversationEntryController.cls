@@ -160,8 +160,15 @@ public class NKS_ConversationEntryController {
         }
     }
 
+    @TestVisible
     private static void createThreadMessages(ConversationEntryWrapper wrapper, MessagingSession session) {
         if (wrapper == null || wrapper.conversationEntries == null || wrapper.conversationEntries.isEmpty()) {
+            logger.error(
+                LOG_PREFIX + '.createThreadMessages EXIT | Wrapper not found | sessionId=' + session.Id,
+                null,
+                CRM_ApplicationDomain.Domain.NKS
+            );
+            logger.publish();
             return;
         }
 
@@ -172,6 +179,7 @@ public class NKS_ConversationEntryController {
                 null,
                 CRM_ApplicationDomain.Domain.NKS
             );
+            logger.publish();
             return;
         }
 
@@ -532,12 +540,13 @@ public class NKS_ConversationEntryController {
     }
 
     private static Thread__c getThreadDetails(Id messagingSessionId) {
-        return [
+        List<Thread__c> thread = [
             SELECT Id, CRM_Additional_Information__c, CRM_isActive__c, CRM_Closed_Date__c
             FROM Thread__c
             WHERE CRM_Related_Object__c = :messagingSessionId
-            FOR UPDATE
+            LIMIT 1
         ];
+        return thread.isEmpty() ? null : thread[0];
     }
 
     public class ConversationEntryWrapper {
