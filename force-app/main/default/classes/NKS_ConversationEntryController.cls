@@ -52,6 +52,8 @@ public class NKS_ConversationEntryController {
                 WHERE Id IN :messagingSessionIds
             ];
 
+            Map<Id, ConversationEntryWrapper> wrapperBySessionId = new Map<Id, ConversationEntryWrapper>();
+
             for (MessagingSession session : messagingSessions) {
                 try {
                     if (session.CRM_Authentication_Status__c != 'Completed') {
@@ -74,7 +76,7 @@ public class NKS_ConversationEntryController {
                         continue;
                     }
 
-                    processConversationEntry(
+                    ConversationEntryWrapper wrapper = fetchConversationEntryWrapper(
                         session,
                         conversationIdentifier,
                         startTimestamp,
@@ -82,10 +84,36 @@ public class NKS_ConversationEntryController {
                         queryDirection,
                         recordLimit
                     );
+
+                    if (wrapper != null) {
+                        wrapperBySessionId.put(session.Id, wrapper);
+                    }
                 } catch (Exception sessionException) {
                     logger.error(
                         LOG_PREFIX +
-                            '.convertConversationEntries | Session processing failed' +
+                            '.convertConversationEntries | Session callout failed' +
+                            ' | sessionId=' +
+                            session.Id +
+                            ' | message=' +
+                            sessionException.getMessage() +
+                            ' | stack=' +
+                            sessionException.getStackTraceString(),
+                        null,
+                        CRM_ApplicationDomain.Domain.NKS
+                    );
+                }
+            }
+
+            for (MessagingSession session : messagingSessions) {
+                if (!wrapperBySessionId.containsKey(session.Id)) {
+                    continue;
+                }
+                try {
+                    createThreadMessages(wrapperBySessionId.get(session.Id), session);
+                } catch (Exception sessionException) {
+                    logger.error(
+                        LOG_PREFIX +
+                            '.convertConversationEntries | Session DML failed' +
                             ' | sessionId=' +
                             session.Id +
                             ' | message=' +
@@ -104,7 +132,7 @@ public class NKS_ConversationEntryController {
         }
     }
 
-    private static void processConversationEntry(
+    private static ConversationEntryWrapper fetchConversationEntryWrapper(
         MessagingSession session,
         String conversationIdentifier,
         Long startTimestamp,
@@ -112,52 +140,30 @@ public class NKS_ConversationEntryController {
         String queryDirection,
         Integer recordLimit
     ) {
-        try {
-            HttpResponse response = NKS_ConversationEntryService.getConversationEntryMessages(
-                conversationIdentifier,
-                startTimestamp,
-                endTimestamp,
-                queryDirection,
-                recordLimit
-            );
+        HttpResponse response = NKS_ConversationEntryService.getConversationEntryMessages(
+            conversationIdentifier,
+            startTimestamp,
+            endTimestamp,
+            queryDirection,
+            recordLimit
+        );
 
-            if (response.getStatusCode() != 200) {
-                logger.httpError(
-                    'Failed to get conversation entries for session: ' +
-                        session.Id +
-                        '.\nStatus Code: ' +
-                        response.getStatusCode() +
-                        '\nResponse Body: ' +
-                        response.getBody(),
-                    response,
-                    null,
-                    CRM_ApplicationDomain.Domain.NKS
-                );
-                return;
-            }
-
-            ConversationEntryWrapper wrapper = (ConversationEntryWrapper) JSON.deserialize(
-                response.getBody(),
-                ConversationEntryWrapper.class
-            );
-
-            createThreadMessages(wrapper, session);
-        } catch (Exception e) {
-            logger.error(
-                LOG_PREFIX +
-                    '.processConversationEntry ERROR' +
-                    ' | sessionId=' +
+        if (response.getStatusCode() != 200) {
+            logger.httpError(
+                'Failed to get conversation entries for session: ' +
                     session.Id +
-                    ' | message=' +
-                    e.getMessage() +
-                    ' | stack=' +
-                    e.getStackTraceString(),
+                    '.\nStatus Code: ' +
+                    response.getStatusCode() +
+                    '\nResponse Body: ' +
+                    response.getBody(),
+                response,
                 null,
                 CRM_ApplicationDomain.Domain.NKS
             );
-        } finally {
-            logger.publish();
+            return null;
         }
+
+        return (ConversationEntryWrapper) JSON.deserialize(response.getBody(), ConversationEntryWrapper.class);
     }
 
     @TestVisible
