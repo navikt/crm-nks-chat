@@ -1,9 +1,4 @@
 public without sharing class ChatAuthControllerExperience {
-    /**
-     * @description: Sets the CRM_Authentication_Status__c when the authentication process is initiated
-     * @author Stian Ruud Schikora | 09-04-2020
-     * @param messagingId [STRING]
-     **/
     @AuraEnabled
     public static void setStatusCompleted(Id messagingId) {
         setStatus(messagingId, 'Completed');
@@ -27,11 +22,6 @@ public without sharing class ChatAuthControllerExperience {
         }
     }
 
-    /**
-     * @description: Performs necesary steps to related the chat and case to the authenticated individual
-     * @author Stian Ruud Schikora | 01-31-2022
-     * @param chatTrans
-     **/
     private static void handleChatAuthentication(MessagingSession messSess) {
         Id accountId = getPersonAccountId();
         Id contactId = getPersonContactId();
@@ -50,16 +40,9 @@ public without sharing class ChatAuthControllerExperience {
             )
                 //Persons tagged as confidential or is NAV employees cannot be journaled - NKS-430
                 messSess.NKS_Journal_Entry_Status__c = 'Completed';
-            // System.debug('Goated');
         }
     }
 
-    /**
-     * @description: Created the thread equivalent of an authenticated chat
-     * @author Stian Ruud Schikora | 01-31-2022
-     * @param chatTrans
-     * @return Id
-     **/
     private static void createChatThread(MessagingSession messSess, MessagingEndUser endUser) {
         Thread__c chatThread = new Thread__c(
             CRM_Thread_Type__c = 'CHAT',
@@ -79,11 +62,6 @@ public without sharing class ChatAuthControllerExperience {
         ];
     }
 
-    /**
-     * @description: Returns the community url used for chat authentication
-     * @author Stian Ruud Schikora | 10-01-2020
-     * @return string
-     **/
     @AuraEnabled
     public static string getCommunityAuthUrl() {
         List<Network> community = [SELECT Id, Name, UrlPathPrefix FROM Network WHERE Name = 'nks'];
