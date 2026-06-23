@@ -41,7 +41,7 @@ private class NKS_MessagingSessionHandler_Test {
             msgSession.Id +
             '"],' +
             '"sender":{"appType":"agent","role":"Agent","subject":"0052o000009d7J9"},' +
-            '"serverReceivedTimestamp":1732111834844}' +
+            '"transcriptedTimestamp":1732111834844}' +
             ']}';
 
         Test.setMock(HttpCalloutMock.class, new SingleRequestMock(200, 'OK', jsonResponse, null));

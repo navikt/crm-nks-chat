@@ -54,7 +54,7 @@ private class NKS_ConversationEntryController_Test {
             messagingSessionId +
             '"],' +
             '"sender":{"appType":"iamessage","role":"EndUser","subject":"v2/iamessage/UNAUTH/NA/uid:66823427-6991-4b41-b932-605b3ad2dd7c"},' +
-            '"serverReceivedTimestamp":1732111810339' +
+            '"transcriptedTimestamp":1732111810339' +
             '},' +
             '{' +
             '"clientDuration":0,' +
@@ -65,7 +65,7 @@ private class NKS_ConversationEntryController_Test {
             messagingSessionId +
             '"],' +
             '"sender":{"appType":"iamessage","role":"System","subject":"system-user"},' +
-            '"serverReceivedTimestamp":1732111810707' +
+            '"transcriptedTimestamp":1732111810707' +
             '},' +
             '{' +
             '"clientDuration":0,' +
@@ -76,7 +76,7 @@ private class NKS_ConversationEntryController_Test {
             messagingSessionId +
             '"],' +
             '"sender":{"appType":"agent","role":"Agent","subject":"0052o000009d7J9"},' +
-            '"serverReceivedTimestamp":1732111834844' +
+            '"transcriptedTimestamp":1732111834844' +
             '},' +
             '{' +
             '"clientDuration":0,' +
@@ -87,7 +87,7 @@ private class NKS_ConversationEntryController_Test {
             messagingSessionId +
             '"],' +
             '"sender":{"appType":"iamessage","role":"EndUser","subject":"v2/iamessage/UNAUTH/NA/uid:66823427-6991-4b41-b932-605b3ad2dd7c"},' +
-            '"serverReceivedTimestamp":1732111856855' +
+            '"transcriptedTimestamp":1732111856855' +
             '}' +
             ']}';
 
@@ -169,7 +169,7 @@ private class NKS_ConversationEntryController_Test {
             messagingSessionId +
             '"],' +
             '"sender":{"appType":"iamessage","role":"System","subject":"system-user"},' +
-            '"serverReceivedTimestamp":1732111810339' +
+            '"transcriptedTimestamp":1732111810339' +
             '}' +
             ']}';
 
@@ -229,7 +229,7 @@ private class NKS_ConversationEntryController_Test {
             messagingSessionId +
             '"],' +
             '"sender":{"appType":"iamessage","role":"System","subject":"system-user"},' +
-            '"serverReceivedTimestamp":1732111810339' +
+            '"transcriptedTimestamp":1732111810339' +
             '}' +
             ']}';
 
@@ -336,7 +336,7 @@ private class NKS_ConversationEntryController_Test {
             messagingSessionId +
             '"],' +
             '"sender":{"appType":"agent","role":"Agent","subject":"0052o000009d7J9"},' +
-            '"serverReceivedTimestamp":1732111810339,' +
+            '"transcriptedTimestamp":1732111810339,' +
             '"entryPayload":{"abstractMessage":{"staticContent":{"formatType":"RichLink","linkItem":{"url":"https://www.nav.no/syk/sykefravaer"}}}}' +
             '}' +
             ']}';
@@ -387,7 +387,7 @@ private class NKS_ConversationEntryController_Test {
             messagingSessionId +
             '"],' +
             '"sender":{"appType":"agent","role":"Agent","subject":"0052o000009d7J9"},' +
-            '"serverReceivedTimestamp":1732111810339,' +
+            '"transcriptedTimestamp":1732111810339,' +
             '"entryPayload":{"abstractMessage":{"staticContent":{"formatType":"Text","text":"Hei! Kan jeg hjelpe deg?"}}}' +
             '}' +
             ']}';
@@ -417,6 +417,67 @@ private class NKS_ConversationEntryController_Test {
             'Hei! Kan jeg hjelpe deg?',
             messages[0].CRM_Message_Text__c,
             'Message text should come from the staticContent text field for non-RichLink format.'
+        );
+    }
+
+    @isTest
+    static void testConvertConversationEntries_messageDataTime() {
+        MessagingSession messagingSession = [
+            SELECT Id, CRM_Authentication_Status__c
+            FROM MessagingSession
+            LIMIT 1
+        ];
+
+        String messagingSessionId = messagingSession.Id;
+
+        String jsonResponse2 = '{"conversationIdentifier":"57eedd4d-5eea-4e31-8f25-1e568bbf16cf","conversationEntries":[{"identifier":"a91c316f-24de-4369-a679-dce4ad95b6a2","entryType":"ConversationUpdated","entryPayload":{"entryType":"ConversationUpdated","id":"a91c316f-24de-4369-a679-dce4ad95b6a2","updates":[{"updateType":"ModalityUpdate","transitionType":"Standard","activeModalities":["Messaging"]}],"updatedBy":{"role":"System","appType":"conversation","subject":"0052o000009GmW3","clientIdentifier":""}},"sender":{"role":"System","appType":"conversation","subject":"0052o000009GmW3","clientIdentifier":null},"recipients":{"secondary":null,"hidden":null,"primary":null},"transcriptedTimestamp":1782113315402,"relatedRecords":[],"clientTimestamp":1782113315402,"clientDuration":0},{"identifier":"4d5f107b-47b5-46c0-863e-5770443c9177","entryType":"Message","entryPayload":{"entryType":"Message","id":"4d5f107b-47b5-46c0-863e-5770443c9177","abstractMessage":{"inReplyToMessageId":null,"customHandlingType":null,"id":"4d5f107b-47b5-46c0-863e-5770443c9177","messageType":"StaticContentMessage","references":null,"contentCategory":null,"staticContent":{"formatType":"Text","text":"Frida:   Jeg kan sette deg over til et menneske for mer hjelp. \nFrida:   Velg et alternativ sÃ¥ setter jeg deg over:\nFrida:   [Knapp: AAP, jobbsÃ¸ker, permittert]\nFrida:   [Knapp: Foreldre, barn og familie]\nFrida:   [Knapp: STENGT: GjeldsrÃ¥dgivning]\nFrida:   [Knapp: Hjelpemiddel]\nFrida:   [Knapp: Pensjon]\nFrida:   [Knapp: Sosiale tjenester]\nFrida:   [Knapp: Sykepenger, grunn- og hjelpestÃ¸nad, yrkesskade, hjelpemiddel]\nFrida:   [Knapp: UfÃ¸retrygd]\nFrida:   [Knapp: Lege/samarbeidspartner]\nFrida:   [Knapp: Internasjonalt]\nBruker: menneske\nBruker: Trykket pÃ¥ [Knapp: Chat med menneske]\nFrida:   Jeg kan sette deg over til et menneske for mer hjelp. \nFrida:   Velg et alternativ sÃ¥ setter jeg deg over:\nFrida:   [Knapp: AAP, jobbsÃ¸ker, permittert]\nFrida:   [Knapp: Foreldre, barn og familie]\nFrida:   [Knapp: STENGT: GjeldsrÃ¥dgivning]\nFrida:   [Knapp: Hjelpemiddel]\nFrida:   [Knapp: Pensjon]\nFrida:   [Knapp: Sosiale tjenester]\nFrida:   [Knapp: Sykepenger, grunn- og hjelpestÃ¸nad, yrkesskade, hjelpemiddel]\nFrida:   [Knapp: UfÃ¸retrygd]\nFrida:   [Knapp: Lege/samarbeidspartner]\nFrida:   [Knapp: Internasjonalt]\nBruker: arbeid\nBruker: Trykket pÃ¥ [Knapp: AAP, jobbsÃ¸ker, permittert]\nFrida:   Jeg setter deg over, et Ã¸yeblikk.\nFrida:   Det er mange som vil snakke med oss nÃ¥. Hold chatten Ã¥pen og fÃ¸lg med, sÃ¥ svarer vi deg  sÃ¥ snart vi kan.","citationContent":null}},"messageReason":null,"wasRevised":null},"sender":{"role":"EndUser","appType":"iamessage","subject":"v2/iamessage/UNAUTH/NA/uid:423b4911-f578-4762-8aba-1de448c5d8ab","clientIdentifier":null},"recipients":{"secondary":null,"hidden":null,"primary":null},"transcriptedTimestamp":1782113316725,"relatedRecords":["0Mwds000007kpwN"],"clientTimestamp":1782113316674,"clientDuration":0},{"identifier":"be1b9265-fc1d-451f-8f8d-aa3aedaaf833","entryType":"RoutingResult","entryPayload":{"entryType":"RoutingResult","id":"be1b9265-fc1d-451f-8f8d-aa3aedaaf833","workOwnerId":null,"estimatedWaitTime":{"estimatedWaitTimeInSeconds":null,"isEWTRequested":false},"initiator":null,"workId":null,"recordId":"0Mwds000007kpwN","errorMessages":[],"pendingServiceRoutingId":"0JRds000008nw7t","skipRouterCPRemovalIfNoRoutingFailures":true,"routingType":"Initial","failureReason":"","failureType":"None","isExternallyRouted":false,"cancelReason":null,"routingConfigurationDetails":{"routingConfigurationType":"QueueRoutingType","queueId":"00GKD000000hau0"}},"sender":{"role":"System","appType":"conversation","subject":"0052o000009GmW3","clientIdentifier":null},"recipients":{"secondary":null,"hidden":null,"primary":null},"transcriptedTimestamp":1782113319224,"relatedRecords":[],"clientTimestamp":1782113319187,"clientDuration":0},{"identifier":"cdef29c3-5ad6-4e26-8c0d-10b1d986dd24","entryType":"ParticipantChanged","entryPayload":{"entryType":"ParticipantChanged","id":"cdef29c3-5ad6-4e26-8c0d-10b1d986dd24","entries":[{"operation":"add","menuMetadata":null,"supportedModalities":null,"participant":{"role":"Agent","appType":"agent","subject":"0052o000009d7J9","clientIdentifier":""},"displayName":"Eirik F"}],"activeModalities":["Messaging"]},"sender":{"role":"System","appType":"conversation","subject":"0052o000009GmW3","clientIdentifier":null},"recipients":{"secondary":null,"hidden":null,"primary":null},"transcriptedTimestamp":1782113391643,"relatedRecords":[],"clientTimestamp":1782113391643,"clientDuration":0},{"identifier":"bd2065d3-d309-4f84-b211-f30f666e918f","entryType":"SessionStatusChanged","entryPayload":{"entryType":"SessionStatusChanged","id":"bd2065d3-d309-4f84-b211-f30f666e918f","conversationIdentifier":"57eedd4d-5eea-4e31-8f25-1e568bbf16cf","channelAddressIdentifier":"95997dc5-3041-4b64-9b2b-43e54d7312df","sessionStatusPrev":"Waiting","sessionEndedByRole":null,"sessionEndTime":null,"sessionStatus":"Active","sessionStartTime":1782113315000,"sessionId":"0Mwds000007kpwN"},"sender":{"role":"System","appType":"conversation","subject":"0052o000009GmW3","clientIdentifier":null},"recipients":{"secondary":null,"hidden":null,"primary":null},"transcriptedTimestamp":1782113392259,"relatedRecords":[],"clientTimestamp":1782113392000,"clientDuration":0},{"identifier":"8d41bc7a-f0f2-495b-8b2e-db9197213c63","entryType":"Message","entryPayload":{"entryType":"Message","id":"8d41bc7a-f0f2-495b-8b2e-db9197213c63","abstractMessage":{"inReplyToMessageId":null,"customHandlingType":null,"id":"8d41bc7a-f0f2-495b-8b2e-db9197213c63","messageType":"StaticContentMessage","references":null,"contentCategory":null,"staticContent":{"formatType":"Text","text":"Velkommen til chat med NAV. Dette er en uinnlogget chat og vi ber deg ikke oppgi person - eller saksopplysninger. Vi kan kun gi deg generell veiledning. Du snakker med Eirik. Gi meg et lite Ã¸yeblikk slik at jeg kan se over dialogen du har hatt sÃ¥ langt.","citationContent":null}},"messageReason":"AutomatedResponse","wasRevised":null},"sender":{"role":"System","appType":"conversation","subject":"0052o000009GmW3","clientIdentifier":null},"recipients":{"secondary":null,"hidden":null,"primary":[{"identifier":"43bc44cc-37ae-31b7-bd68-285386c3840b","displayName":"Eirik F","contact":"0052o000009d7J9"},{"identifier":"8ccef6f3-4e2a-3068-ae87-a68d623e335c","displayName":"Guest","contact":"v2/iamessage/UNAUTH/NA/uid:423b4911-f578-4762-8aba-1de448c5d8ab"}]},"transcriptedTimestamp":1782113392995,"relatedRecords":[],"clientTimestamp":1782113392000,"clientDuration":0},{"identifier":"5a957a97-4a8c-46c0-a4a8-105899e51603","entryType":"Message","entryPayload":{"entryType":"Message","id":"5a957a97-4a8c-46c0-a4a8-105899e51603","abstractMessage":{"inReplyToMessageId":null,"customHandlingType":null,"id":"5a957a97-4a8c-46c0-a4a8-105899e51603","messageType":"StaticContentMessage","references":null,"contentCategory":null,"staticContent":{"formatType":"Text","text":"Heisann","citationContent":null}},"messageReason":null,"wasRevised":null},"sender":{"role":"EndUser","appType":"iamessage","subject":"v2/iamessage/UNAUTH/NA/uid:423b4911-f578-4762-8aba-1de448c5d8ab","clientIdentifier":null},"recipients":{"secondary":null,"hidden":null,"primary":null},"transcriptedTimestamp":1782113402970,"relatedRecords":["0Mwds000007kpwN"],"clientTimestamp":1782113402869,"clientDuration":0},{"identifier":"fe605a81-dfba-45f5-8d5b-e1ee28fb6b07","entryType":"Message","entryPayload":{"entryType":"Message","id":"fe605a81-dfba-45f5-8d5b-e1ee28fb6b07","abstractMessage":{"inReplyToMessageId":null,"customHandlingType":null,"id":"fe605a81-dfba-45f5-8d5b-e1ee28fb6b07","messageType":"StaticContentMessage","references":[],"contentCategory":null,"staticContent":{"formatType":"Text","text":"yo","citationContent":null}},"messageReason":null,"wasRevised":null},"sender":{"role":"Agent","appType":"agent","subject":"0052o000009d7J9","clientIdentifier":null},"recipients":{"secondary":null,"hidden":null,"primary":null},"transcriptedTimestamp":1782113403953,"relatedRecords":["0Mwds000007kpwN"],"clientTimestamp":1782113403875,"clientDuration":0},{"identifier":"9997ca41-f5d7-4654-a632-9ae8a59dff88","entryType":"Message","entryPayload":{"entryType":"Message","id":"9997ca41-f5d7-4654-a632-9ae8a59dff88","abstractMessage":{"inReplyToMessageId":null,"customHandlingType":null,"id":"9997ca41-f5d7-4654-a632-9ae8a59dff88","messageType":"StaticContentMessage","references":null,"contentCategory":null,"staticContent":{"formatType":"Text","text":"Erru dum eller","citationContent":null}},"messageReason":null,"wasRevised":null},"sender":{"role":"EndUser","appType":"iamessage","subject":"v2/iamessage/UNAUTH/NA/uid:423b4911-f578-4762-8aba-1de448c5d8ab","clientIdentifier":null},"recipients":{"secondary":null,"hidden":null,"primary":null},"transcriptedTimestamp":1782113408088,"relatedRecords":["0Mwds000007kpwN"],"clientTimestamp":1782113408065,"clientDuration":0},{"identifier":"a3ba6666-18b8-47ea-aed3-99c4e2ffb20a","entryType":"SessionStatusChanged","entryPayload":{"entryType":"SessionStatusChanged","id":"a3ba6666-18b8-47ea-aed3-99c4e2ffb20a","conversationIdentifier":"57eedd4d-5eea-4e31-8f25-1e568bbf16cf","channelAddressIdentifier":"95997dc5-3041-4b64-9b2b-43e54d7312df","sessionStatusPrev":"Active","sessionEndedByRole":"Agent","sessionEndTime":1782113415000,"sessionStatus":"Ended","sessionStartTime":1782113315000,"sessionId":"0Mwds000007kpwN"},"sender":{"role":"System","appType":"conversation","subject":"0052o000009GmW3","clientIdentifier":null},"recipients":{"secondary":null,"hidden":null,"primary":null},"transcriptedTimestamp":1782113416617,"relatedRecords":[],"clientTimestamp":1782113416000,"clientDuration":0},{"identifier":"6855d021-6f25-4162-8fb8-284b79ff199a","entryType":"ParticipantChanged","entryPayload":{"entryType":"ParticipantChanged","id":"6855d021-6f25-4162-8fb8-284b79ff199a","entries":[{"operation":"remove","menuMetadata":null,"supportedModalities":null,"participant":{"role":"Agent","appType":"agent","subject":"0052o000009d7J9","clientIdentifier":""},"displayName":"Eirik F"}],"activeModalities":["Messaging"]},"sender":{"role":"System","appType":"conversation","subject":"0052o000009GmW3","clientIdentifier":null},"recipients":{"secondary":null,"hidden":null,"primary":null},"transcriptedTimestamp":1782113416671,"relatedRecords":[],"clientTimestamp":1782113416671,"clientDuration":0}]}';
+
+        String jsonResponse =
+            '{"conversationEntries":[' +
+            '{' +
+            '"clientDuration":0,"clientTimestamp":1732111810339,"identifier":"entry1",' +
+            '"relatedRecords":["' +
+            messagingSessionId +
+            '"],' +
+            '"sender":{"appType":"agent","role":"Agent","subject":"0052o000009d7J9"},' +
+            '"transcriptedTimestamp":1732111810339,' +
+            '"entryPayload":{"abstractMessage":{"staticContent":{"formatType":"Text","text":"Hei! Kan jeg hjelpe deg?"}}}' +
+            '},' +
+            '{' +
+            '"clientDuration":0,"clientTimestamp":1732111810339,"identifier":"entry1",' +
+            '"relatedRecords":["' +
+            messagingSessionId +
+            '"],' +
+            '"sender":{"appType":"iamessage","role":"EndUser","subject":"v2/iamessage/UNAUTH/NA/uid:66823427-6991-4b41-b932-605b3ad2dd7c"},' +
+            '"transcriptedTimestamp":null,' +
+            '"entryPayload":{"abstractMessage":{"staticContent":{"formatType":"Text","text":"Du kan hjelpe meg med dato!"}}}' +
+            '}' +
+            ']}';
+
+        Test.setMock(HttpCalloutMock.class, new SingleRequestMock(200, 'OK', jsonResponse, null));
+
+        Test.startTest();
+        messagingSession.CRM_Authentication_Status__c = 'Completed';
+        update messagingSession;
+        Test.stopTest();
+
+        Thread__c thread = [
+            SELECT Id
+            FROM Thread__c
+            WHERE CRM_Related_Object__c = :messagingSessionId
+            LIMIT 1
+        ];
+
+        List<Message__c> messages = [
+            SELECT Id, CRM_Sent_Date__c
+            FROM Message__c
+            WHERE CRM_Thread__c = :thread.Id
+        ];
+
+        Assert.areEqual(2, messages.size(), 'Expected 2 messages created for the Text static content entries.');
+        Assert.isNotNull(
+            messages[0].CRM_Sent_Date__c,
+            'Message sent date should be populated for the Text static content entry.'
         );
     }
 
@@ -470,7 +531,7 @@ private class NKS_ConversationEntryController_Test {
     @IsTest
     static void createThreadMessages_NoThread() {
         NKS_ConversationEntryController.ConversationEntryWrapper wrapper = (NKS_ConversationEntryController.ConversationEntryWrapper) JSON.deserialize(
-            '{"conversationEntries":[{"clientDuration":0,"clientTimestamp":1732111810339,"identifier":"entry1","messageText":"Frida: Hei! Jeg heter Frida og er NAVs chatbot.\\nFrida: Hva lurer du på?\\nBruker: menneske\\nFrida: Det er mange som trenger hjelp fra oss nå.","relatedRecords":["sessionId"],"sender":{"appType":"iamessage","role":"EndUser","subject":"v2/iamessage/UNAUTH/NA/uid:66823427-6991-4b41-b932-605b3ad2dd7c"},"serverReceivedTimestamp":1732111810339}]}',
+            '{"conversationEntries":[{"clientDuration":0,"clientTimestamp":1732111810339,"identifier":"entry1","messageText":"Frida: Hei! Jeg heter Frida og er NAVs chatbot.\\nFrida: Hva lurer du på?\\nBruker: menneske\\nFrida: Det er mange som trenger hjelp fra oss nå.","relatedRecords":["sessionId"],"sender":{"appType":"iamessage","role":"EndUser","subject":"v2/iamessage/UNAUTH/NA/uid:66823427-6991-4b41-b932-605b3ad2dd7c"},"transcriptedTimestamp":1732111810339}]}',
             NKS_ConversationEntryController.ConversationEntryWrapper.class
         );
         MessagingSession session = new MessagingSession();
