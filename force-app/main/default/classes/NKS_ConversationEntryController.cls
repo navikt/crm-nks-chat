@@ -594,6 +594,7 @@ public class NKS_ConversationEntryController {
         public String subject;
     }
 
+    // For manual reruns in dev console
     public static void retryDeleteParticipantData(List<String> participantEntityIds) {
         List<MessagingSession> sessions = [
             SELECT Id
