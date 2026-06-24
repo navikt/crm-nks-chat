@@ -1,6 +1,6 @@
 {
     "orgName": "crm-nks-chat",
-    "edition": "Enterprise",
+    "edition": "Developer",
     "release": "Current",
     "adminEmail": "fakeemail@nav.no.scratchorg",
     "features": [
@@ -17,11 +17,15 @@
         "Knowledge",
         "LightningServiceConsole",
         "FIELDSERVICE:1",
+        "EmbeddedServiceMessaging",
         "LiveMessage"
     ],
     "country": "NO",
     "language": "en_US",
     "settings": {
+        "liveMessageSettings": {
+            "enableLiveMessage": true
+        },
         "communitiesSettings": {
             "enableNetworksEnabled": true,
             "enableOotbProfExtUserOpsEnable": true
@@ -68,9 +72,14 @@
         },
         "surveySettings": {
             "enableSurvey": true
+        }
+    },
+    "objectSettings": {
+        "case": {
+            "sharingModel": "private"
         },
-        "liveMessageSettings": {
-            "enableLiveMessage": true
+        "opportunity": {
+            "sharingModel": "private"
         }
     }
 }

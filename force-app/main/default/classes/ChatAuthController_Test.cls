@@ -2,87 +2,72 @@
 public class ChatAuthController_Test {
     @TestSetup
     static void makeData() {
-        Case casy = (Case) UTIL_TestDataFactory.createRecord(new Case());
-        UTIL_TestDataFactory.createRecord(new LiveChatTranscript(CaseId = casy.Id));
-    }
+        User thisUser = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
 
-    @isTest
-    static void testGetChatStatus() {
-        Map<String, String> chatStatuses;
-
-        Test.startTest();
-        LiveChatTranscript chatTranscript = [SELECT Id FROM LiveChatTranscript LIMIT 1];
-        chatStatuses = ChatAuthController.getChatInfo(chatTranscript.Id);
-
-        //Testing exception
-        try {
-            ChatAuthController.getChatInfo('FAKEID');
-        } catch (Exception ex) {
-            System.assertEquals(new AuraHandledException('Test').getTypeName(), ex.getTypeName());
+        System.runAs(thisUser) {
+            MessagingChannel channel = (MessagingChannel) UTIL_TestDataFactory.createRecord(new MessagingChannel());
+            UTIL_TestDataFactory.createRecord(
+                new MessagingSession(
+                    MessagingChannelId = channel.Id,
+                    MessagingEndUserId = UTIL_TestDataFactory.createRecord(
+                            new MessagingEndUser(MessagingChannelId = channel.Id)
+                        )
+                        .Id
+                )
+            );
         }
-        Test.stopTest();
-
-        System.assertEquals('Not Started', chatStatuses.get('AUTH_STATUS'));
     }
 
     @isTest
     static void testSetStatusRequested() {
         Test.startTest();
-        LiveChatTranscript chatTranscript = [SELECT Id FROM LiveChatTranscript LIMIT 1];
-        LiveChatVisitor visitor = [SELECT Id FROM LiveChatVisitor LIMIT 1];
-        ChatAuthController.setStatusRequested(chatTranscript.Id);
+        MessagingSession messagingSession = [SELECT Id FROM MessagingSession LIMIT 1];
+        MessagingEndUser endUser = [SELECT Id FROM MessagingEndUser LIMIT 1];
+        ChatAuthController.setStatusRequested(messagingSession.Id);
 
         //Testing exception
         try {
-            ChatAuthController.setStatusRequested(visitor.Id);
+            ChatAuthController.setStatusRequested(endUser.Id);
         } catch (Exception ex) {
             System.assertEquals(new AuraHandledException('Test').getTypeName(), ex.getTypeName());
         }
         Test.stopTest();
 
-        LiveChatTranscript updatedTranscript = [
+        MessagingSession updatedSession = [
             SELECT Id, CRM_Authentication_Status__c
-            FROM LiveChatTranscript
-            WHERE Id = :chatTranscript.Id
+            FROM MessagingSession
+            WHERE Id = :messagingSession.Id
         ];
 
-        System.assertEquals('Authentication Requested', updatedTranscript.CRM_Authentication_Status__c);
+        System.assertEquals('Authentication Requested', updatedSession.CRM_Authentication_Status__c);
     }
 
     @isTest
-    static void testSetStatusCompleted() {
-        LiveChatTranscript chatTranscript = [SELECT Id FROM LiveChatTranscript LIMIT 1];
+    static void testGetChatStatus() {
+        Map<String, String> messagingStatus;
 
         Test.startTest();
-        ChatAuthController.setStatusCompleted(chatTranscript.Id);
+        MessagingSession messSess = [SELECT Id FROM MessagingSession LIMIT 1];
+        messagingStatus = ChatAuthController.getMessagingInfo(messSess.Id);
+
+        //Testing exception
+        try {
+            ChatAuthController.getMessagingInfo('FAKEID');
+        } catch (Exception ex) {
+            System.assertEquals(new AuraHandledException('Test').getTypeName(), ex.getTypeName());
+        }
         Test.stopTest();
 
-        LiveChatTranscript updatedTranscript = [
-            SELECT Id, CRM_Authentication_Status__c
-            FROM LiveChatTranscript
-            WHERE Id = :chatTranscript.Id
-        ];
-        System.assertEquals('Completed', updatedTranscript.CRM_Authentication_Status__c);
-    }
-
-    @isTest
-    static void testGetCommunityAuthUrl() {
-        String communityUrl;
-
-        Test.startTest();
-        communityUrl = ChatAuthController.getCommunityAuthUrl();
-        Test.stopTest();
-
-        System.assert(String.isNotBlank(communityUrl));
+        System.assertEquals('Not Started', messagingStatus.get('AUTH_STATUS'));
     }
 
     @isTest
     static void testGetCounselorName() {
         String fullname;
-        LiveChatTranscript chatTranscript = [SELECT Id FROM LiveChatTranscript LIMIT 1];
+        MessagingSession messagingSession = [SELECT Id FROM MessagingSession LIMIT 1];
 
         Test.startTest();
-        fullname = ChatAuthController.getCounselorName(chatTranscript.Id);
+        fullname = ChatAuthController.getCounselorName(messagingSession.Id);
         Test.stopTest();
 
         System.assert(String.isNotBlank(fullname));

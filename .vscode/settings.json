@@ -34,5 +34,6 @@
         "Scratch_Permissions",
         "NKS_Chat_Permissions"
     ],
-    "xml.preferences.showSchemaDocumentationType": "none"
+    "xml.preferences.showSchemaDocumentationType": "none",
+    "sarif-viewer.connectToGithubCodeScanning": "off"
 }

@@ -31,6 +31,30 @@ private class NKS_ChatTranscriptService_Test {
         User testUser = new User();
         testUser.CRM_NAV_Ident__c = 'Z999998';
         UTIL_TestDataFactory.createRecord(testUser);
+
+        System.runAs(testUser) {
+            MessagingChannel objMsgChannel = new MessagingChannel();
+            objMsgChannel.MasterLabel = 'TestChannel';
+            objMsgChannel.DeveloperName = 'TestChannel';
+            objMsgChannel.IsActive = true;
+            objMsgChannel.MessageType = 'Text';
+            objMsgChannel.MessagingPlatformKey = 'TestChannel';
+            insert objMsgChannel;
+
+            MessagingEndUser objMsgUser = new MessagingEndUser();
+            objMsgUser.Name = 'Messaging User';
+            objMsgUser.MessagingChannelId = objMsgChannel.Id;
+            objMsgUser.MessageType = 'EmbeddedMessaging';
+            objMsgUser.MessagingPlatformKey = 'TestChannel';
+            insert objMsgUser;
+
+            MessagingSession objSession = new MessagingSession();
+            objSession.MessagingEndUserId = objMsgUser.Id;
+            objSession.MessagingChannelId = objMsgChannel.Id;
+            objSession.Status = 'Active';
+            objSession.Queue_Name__c = 'NKS_Messaging_Arbeid';
+            insert objSession;
+        }
     }
 
     @isTest
@@ -73,6 +97,39 @@ private class NKS_ChatTranscriptService_Test {
         Test.stopTest();
         String expectedText = NKS_ChatTranscriptService.authTexts.get('norwegian');
 
+        Assert.areEqual(expectedText, result);
+    }
+
+    @isTest
+    static void testGetMessagingSession() {
+        MessagingSession testSession = [
+            SELECT Id
+            FROM MessagingSession
+            LIMIT 1
+        ];
+
+        Test.startTest();
+        MessagingSession result = NKS_ChatTranscriptService.getMessagingSession(testSession.Id);
+        Test.stopTest();
+
+        Assert.areNotEqual(null, result, 'The result should not be null');
+        Assert.areEqual('NKS_Messaging_Arbeid', result.Queue_Name__c, 'The Queue_Name__c field should match');
+        Assert.areEqual('Active', result.Status, 'The Status field should match');
+    }
+
+    @isTest
+    static void testGenerateAuthMessageMessagingSessionFallback() {
+        MessagingSession testSession = [
+            SELECT Id
+            FROM MessagingSession
+            LIMIT 1
+        ];
+
+        Test.startTest();
+        String result = NKS_ChatTranscriptService.generateAuthMessage(testSession.Id);
+        Test.stopTest();
+
+        String expectedText = NKS_ChatTranscriptService.authTexts.get('norwegian');
         Assert.areEqual(expectedText, result);
     }
 }

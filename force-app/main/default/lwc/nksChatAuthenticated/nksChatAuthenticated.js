@@ -1,11 +1,11 @@
 import { LightningElement } from 'lwc';
-import setStatusCompleted from '@salesforce/apex/ChatAuthController.setStatusCompleted';
+import setStatusCompleted from '@salesforce/apex/ChatAuthControllerExperience.setStatusCompleted';
 
-export default class AuthenticationCompletedHandler extends LightningElement {
+export default class NksChatAuthenticated extends LightningElement {
     connectedCallback() {
-        const chatTranscriptId = this.getUrlParamValue(window.location.href, 'ctid');
+        const messagingId = this.getUrlParamValue(window.location.href, 'ctid');
 
-        setStatusCompleted({ chatTranscriptId: chatTranscriptId })
+        setStatusCompleted({ messagingId: messagingId })
             .then((result) => {
                 console.log(result);
             })

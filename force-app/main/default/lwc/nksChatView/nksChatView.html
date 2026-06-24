@@ -15,7 +15,10 @@
             modal-header="Chatbot samtale"
         >
             <div slot="modalContent">
-                <lightning-formatted-rich-text value={chatbotMessage}></lightning-formatted-rich-text>
+                <div lwc:if={isChatTranscript}>
+                    <lightning-formatted-rich-text value={chatbotMessage}></lightning-formatted-rich-text>
+                </div>
+                <div lwc:else class="chatbot-text">{chatbotMessage}</div>
             </div>
         </c-community-modal>
         <c-community-message-container message-groups={messageGroups}></c-community-message-container>

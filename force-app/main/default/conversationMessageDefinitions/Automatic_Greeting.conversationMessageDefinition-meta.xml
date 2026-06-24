@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ConversationMessageDefinition xmlns="http://soap.sforce.com/2006/04/metadata">
+    <constants>
+        <constantType>Custom</constantType>
+        <label>English_greeting</label>
+        <name>English_greeting</name>
+        <primitiveValues>
+            <textValue>Welcome to chat with NAV. This is an open chat and we kindly ask you not to reveal personal or case related information. We can give you general advice. You&apos;re chatting with</textValue>
+            <type>Text</type>
+        </primitiveValues>
+        <valueType>Text</valueType>
+    </constants>
+    <constants>
+        <constantType>Custom</constantType>
+        <label>Norwegian_greeting</label>
+        <name>Norwegian_greeting</name>
+        <primitiveValues>
+            <textValue>Velkommen til chat med NAV. Dette er en uinnlogget chat og vi ber deg ikke oppgi person - eller saksopplysninger. Vi kan kun gi deg generell veiledning. Du snakker med</textValue>
+            <type>Text</type>
+        </primitiveValues>
+        <valueType>Text</valueType>
+    </constants>
+    <constants>
+        <constantType>Custom</constantType>
+        <label>Norwegian_greeting_2</label>
+        <name>Norwegian_greeting_2</name>
+        <primitiveValues>
+            <textValue>. Gi meg et lite øyeblikk slik at jeg kan se over dialogen du har hatt så langt.</textValue>
+            <type>Text</type>
+        </primitiveValues>
+        <valueType>Text</valueType>
+    </constants>
+    <constants>
+        <constantType>Title</constantType>
+        <primitiveValues>
+            <textValue>This is in English</textValue>
+            <type>Text</type>
+        </primitiveValues>
+    </constants>
+    <label>Automatic Greeting</label>
+    <language>en_US</language>
+    <messageLayouts>
+        <formatType>Text</formatType>
+        <layoutItems>
+            <collectionType>None</collectionType>
+            <name>text</name>
+            <primitiveValues>
+                <formulaTemplate>{!IF($Parameters.MessagingSession.CRM_Language__c = &apos;en_US&apos;, 
+$Constants.English_greeting &amp; &apos; &apos; &amp; $Parameters.MessagingSession.LastModifiedBy.NKS_GreetingName__c,
+$Constants.Norwegian_greeting &amp; &apos; &apos; &amp; $Parameters.MessagingSession.LastModifiedBy.NKS_GreetingName__c &amp; $Constants.Norwegian_greeting_2)}</formulaTemplate>
+                <type>FormulaTemplate</type>
+            </primitiveValues>
+        </layoutItems>
+        <messageType>StaticContent</messageType>
+    </messageLayouts>
+    <type>AutoResponse</type>
+</ConversationMessageDefinition>

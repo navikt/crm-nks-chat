@@ -22,4 +22,17 @@ public with sharing class NKS_ChatAfterWork_Test {
         ];
         Assert.areEqual(15000, report.CRM_Value__c);
     }
+
+    @IsTest
+    static void testUpdateThreatClickValue_invalidId_throwsAuraHandledException() {
+        Id invalidId = UserInfo.getUserId();
+        Test.startTest();
+        try {
+            NKS_ChatAfterWork.updateThreatClickValue(invalidId, 1);
+            Assert.fail('Expected AuraHandledException to be thrown');
+        } catch (AuraHandledException e) {
+            Assert.isTrue(true, 'AuraHandledException should be thrown for an invalid record Id');
+        }
+        Test.stopTest();
+    }
 }

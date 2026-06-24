@@ -1,34 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>63.0</apiVersion>
+    <apiVersion>66.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
-        <name>Update_Theme_Group</name>
-        <label>Update Theme Group</label>
-        <locationX>50</locationX>
-        <locationY>503</locationY>
+        <name>Assign_Theme_Group</name>
+        <label>Assign Theme Group</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <assignmentItems>
-            <assignToReference>$Record.NKS_Theme_Group__c</assignToReference>
+            <assignToReference>input_record.NKS_Theme_Group__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <elementReference>Get_Theme_Group.Id</elementReference>
             </value>
         </assignmentItems>
-        <assignmentItems>
-            <assignToReference>$Record.NKS_Theme_Group_Name__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Get_Theme_Group.Name</elementReference>
-            </value>
-        </assignmentItems>
+        <connector>
+            <targetReference>Update_Messaging_Session</targetReference>
+        </connector>
     </assignments>
     <decisions>
-        <name>Theme_Found</name>
-        <label>Theme Found</label>
-        <locationX>182</locationX>
-        <locationY>395</locationY>
-        <defaultConnectorLabel>No</defaultConnectorLabel>
+        <name>Not_Null</name>
+        <label>Not Null</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
-            <name>Yes</name>
+            <name>True</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>Get_Theme_Group</leftValueReference>
@@ -38,29 +35,28 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Update_Theme_Group</targetReference>
+                <targetReference>Assign_Theme_Group</targetReference>
             </connector>
-            <label>Yes</label>
+            <label>True</label>
         </rules>
     </decisions>
     <environments>Default</environments>
     <formulas>
-        <description>Maps the incoming queue names to a theme group.</description>
         <name>Queue_Theme_Mapping</name>
         <dataType>String</dataType>
-        <expression>CASE({!$Record.LiveChatButton.Queue.DeveloperName},
-    &apos;NKS_Chat_Familie&apos;, &apos;FMLI&apos;,
-    &apos;NKS_Chat_Arbeid&apos;, &apos;ARBD&apos;,
-    &apos;NKS_Chat_Ufoere&apos;, &apos;HELSE&apos;,
-    &apos;NKS_Chat_Helse&apos;, &apos;HELSE&apos;,
-    &apos;NKS_Chat_Arbeidsgiver_og_Samhandler&apos;, &apos;ARBD&apos;,
-    &apos;NKS_Chat_Pensjon&apos;, &apos;PENS&apos;,
-    &apos;HOT_Chat_Hjelpemiddelsentralen&apos;, &apos;HJLPM&apos;,
+        <expression>CASE({!input_record.Queue_Name__c},
+    &apos;NKS_Messaging_Familie&apos;, &apos;FMLI&apos;,
+    &apos;NKS_Messaging_Arbeid&apos;, &apos;ARBD&apos;,
+    &apos;NKS_Messaging_Ufoere&apos;, &apos;HELSE&apos;,
+    &apos;NKS_Messaging_Helse&apos;, &apos;HELSE&apos;,
+    &apos;NKS_Messaging_Arbeidsgiver_og_Samhandler&apos;, &apos;ARBD&apos;,
+    &apos;NKS_Messaging_Pensjon&apos;, &apos;PENS&apos;,
+    &apos;HOT_Messaging_Hjelpemiddelsentralen&apos;, &apos;HJLPM&apos;,
     null
 )</expression>
     </formulas>
-    <interviewLabel>Update {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Update Chat Theme Group</label>
+    <interviewLabel>NKS Set Theme {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>NKS Messaging Set Theme Group</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -83,11 +79,11 @@
     <recordLookups>
         <name>Get_Theme_Group</name>
         <label>Get Theme Group</label>
-        <locationX>182</locationX>
-        <locationY>287</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Theme_Found</targetReference>
+            <targetReference>Not_Null</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -113,28 +109,29 @@
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>Common_Code__c</object>
-        <queriedFields>Id</queriedFields>
-        <queriedFields>Name</queriedFields>
-        <queriedFields>CRM_Code__c</queriedFields>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
+    <recordUpdates>
+        <name>Update_Messaging_Session</name>
+        <label>Update Messaging Session</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <inputReference>input_record</inputReference>
+    </recordUpdates>
     <start>
-        <locationX>56</locationX>
+        <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Get_Theme_Group</targetReference>
         </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>LiveChatButtonId</field>
-            <operator>IsChanged</operator>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </filters>
-        <object>LiveChatTranscript</object>
-        <recordTriggerType>Update</recordTriggerType>
-        <triggerType>RecordBeforeSave</triggerType>
     </start>
     <status>Active</status>
+    <variables>
+        <name>input_record</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+        <objectType>MessagingSession</objectType>
+    </variables>
 </Flow>

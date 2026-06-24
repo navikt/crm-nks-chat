@@ -1,7 +1,7 @@
 ({
     onTabCreated: function (component, event, helper) {
-        var newTabId = event.getParam('tabId');
-        var workspace = component.find('workspace');
+        const newTabId = event.getParam('tabId');
+        const workspace = component.find('workspace');
 
         workspace.getAllTabInfo().then(function (response) {
             if (response.length === 1) {
@@ -29,36 +29,21 @@
     },
 
     handleChatEnded: function (component, event, helper) {
-        const chatToolkit = component.find('chatToolkit');
-        const eventRecordId = event.getParam('recordId');
-        const workspace = component.find('workspace');
-        const eventFullID = helper.convertId15To18(eventRecordId);
+        const type = event.getParam('type');
+        if (type === 'sessionEnded') {
+            const eventRecordId = event.getParam('recordId');
+            const workspace = component.find('workspace');
 
-        workspace
-            .getAllTabInfo()
-            .then((res) => {
-                const eventTab = res.find((content) => content.recordId === eventFullID);
-                if (!eventTab) return;
-                helper.setTabColor(workspace, eventTab.tabId);
-            })
-            .catch(() => {
-                //Errors require manual handling.
-            });
-
-        chatToolkit
-            .getChatLog({
-                recordId: eventRecordId
-            })
-            .then((result) => {
-                let conversation = result.messages;
-                let filteredConversation = conversation.filter(function (message) {
-                    //Filtering out all messages of type supervisor and AgentWhisper as these are "whispers" and should not be added to the journal
-                    return message.type !== 'Supervisor' && message.type !== 'AgentWhisper';
+            workspace
+                .getAllTabInfo()
+                .then((tabInfoList) => {
+                    const eventTab = tabInfoList.find((tab) => tab.recordId === eventRecordId);
+                    if (!eventTab) return;
+                    helper.setTabColor(workspace, eventTab.tabId);
+                })
+                .catch((error) => {
+                    console.error('Error retrieving tab info for setting color:', error);
                 });
-                helper.callStoreConversation(component, filteredConversation, eventRecordId);
-            })
-            .catch(() => {
-                //Errors require manual handling.
-            });
+        }
     }
 });

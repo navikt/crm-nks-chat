@@ -22,11 +22,5 @@
         "saveRefs": true,
         "resolveRefs": true,
         "files": ["chats.json"]
-    },
-    {
-        "sobject": "PushTopic",
-        "saveRefs": true,
-        "resolveRefs": true,
-        "files": ["pushtopics.json"]
     }
 ]
