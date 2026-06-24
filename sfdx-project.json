@@ -4,7 +4,7 @@
             "path": "force-app",
             "default": true,
             "package": "crm-nks-chat",
-            "versionNumber": "0.77.0.NEXT",
+            "versionNumber": "0.78.0.NEXT",
             "dependencies": [
                 {
                     "package": "platform-data-model",
@@ -14,7 +14,7 @@
                     "package": "custom-metadata-dao",
                     "versionNumber": "0.1.33.LATEST"
                 },
-                 {
+                {
                     "package": "custom-permission-helper",
                     "versionNumber": "0.1.33.LATEST"
                 },
@@ -42,7 +42,6 @@
                     "package": "crm-henvendelse-base",
                     "versionNumber": "0.36.0.LATEST"
                 },
-               
                 {
                     "package": "crm-platform-integration",
                     "versionNumber": "0.170.0.LATEST"
