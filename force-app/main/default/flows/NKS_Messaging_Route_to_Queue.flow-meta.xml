@@ -493,7 +493,7 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Log_Values_From_Boost</targetReference>
+            <targetReference>Get_Arbeid_Queue</targetReference>
         </connector>
         <flowName>Flow_Create_Application_Log</flowName>
         <inputAssignments>
