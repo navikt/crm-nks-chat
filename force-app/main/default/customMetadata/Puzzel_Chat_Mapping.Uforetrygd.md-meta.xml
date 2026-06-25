@@ -6,11 +6,11 @@
     <protected>false</protected>
     <values>
         <field>Puzzel_Chat_Name__c</field>
-        <value xsi:type="xsd:string">SF_Chat_Uforetrygd</value>
+        <value xsi:type="xsd:string">SF_Chat_Uføretrygd</value>
     </values>
     <values>
         <field>Puzzel_Queue_Api__c</field>
-        <value xsi:type="xsd:string">q_sf_chat_uforetrygd</value>
+        <value xsi:type="xsd:string">q_sf_chat_uføretrygd</value>
     </values>
     <values>
         <field>Salesforce_QueueId__c</field>
