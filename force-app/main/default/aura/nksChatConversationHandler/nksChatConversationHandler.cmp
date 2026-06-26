@@ -5,7 +5,5 @@
     <lightning:conversationToolkitApi aura:id="chatToolkit" />
     <lightning:workspaceAPI aura:id="workspace" />
 
-    <aura:registerEvent name="appEvent" type="c:afterworkEvent" />
-    <aura:handler event="c:afterworkEvent" action="{!c.handleChatEnded}" />
     <aura:handler event="lightning:tabCreated" action="{! c.onTabCreated }" />
 </aura:component>
