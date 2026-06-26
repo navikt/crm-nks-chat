@@ -65,10 +65,6 @@
             });
     },
 
-    setWarningTabState: function (component) {
-        this.setTabStateWithDelay(component, 'warning');
-    },
-
     setSuccessTabState: function (component) {
         this.setTabStateWithDelay(component, 'success');
     },

@@ -55,10 +55,6 @@
         // Fired by LWC whenever auth status changes
         const status = event.getParam('status');
         helper.updateTabForAuthStatus(component, status);
-
-        if (status === 'Authentication Requested') {
-            helper.setWarningTabState(component);
-        }
     },
 
     handleChatEnded: function (component, event, helper) {
