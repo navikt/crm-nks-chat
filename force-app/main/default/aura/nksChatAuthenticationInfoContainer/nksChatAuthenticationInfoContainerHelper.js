@@ -44,18 +44,18 @@
         const workspace = component.find('workspace');
 
         workspace
-            .getFocusedTabInfo()
-            .then((tabInfo) => {
+            .getEnclosingTabId()
+            .then((tabId) => {
                 if (authStatus === 'Completed') {
                     return workspace.setTabIcon({
-                        tabId: tabInfo.tabId,
+                        tabId,
                         icon: 'utility:lock',
                         iconAlt: 'Innlogget chat'
                     });
                 }
 
                 return workspace.setTabIcon({
-                    tabId: tabInfo.tabId,
+                    tabId,
                     icon: 'standard:live_chat',
                     iconAlt: 'Uinnlogget chat'
                 });
