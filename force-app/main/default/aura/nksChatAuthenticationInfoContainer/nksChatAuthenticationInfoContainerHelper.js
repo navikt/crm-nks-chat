@@ -46,6 +46,8 @@
         workspace
             .getEnclosingTabId()
             .then((tabId) => {
+                component.set('v.chatTabId', tabId);
+
                 if (authStatus === 'Completed') {
                     return workspace.setTabIcon({
                         tabId,
@@ -75,20 +77,20 @@
 
     setTabStateWithDelay: function (component, state) {
         const workspace = component.find('workspace');
+        const tabId = component.get('v.chatTabId');
+
+        if (!tabId) {
+            return;
+        }
 
         // eslint-disable-next-line @lwc/lwc/no-async-operation, @locker/locker/distorted-window-set-timeout
         window.setTimeout(
             $A.getCallback(() => {
                 workspace
-                    .getFocusedTabInfo()
-                    .then((tabInfo) => {
-                        return workspace.setTabHighlighted({
-                            tabId: tabInfo.tabId,
-                            highlighted: true,
-                            options: {
-                                state: state
-                            }
-                        });
+                    .setTabHighlighted({
+                        tabId,
+                        highlighted: true,
+                        options: { state }
                     })
                     .catch((error) => {
                         console.error('Failed to set tab state:', JSON.stringify(error));
