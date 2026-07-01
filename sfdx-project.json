@@ -4,7 +4,7 @@
             "path": "force-app",
             "default": true,
             "package": "crm-nks-chat",
-            "versionNumber": "0.79.0.NEXT",
+            "versionNumber": "0.80.0.NEXT",
             "dependencies": [
                 {
                     "package": "platform-data-model",
