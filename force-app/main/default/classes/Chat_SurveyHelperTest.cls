@@ -1,23 +1,42 @@
 @isTest
-public with sharing class Chat_SurveyHelperTest {
-    @isTest
-    static void testGetSurveyLink() {
-        Case enCase = new Case(Status = 'New');
-        LiveChatTranscript transcript = new LiveChatTranscript(
-            ChatKey = 'testKey',
-            CaseId = enCase.Id,
-            CRM_Authentication_Status__c = 'Completed',
-            NKS_Authentication_Timestamp__c = Datetime.now()
-        );
-        String surveyInvitationLink = '';
+private class Chat_SurveyHelperTest {
+    @TestSetup
+    static void makeData() {
+        User thisUser = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
 
+        System.runAs(thisUser) {
+            MessagingChannel channel = (MessagingChannel) UTIL_TestDataFactory.createRecord(new MessagingChannel());
+            MessagingEndUser endUser = (MessagingEndUser) UTIL_TestDataFactory.createRecord(
+                new MessagingEndUser(MessagingChannelId = channel.Id)
+            );
+            UTIL_TestDataFactory.createRecord(
+                new MessagingSession(
+                    MessagingChannelId = channel.Id,
+                    MessagingEndUserId = endUser.Id,
+                    SessionKey = 'testKey'
+                )
+            );
+        }
+    }
+
+    @isTest
+    static void testGetSurveyInvitationLinkReturnsNullWhenNoSurveyInvitationFound() {
+        Test.startTest();
+        String surveyInvitationLink = Chat_SurveyHelper.getSurveyInvitationLink('testKey');
+        Test.stopTest();
+
+        Assert.isNull(surveyInvitationLink, 'Expected surveyInvitationLink to be null');
+    }
+
+    @isTest
+    static void testGetSurveyInvitationLinkThrowsWhenSessionKeyIsBlank() {
         Test.startTest();
         try {
-            surveyInvitationLink = Chat_SurveyHelper.getSurveyInvitationLink('testKey');
+            Chat_SurveyHelper.getSurveyInvitationLink('');
+            Assert.fail('Expected exception was not thrown');
         } catch (Exception e) {
-            System.assertEquals(e.getTypeName(), 'QueryException');
+            Assert.areEqual('sessionKey is required.', e.getMessage());
         }
         Test.stopTest();
-        System.assertEquals(null, surveyInvitationLink);
     }
 }
