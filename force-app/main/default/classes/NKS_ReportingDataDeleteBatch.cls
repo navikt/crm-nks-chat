@@ -9,7 +9,7 @@ public with sharing class NKS_ReportingDataDeleteBatch implements Database.Batch
         List<ReportingData__c> toDelete = new List<ReportingData__c>();
         for (ReportingData__c report : scope) {
             // Long text area field cannot be used in a WHERE filter, so check it here
-            if (report.NKS_Messaging_Session__c != null) {
+            if (!String.isBlank(report.NKS_Messaging_Session__c)) {
                 toDelete.add(report);
             }
         }
@@ -21,6 +21,6 @@ public with sharing class NKS_ReportingDataDeleteBatch implements Database.Batch
 
     // Should run once a day. Cron exp: 0 0 0 * * ?
     public void execute(SchedulableContext context) {
-        Database.executeBatch(new NKS_ReportingDataDeleteBatch(), 200);
+        Database.executeBatch(new NKS_ReportingDataDeleteBatch(), 100);
     }
 }
