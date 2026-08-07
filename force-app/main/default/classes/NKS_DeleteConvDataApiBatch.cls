@@ -1,5 +1,5 @@
 public with sharing class NKS_DeleteConvDataApiBatch implements Database.Batchable<sObject>, Schedulable {
-    private static final String QUERY = 'SELECT Id, MessagingEndUserId FROM MessagingSession WHERE EndUserAccountId = NULL AND CRM_Authentication_Status__c != \'Completed\' AND Status IN (\'Ended\', \'Inactive\', \'Error\') AND ((Queue_Name__c IN (\'NKS_Messaging_Gjeldsraadgivning\', \'NKS_Messaging_Sosiale_Tjenester\') AND CreatedDate = LAST_N_DAYS:2) OR (Queue_Name__c NOT IN (\'NKS_Messaging_Gjeldsraadgivning\', \'NKS_Messaging_Sosiale_Tjenester\') AND CreatedDate <= N_DAYS_AGO:2))';
+    private static final String QUERY = 'SELECT Id, MessagingEndUserId FROM MessagingSession WHERE EndUserAccountId = NULL AND CRM_Authentication_Status__c != \'Completed\' AND Status IN (\'Ended\', \'Inactive\', \'Error\') AND CreatedDate <= N_DAYS_AGO:2';
 
     public Database.QueryLocator start(Database.BatchableContext context) {
         return Database.getQueryLocator(QUERY);
@@ -15,6 +15,8 @@ public with sharing class NKS_DeleteConvDataApiBatch implements Database.Batchab
             }
         }
 
+        // Since we delete unauthenticated Messaging Sessions (with the chat content), we need to copy the other data to ReportingData__c before deletion for statistics.
+        NKS_MessagingSessionReportData.copyToReportingData(sessionIds);
         NKS_ConversationEntryController.deleteSessionDataAndEnqueueCallout(sessionIds, participantEntityIds);
     }
 
