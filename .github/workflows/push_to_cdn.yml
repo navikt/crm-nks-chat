@@ -1,30 +1,24 @@
-name: 'push-to-cdn'
+name: Push to CDN
 
 on:
-  workflow_dispatch:
   push:
     branches:
       - 'main'
-    paths:
-    - "cdn/**"
 
 jobs:
   upload:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: 'read'
-      id-token: 'write'
+      contents: read
+      id-token: write
 
     steps:
-      - uses: 'actions/checkout@v3'
-
-      - id: upload
-        uses: navikt/frontend/actions/cdn-upload/v1@main
+      - uses: actions/checkout@v6
+      - name: Upload static files to CDN
+        uses: nais/deploy/actions/cdn-upload/v2@master
         with:
-          cdn-team-name: teamnks
+          team: teamnks
           source: ./cdn
           destination: '/assets/'
-
-      - run: echo uploaded file ${{ steps.upload.outputs.uploaded }}
-        shell: bash
+      - run: 'echo "uploaded file ${{ steps.upload.outputs.uploaded }}"'
