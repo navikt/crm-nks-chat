@@ -6,37 +6,45 @@ const QUICK_TEXT_TRIGGER_KEYS = ['Enter', ' ', ','];
 export default class NksMessagingQuickText extends LightningElement {
     quickTextMap = [];
     recentlyInserted = '';
+    _boundEditors = new Map();
+    _observer = null;
 
     connectedCallback() {
-        const conversationBody = document.querySelector('[data-target-selection-name="scrt_conversationBody"]');
-        if (!conversationBody) return;
+        this._bindEditors();
 
-        const editor = conversationBody.querySelector('textarea');
-        if (!editor) return;
-
-        if (this._keyupBound) return;
-        this._keyupBound = true;
-
-        editor.addEventListener('keyup', (event) => {
-            if (QUICK_TEXT_TRIGGER_KEYS.includes(event.key)) {
-                this.insertquicktext(event, editor);
-            }
+        this._observer = new MutationObserver(() => {
+            this._bindEditors();
+            this._cleanupEditors();
         });
+
+        this._observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    }
+
+    disconnectedCallback() {
+        this._removeAllListeners();
+
+        if (this._observer) {
+            this._observer.disconnect();
+            this._observer = null;
+        }
     }
 
     @wire(getQuicktexts, {})
     wiredQuicktexts({ error, data }) {
         if (error) {
-            console.error('getQuicktexts error:', error);
             this.quickTextMap = [];
         } else if (data) {
             this.quickTextMap = data.map((row) => {
                 const message = row.Message ?? '';
                 const isCaseSensitive = Boolean(row.Case_sensitive__c);
-                const abbreviation = row.nksAbbreviationKey__c;
+                const abbreviation = row.nksAbbreviationKey__c ?? '';
 
                 return {
                     abbreviation,
+                    abbreviationUpper: abbreviation.toUpperCase(),
                     content: {
                         message,
                         isCaseSensitive
@@ -46,6 +54,43 @@ export default class NksMessagingQuickText extends LightningElement {
         }
     }
 
+    _bindEditors() {
+        // eslint-disable-next-line @lwc/lwc/no-document-query
+        const conversationBodies = document.querySelectorAll('[data-target-selection-name="scrt_conversationBody"]');
+
+        conversationBodies.forEach((conversationBody) => {
+            const editor = conversationBody.querySelector('textarea');
+            if (!editor || this._boundEditors.has(editor)) {
+                return;
+            }
+
+            const handler = (event) => {
+                if (QUICK_TEXT_TRIGGER_KEYS.includes(event.key)) {
+                    this.insertquicktext(event, editor);
+                }
+            };
+
+            editor.addEventListener('keyup', handler);
+            this._boundEditors.set(editor, handler);
+        });
+    }
+
+    _cleanupEditors() {
+        for (const [editor, handler] of this._boundEditors.entries()) {
+            if (!document.body.contains(editor)) {
+                editor.removeEventListener('keyup', handler);
+                this._boundEditors.delete(editor);
+            }
+        }
+    }
+
+    _removeAllListeners() {
+        for (const [editor, handler] of this._boundEditors.entries()) {
+            editor.removeEventListener('keyup', handler);
+        }
+        this._boundEditors.clear();
+    }
+
     insertquicktext(event, editor) {
         if (!Array.isArray(this.quickTextMap) || this.quickTextMap.length === 0) {
             this.recentlyInserted = '';
@@ -53,7 +98,6 @@ export default class NksMessagingQuickText extends LightningElement {
         }
 
         const caretEnd = editor.selectionEnd;
-
         const lastItem = editor.value
             .substring(0, caretEnd)
             .replace(/(\r\n|\n|\r)/g, ' ')
@@ -67,7 +111,6 @@ export default class NksMessagingQuickText extends LightningElement {
         }
 
         const lastWord = lastItem.replace(event.key, '');
-
         const obj = this._getQmappedItem(lastWord);
 
         if (!obj) {
@@ -82,12 +125,11 @@ export default class NksMessagingQuickText extends LightningElement {
 
         if (isCaseSensitive) {
             const words = quickText.split(' ');
-
             const first = lastItem.charAt(0);
+
             if (first && first === first.toLowerCase()) {
                 words[0] = (words[0] || '').toLowerCase();
-                const lowerCaseQuickText = words.join(' ');
-                this._replaceWithQuickText(editor, lowerCaseQuickText + lastChar, startIndex, caretEnd);
+                this._replaceWithQuickText(editor, words.join(' ') + lastChar, startIndex, caretEnd);
                 return;
             }
 
@@ -106,6 +148,7 @@ export default class NksMessagingQuickText extends LightningElement {
 
         const needleUpper = abbreviation.toUpperCase();
         const found = this.quickTextMap.find((item) => item.abbreviationUpper === needleUpper);
+
         if (found) return found;
 
         return this.quickTextMap.find((item) => item.abbreviation === abbreviation) ?? null;
@@ -116,8 +159,8 @@ export default class NksMessagingQuickText extends LightningElement {
         const safeEnd = Math.max(safeStart, end);
 
         editor.setRangeText(replacement, safeStart, safeEnd, 'end');
-        editor.dispatchEvent(new CustomEvent('input', { bubbles: true }));
-
+        // eslint-disable-next-line @lwc/lwc/prefer-custom-event
+        editor.dispatchEvent(new Event('input', { bubbles: true }));
         this.recentlyInserted = replacement;
     }
 }
