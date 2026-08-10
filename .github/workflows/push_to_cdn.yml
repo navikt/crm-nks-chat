@@ -1,9 +1,12 @@
 name: Push to CDN
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - 'main'
+    paths:
+      - "cdn/**"
 
 jobs:
   upload:
