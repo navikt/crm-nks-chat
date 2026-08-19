@@ -6,22 +6,23 @@ const QUICK_TEXT_TRIGGER_KEYS = ['Enter', ' ', ','];
 export default class NksMessagingQuickText extends LightningElement {
     quickTextMap = [];
     recentlyInserted = '';
+    // eslint-disable-next-line compat/compat
+    _boundEditors = new WeakSet();
+    _scanInterval;
 
     connectedCallback() {
-        const conversationBody = document.querySelector('[data-target-selection-name="scrt_conversationBody"]');
-        if (!conversationBody) return;
+        this.bindEditors();
+        // eslint-disable-next-line @lwc/lwc/no-async-operation, @locker/locker/distorted-window-set-interval
+        this._scanInterval = window.setInterval(() => {
+            this.bindEditors();
+        }, 1000);
+    }
 
-        const editor = conversationBody.querySelector('textarea');
-        if (!editor) return;
-
-        if (this._keyupBound) return;
-        this._keyupBound = true;
-
-        editor.addEventListener('keyup', (event) => {
-            if (QUICK_TEXT_TRIGGER_KEYS.includes(event.key)) {
-                this.insertquicktext(event, editor);
-            }
-        });
+    disconnectedCallback() {
+        if (this._scanInterval) {
+            window.clearInterval(this._scanInterval);
+            this._scanInterval = null;
+        }
     }
 
     @wire(getQuicktexts, {})
@@ -33,10 +34,11 @@ export default class NksMessagingQuickText extends LightningElement {
             this.quickTextMap = data.map((row) => {
                 const message = row.Message ?? '';
                 const isCaseSensitive = Boolean(row.Case_sensitive__c);
-                const abbreviation = row.nksAbbreviationKey__c;
+                const abbreviation = row.nksAbbreviationKey__c ?? '';
 
                 return {
                     abbreviation,
+                    abbreviationUpper: abbreviation.toUpperCase(),
                     content: {
                         message,
                         isCaseSensitive
@@ -46,6 +48,26 @@ export default class NksMessagingQuickText extends LightningElement {
         }
     }
 
+    bindEditors() {
+        // eslint-disable-next-line @lwc/lwc/no-document-query
+        const conversationBodies = document.querySelectorAll('[data-target-selection-name="scrt_conversationBody"]');
+
+        conversationBodies.forEach((conversationBody) => {
+            const editor = conversationBody.querySelector('textarea');
+            if (!editor || this._boundEditors.has(editor)) {
+                return;
+            }
+
+            this._boundEditors.add(editor);
+
+            editor.addEventListener('keyup', (event) => {
+                if (QUICK_TEXT_TRIGGER_KEYS.includes(event.key)) {
+                    this.insertquicktext(event, editor);
+                }
+            });
+        });
+    }
+
     insertquicktext(event, editor) {
         if (!Array.isArray(this.quickTextMap) || this.quickTextMap.length === 0) {
             this.recentlyInserted = '';
@@ -53,7 +75,6 @@ export default class NksMessagingQuickText extends LightningElement {
         }
 
         const caretEnd = editor.selectionEnd;
-
         const lastItem = editor.value
             .substring(0, caretEnd)
             .replace(/(\r\n|\n|\r)/g, ' ')
@@ -67,7 +88,6 @@ export default class NksMessagingQuickText extends LightningElement {
         }
 
         const lastWord = lastItem.replace(event.key, '');
-
         const obj = this._getQmappedItem(lastWord);
 
         if (!obj) {
@@ -82,8 +102,8 @@ export default class NksMessagingQuickText extends LightningElement {
 
         if (isCaseSensitive) {
             const words = quickText.split(' ');
-
             const first = lastItem.charAt(0);
+
             if (first && first === first.toLowerCase()) {
                 words[0] = (words[0] || '').toLowerCase();
                 const lowerCaseQuickText = words.join(' ');
