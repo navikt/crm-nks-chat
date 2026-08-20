@@ -4,6 +4,7 @@ public with sharing class NKS_ReportingDataDeleteBatch_Test {
     static void makeData() {
         ReportingData__c oldReport = new ReportingData__c(
             CRM_Category__c = 'Chat',
+            NKS_Has_Messaging_Session__c = true,
             NKS_Messaging_Session__c = '{"Status":"Ended"}'
         );
         insert oldReport;
@@ -11,6 +12,7 @@ public with sharing class NKS_ReportingDataDeleteBatch_Test {
 
         ReportingData__c recentReport = new ReportingData__c(
             CRM_Category__c = 'Chat',
+            NKS_Has_Messaging_Session__c = true,
             NKS_Messaging_Session__c = '{"Status":"Ended"}'
         );
         insert recentReport;
