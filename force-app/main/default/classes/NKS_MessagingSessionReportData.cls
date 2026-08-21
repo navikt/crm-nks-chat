@@ -62,7 +62,11 @@ public with sharing class NKS_MessagingSessionReportData {
             };
 
             reportingDataList.add(
-                new ReportingData__c(CRM_Category__c = 'Chat', NKS_Messaging_Session__c = JSON.serialize(fieldMap))
+                new ReportingData__c(
+                    CRM_Category__c = 'Chat',
+                    NKS_Has_Messaging_Session__c = true,
+                    NKS_Messaging_Session__c = JSON.serialize(fieldMap)
+                )
             );
         }
 

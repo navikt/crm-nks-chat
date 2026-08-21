@@ -37,11 +37,12 @@ public with sharing class NKS_MessagingSessionReportData_Test {
         Test.stopTest();
 
         ReportingData__c report = [
-            SELECT Id, NKS_Messaging_Session__c
+            SELECT Id, NKS_Has_Messaging_Session__c, NKS_Messaging_Session__c
             FROM ReportingData__c
             WHERE CRM_Category__c = 'Chat'
             LIMIT 1
         ];
+        Assert.isTrue(report.NKS_Has_Messaging_Session__c);
         Assert.isTrue(report.NKS_Messaging_Session__c.contains('"Status":"Ended"'));
     }
 
