@@ -25,6 +25,6 @@ public with sharing class NKS_DeleteConvDataApiBatch implements Database.Batchab
 
     // Should run every hour. Cron exp: 0 0 * * * ?
     public void execute(SchedulableContext context) {
-        Database.executeBatch(new NKS_DeleteConvDataApiBatch(), 50);
+        Database.executeBatch(new NKS_DeleteConvDataApiBatch(), 40);
     }
 }
