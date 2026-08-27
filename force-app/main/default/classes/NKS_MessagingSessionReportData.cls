@@ -1,7 +1,19 @@
 public with sharing class NKS_MessagingSessionReportData {
-    public static void copyToReportingData(Set<Id> sessionIds) {
+    public static Set<Id> copyToReportingData(Set<Id> sessionIds) {
         if (sessionIds == null || sessionIds.isEmpty()) {
-            return;
+            return new Set<Id>();
+        }
+
+        for (ReportingData__c existing : [
+            SELECT NKS_Messaging_Session_Id__c
+            FROM ReportingData__c
+            WHERE NKS_Messaging_Session_Id__c IN :sessionIds
+        ]) {
+            sessionIds.remove(existing.NKS_Messaging_Session_Id__c);
+        }
+
+        if (sessionIds.isEmpty()) {
+            return sessionIds;
         }
 
         List<MessagingSession> sessions = [
@@ -65,7 +77,8 @@ public with sharing class NKS_MessagingSessionReportData {
                 new ReportingData__c(
                     CRM_Category__c = 'Chat',
                     NKS_Has_Messaging_Session__c = true,
-                    NKS_Messaging_Session__c = JSON.serialize(fieldMap)
+                    NKS_Messaging_Session__c = JSON.serialize(fieldMap),
+                    NKS_Messaging_Session_Id__c = session.Id
                 )
             );
         }
@@ -73,5 +86,7 @@ public with sharing class NKS_MessagingSessionReportData {
         if (!reportingDataList.isEmpty()) {
             insert reportingDataList;
         }
+
+        return sessionIds;
     }
 }
