@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Flow xmlns="http://soap.sforce.com/2006/04/metadata"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <actionCalls>
         <name>Post_Oppgave</name>
         <label>Post Oppgave</label>
-        <locationX>182</locationX>
-        <locationY>458</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <actionName>OppgaveManager</actionName>
         <actionType>apex</actionType>
         <connector>
@@ -93,8 +92,8 @@
     <assignments>
         <name>Set_Publish_Notification_To_True</name>
         <label>Set Publish Notification To True</label>
-        <locationX>50</locationX>
-        <locationY>782</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <assignmentItems>
             <assignToReference>Publish_Notification</assignToReference>
             <operator>Assign</operator>
@@ -109,8 +108,8 @@
     <decisions>
         <name>Check_If_Has_Thread</name>
         <label>Check If Has Thread</label>
-        <locationX>380</locationX>
-        <locationY>242</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <defaultConnector>
             <targetReference>No_Account_Screen</targetReference>
         </defaultConnector>
@@ -134,8 +133,8 @@
     <decisions>
         <name>Verify_Task_Post</name>
         <label>Verify Task Post</label>
-        <locationX>182</locationX>
-        <locationY>674</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <defaultConnector>
             <targetReference>Post_Error_Screen</targetReference>
         </defaultConnector>
@@ -159,8 +158,8 @@
     <dynamicChoiceSets>
         <name>Priority_Picklist</name>
         <dataType>Picklist</dataType>
-        <displayField xsi:nil="true" />
-        <object xsi:nil="true" />
+        <displayField xsi:nil="true"/>
+        <object xsi:nil="true"/>
         <picklistField>CRM_Priority__c</picklistField>
         <picklistObject>NavTask__c</picklistObject>
     </dynamicChoiceSets>
@@ -199,8 +198,8 @@
         <description>Query the thread to relate the NAV Task to.</description>
         <name>Get_Thread</name>
         <label>Get Thread</label>
-        <locationX>380</locationX>
-        <locationY>134</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Check_If_Has_Thread</targetReference>
@@ -220,8 +219,8 @@
     <recordUpdates>
         <name>Update_Thread_Theme</name>
         <label>Update Thread Theme</label>
-        <locationX>182</locationX>
-        <locationY>566</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <connector>
             <targetReference>Verify_Task_Post</targetReference>
         </connector>
@@ -252,8 +251,8 @@
     <screens>
         <name>NAV_Task_Input_Screen</name>
         <label>NAV Task Input Screen</label>
-        <locationX>182</locationX>
-        <locationY>350</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -432,8 +431,8 @@
     <screens>
         <name>No_Account_Screen</name>
         <label>No Account Screen</label>
-        <locationX>578</locationX>
-        <locationY>350</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -457,8 +456,8 @@
     <screens>
         <name>Post_Error_Screen</name>
         <label>Post Error Screen</label>
-        <locationX>314</locationX>
-        <locationY>782</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -546,8 +545,8 @@
     <screens>
         <name>Publish_Oppgave_created_LMS_event</name>
         <label>Publish Oppgave created LMS event</label>
-        <locationX>50</locationX>
-        <locationY>890</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -583,7 +582,7 @@
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>254</locationX>
+        <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Get_Thread</targetReference>
@@ -616,6 +615,16 @@
         <isCollection>false</isCollection>
         <isInput>true</isInput>
         <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>Selected_Theme_SF_Id</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <value>
+            <elementReference>Theme_Categorization.theme</elementReference>
+        </value>
     </variables>
     <variables>
         <name>Selected_Unit_Name</name>
