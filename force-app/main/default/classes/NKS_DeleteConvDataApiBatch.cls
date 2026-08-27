@@ -7,17 +7,22 @@ public with sharing class NKS_DeleteConvDataApiBatch implements Database.Batchab
 
     public void execute(Database.BatchableContext context, List<MessagingSession> scope) {
         Set<Id> sessionIds = new Set<Id>();
-        List<String> participantEntityIds = new List<String>(); // Limit of 50 in API
         for (MessagingSession session : scope) {
             sessionIds.add(session.Id);
-            if (session.MessagingEndUserId != null) {
+        }
+
+        // Since we delete unauthenticated Messaging Sessions (with the chat content), we need to copy the other data to ReportingData__c before deletion for statistics.
+        // Sessions that already have reporting data have already had their deletion enqueued, so skip them here.
+        Set<Id> sessionIdsToDelete = NKS_MessagingSessionReportData.copyToReportingData(sessionIds);
+
+        List<String> participantEntityIds = new List<String>(); // Limit of 50 in API
+        for (MessagingSession session : scope) {
+            if (sessionIdsToDelete.contains(session.Id) && session.MessagingEndUserId != null) {
                 participantEntityIds.add(session.MessagingEndUserId);
             }
         }
 
-        // Since we delete unauthenticated Messaging Sessions (with the chat content), we need to copy the other data to ReportingData__c before deletion for statistics.
-        NKS_MessagingSessionReportData.copyToReportingData(sessionIds);
-        NKS_ConversationEntryController.deleteSessionDataAndEnqueueCallout(sessionIds, participantEntityIds);
+        NKS_ConversationEntryController.deleteSessionDataAndEnqueueCallout(sessionIdsToDelete, participantEntityIds);
     }
 
     public void finish(Database.BatchableContext context) {
