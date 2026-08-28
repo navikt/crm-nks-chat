@@ -1,23 +1,83 @@
 @isTest
-public with sharing class Chat_SurveyHelperTest {
+private class Chat_SurveyHelperTest {
+    private static void resetTestState() {
+        Chat_SurveyHelper.testForceException = false;
+        Chat_SurveyHelper.testHasInvitation = false;
+        Chat_SurveyHelper.testInvitationLinkValue = null;
+    }
+
+    @TestSetup
+    static void makeData() {
+        User thisUser = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
+
+        System.runAs(thisUser) {
+            MessagingChannel channel = (MessagingChannel) UTIL_TestDataFactory.createRecord(new MessagingChannel());
+            MessagingEndUser endUser = (MessagingEndUser) UTIL_TestDataFactory.createRecord(
+                new MessagingEndUser(MessagingChannelId = channel.Id)
+            );
+            UTIL_TestDataFactory.createRecord(
+                new MessagingSession(
+                    MessagingChannelId = channel.Id,
+                    MessagingEndUserId = endUser.Id,
+                    SessionKey = 'testKey'
+                )
+            );
+        }
+    }
+
     @isTest
-    static void testGetSurveyLink() {
-        Case enCase = new Case(Status = 'New');
-        LiveChatTranscript transcript = new LiveChatTranscript(
-            ChatKey = 'testKey',
-            CaseId = enCase.Id,
-            CRM_Authentication_Status__c = 'Completed',
-            NKS_Authentication_Timestamp__c = Datetime.now()
-        );
-        String surveyInvitationLink = '';
+    static void testGetSurveyInvitationLinkReturnsEmptyWhenNoSurveyInvitationFound() {
+        resetTestState();
+
+        Test.startTest();
+        String surveyInvitationLink = Chat_SurveyHelper.getSurveyInvitationLink('testKey');
+        Test.stopTest();
+
+        Assert.areEqual('', surveyInvitationLink);
+    }
+
+    @isTest
+    static void testGetSurveyInvitationLinkReturnsInvitationLinkWhenFound() {
+        resetTestState();
+        Chat_SurveyHelper.testHasInvitation = true;
+        Chat_SurveyHelper.testInvitationLinkValue = 'https://example.test/survey';
+
+        Test.startTest();
+        String surveyInvitationLink = Chat_SurveyHelper.getSurveyInvitationLink('testKey');
+        Test.stopTest();
+
+        Assert.areEqual('https://example.test/survey', surveyInvitationLink);
+    }
+
+    @isTest
+    static void testGetSurveyInvitationLinkThrowsWhenSessionKeyIsBlank() {
+        resetTestState();
 
         Test.startTest();
         try {
-            surveyInvitationLink = Chat_SurveyHelper.getSurveyInvitationLink('testKey');
+            Chat_SurveyHelper.getSurveyInvitationLink('');
+            Assert.fail('Expected exception was not thrown');
         } catch (Exception e) {
-            System.assertEquals(e.getTypeName(), 'QueryException');
+            Assert.areEqual('sessionKey is required.', e.getMessage());
         }
         Test.stopTest();
-        System.assertEquals(null, surveyInvitationLink);
+    }
+
+    @isTest
+    static void testGetSurveyInvitationLinkThrowsWrappedExceptionWhenUnexpectedErrorOccurs() {
+        resetTestState();
+        Chat_SurveyHelper.testForceException = true;
+
+        Test.startTest();
+        try {
+            Chat_SurveyHelper.getSurveyInvitationLink('testKey');
+            Assert.fail('Expected exception was not thrown');
+        } catch (Exception e) {
+            Assert.areEqual('Chat_SurveyHelper.ChatSurveyException', e.getTypeName());
+            Assert.isTrue(e.getMessage().contains('An error has occurred while getting SurveyInvitation link.'));
+            Assert.isTrue(e.getMessage().contains('sessionKey=testKey'));
+            Assert.isTrue(e.getMessage().contains('forced test exception'));
+        }
+        Test.stopTest();
     }
 }

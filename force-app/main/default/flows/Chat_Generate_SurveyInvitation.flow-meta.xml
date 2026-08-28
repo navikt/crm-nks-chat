@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
-        <name>Generate_Survey_Invitation_Link</name>
-        <label>Generate Survey Invitation Link</label>
-        <locationX>204</locationX>
-        <locationY>1031</locationY>
-        <actionName>NKS_SurveyController</actionName>
+        <name>Generate_SurveyInvitation</name>
+        <label>Generate SurveyInvitation</label>
+        <locationX>248</locationX>
+        <locationY>647</locationY>
+        <actionName>NKS_MessagingSurveyInvitationInvocable</actionName>
         <actionType>apex</actionType>
         <connector>
             <targetReference>Check_If_SurveyInvitationId_Is_Null</targetReference>
@@ -13,19 +13,23 @@
         <faultConnector>
             <targetReference>Log_Error</targetReference>
         </faultConnector>
-        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <flowTransactionModel>Automatic</flowTransactionModel>
         <inputParameters>
-            <name>caseId</name>
+            <name>sessionId</name>
             <value>
-                <elementReference>Get_Case.Id</elementReference>
+                <elementReference>$Record.Id</elementReference>
+                <inputConfiguratorMode>Resource</inputConfiguratorMode>
             </value>
         </inputParameters>
         <inputParameters>
             <name>surveyDeveloperName</name>
             <value>
+                <inputConfiguratorMode>Resource</inputConfiguratorMode>
                 <stringValue>nks_chat_survey</stringValue>
             </value>
         </inputParameters>
+        <nameSegment>NKS_MessagingSurveyInvitationInvocable</nameSegment>
+        <offset>0</offset>
         <outputParameters>
             <assignToReference>surveyInvitationId</assignToReference>
             <name>output</name>
@@ -34,49 +38,59 @@
     <actionCalls>
         <name>Log_Error</name>
         <label>Log Error</label>
-        <locationX>864</locationX>
-        <locationY>1139</locationY>
+        <locationX>644</locationX>
+        <locationY>755</locationY>
         <actionName>LoggerUtility</actionName>
         <actionType>apex</actionType>
         <dataTypeMappings>
             <typeName>T__refRecord</typeName>
-            <typeValue>Thread__c</typeValue>
+            <typeValue>MessagingSession</typeValue>
         </dataTypeMappings>
-        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <flowTransactionModel>Automatic</flowTransactionModel>
         <inputParameters>
             <name>category</name>
             <value>
-                <stringValue>NKS</stringValue>
+                <inputConfiguratorMode>Resource</inputConfiguratorMode>
+                <stringValue>NKS Survey</stringValue>
             </value>
         </inputParameters>
         <inputParameters>
             <name>domain</name>
             <value>
-                <stringValue>CHAT</stringValue>
+                <inputConfiguratorMode>Resource</inputConfiguratorMode>
+                <stringValue>NKS</stringValue>
             </value>
         </inputParameters>
         <inputParameters>
             <name>logLevel</name>
             <value>
+                <inputConfiguratorMode>Resource</inputConfiguratorMode>
                 <stringValue>ERROR</stringValue>
             </value>
         </inputParameters>
         <inputParameters>
             <name>logMessage</name>
             <value>
-                <stringValue>An error has occurred on generating/updating SurveyInvitationLink</stringValue>
+                <elementReference>$Flow.FaultMessage</elementReference>
+                <inputConfiguratorMode>Resource</inputConfiguratorMode>
             </value>
         </inputParameters>
+        <inputParameters>
+            <name>refRecord</name>
+            <value>
+                <elementReference>$Record</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>LoggerUtility</nameSegment>
+        <offset>0</offset>
     </actionCalls>
     <apiVersion>57.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <decisions>
         <name>Check_if_is_logged_in</name>
         <label>Check if is logged in</label>
-        <locationX>204</locationX>
+        <locationX>479</locationX>
         <locationY>323</locationY>
-        <defaultConnector>
-            <targetReference>Get_Case</targetReference>
-        </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>loggedIn</name>
@@ -100,7 +114,7 @@
         <locationX>50</locationX>
         <locationY>539</locationY>
         <defaultConnector>
-            <targetReference>Get_Case</targetReference>
+            <targetReference>Generate_SurveyInvitation</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
@@ -119,8 +133,8 @@
     <decisions>
         <name>Check_If_SurveyInvitationId_Is_Null</name>
         <label>Check If SurveyInvitationId Is Null</label>
-        <locationX>204</locationX>
-        <locationY>1139</locationY>
+        <locationX>248</locationX>
+        <locationY>755</locationY>
         <defaultConnector>
             <targetReference>Update_Survey_Invitation</targetReference>
         </defaultConnector>
@@ -138,6 +152,12 @@
             <label>isNull</label>
         </rules>
     </decisions>
+    <environments>Default</environments>
+    <formulas>
+        <name>MessagingSessionId</name>
+        <dataType>String</dataType>
+        <expression>{!$Record.Id}</expression>
+    </formulas>
     <interviewLabel>Chat - Generate SurveyInvitation {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Chat - Generate SurveyInvitation</label>
     <processMetadataValues>
@@ -160,27 +180,6 @@
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <recordLookups>
-        <name>Get_Case</name>
-        <label>Get Case</label>
-        <locationX>204</locationX>
-        <locationY>923</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Generate_Survey_Invitation_Link</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>$Record.CaseId</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Case</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
         <name>Get_Person</name>
         <label>Get Person</label>
         <locationX>50</locationX>
@@ -194,7 +193,7 @@
             <field>Id</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>$Record.Account.CRM_Person__c</elementReference>
+                <elementReference>$Record.MessagingEndUser.Account.CRM_Person__c</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
@@ -204,36 +203,32 @@
     <recordUpdates>
         <name>Update_Survey_Invitation</name>
         <label>Update Survey Invitation</label>
-        <locationX>336</locationX>
-        <locationY>1247</locationY>
-        <faultConnector>
-            <isGoTo>true</isGoTo>
-            <targetReference>Log_Error</targetReference>
-        </faultConnector>
+        <locationX>380</locationX>
+        <locationY>863</locationY>
         <filterLogic>and</filterLogic>
         <filters>
-            <field>Case__c</field>
+            <field>MessagingSession__c</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>$Record.CaseId</elementReference>
+                <elementReference>MessagingSessionId</elementReference>
             </value>
         </filters>
         <inputAssignments>
             <field>NKS_Survey_Theme__c</field>
             <value>
-                <elementReference>$Record.NKS_Chat_Queue__c</elementReference>
+                <elementReference>$Record.NKS_Theme_Group__r.Name</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
             <field>NKS_Survey_Unit__c</field>
             <value>
-                <elementReference>Get_Case.Owner:User.Department</elementReference>
+                <elementReference>$Record.Owner:User.Department</elementReference>
             </value>
         </inputAssignments>
         <object>SurveyInvitation</object>
     </recordUpdates>
     <start>
-        <locationX>78</locationX>
+        <locationX>353</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Check_if_is_logged_in</targetReference>
@@ -241,20 +236,13 @@
         <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
         <filterLogic>and</filterLogic>
         <filters>
-            <field>CaseId</field>
-            <operator>NotEqualTo</operator>
+            <field>Status</field>
+            <operator>EqualTo</operator>
             <value>
-                <stringValue></stringValue>
+                <stringValue>Ended</stringValue>
             </value>
         </filters>
-        <filters>
-            <field>CRM_Authentication_Status__c</field>
-            <operator>NotEqualTo</operator>
-            <value>
-                <stringValue></stringValue>
-            </value>
-        </filters>
-        <object>LiveChatTranscript</object>
+        <object>MessagingSession</object>
         <recordTriggerType>Update</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>
     </start>
@@ -265,5 +253,8 @@
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>false</isOutput>
+        <value>
+            <elementReference>Generate_SurveyInvitation</elementReference>
+        </value>
     </variables>
 </Flow>
