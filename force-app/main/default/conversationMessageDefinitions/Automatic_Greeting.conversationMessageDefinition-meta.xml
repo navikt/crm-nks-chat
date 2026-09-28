@@ -5,7 +5,7 @@
         <label>English_greeting</label>
         <name>English_greeting</name>
         <primitiveValues>
-            <textValue>Welcome to chat with NAV. This is an open chat and we kindly ask you not to reveal personal or case related information. We can give you general advice. You&apos;re chatting with</textValue>
+            <textValue>Welcome to chat with Nav. This is an open chat and we kindly ask you not to reveal personal or case related information. We can give you general advice. You&apos;re chatting with</textValue>
             <type>Text</type>
         </primitiveValues>
         <valueType>Text</valueType>
@@ -15,7 +15,7 @@
         <label>Norwegian_greeting</label>
         <name>Norwegian_greeting</name>
         <primitiveValues>
-            <textValue>Velkommen til chat med NAV. Dette er en uinnlogget chat og vi ber deg ikke oppgi person - eller saksopplysninger. Vi kan kun gi deg generell veiledning. Du snakker med</textValue>
+            <textValue>Velkommen til chat med Nav. Dette er en uinnlogget chat og vi ber deg ikke oppgi person - eller saksopplysninger. Vi kan kun gi deg generell veiledning. Du snakker med</textValue>
             <type>Text</type>
         </primitiveValues>
         <valueType>Text</valueType>
