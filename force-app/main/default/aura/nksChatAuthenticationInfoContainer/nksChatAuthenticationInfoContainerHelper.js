@@ -76,7 +76,6 @@
     },
 
     setTabStateWithDelay: function (component, state) {
-        const workspace = component.find('workspace');
         const tabId = component.get('v.chatTabId');
 
         if (!tabId) {
@@ -86,15 +85,27 @@
         // eslint-disable-next-line @lwc/lwc/no-async-operation, @locker/locker/distorted-window-set-timeout
         window.setTimeout(
             $A.getCallback(() => {
-                workspace
-                    .setTabHighlighted({
-                        tabId,
-                        highlighted: true,
-                        options: { state }
-                    })
-                    .catch((error) => {
+                if (!component.isValid()) {
+                    return;
+                }
+
+                const workspace = component.find('workspace');
+
+                if (!workspace) {
+                    return;
+                }
+
+                const result = workspace.setTabHighlighted({
+                    tabId,
+                    highlighted: true,
+                    options: { state }
+                });
+
+                if (result && typeof result.catch === 'function') {
+                    result.catch((error) => {
                         console.error('Failed to set tab state:', JSON.stringify(error));
                     });
+                }
             }),
             500
         );
