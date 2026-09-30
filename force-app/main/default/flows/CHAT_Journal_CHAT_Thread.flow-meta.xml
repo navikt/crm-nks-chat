@@ -676,7 +676,7 @@
     <formulas>
         <name>BOT_DOCUMENT_TITLE</name>
         <dataType>String</dataType>
-        <expression>&apos;Chatsamtale med Frida - &apos; + {!THREAD_CLOSE_DATE} + &apos; - &apos; +
+        <expression>&apos;Chatsamtale med NavBot - &apos; + {!THREAD_CLOSE_DATE} + &apos; - &apos; +
             {!JOURNALED_THREAD.CRM_Theme_Name__c}</expression>
     </formulas>
     <formulas>

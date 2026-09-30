@@ -7,7 +7,7 @@
     </quickActions>
     <quickActions>
         <aspect>Master</aspect>
-        <label>Sladd Frida samtalen</label>
+        <label>Sladd NavBot samtalen</label>
         <name>NKS_RedactFridaChat</name>
     </quickActions>
 </CustomObjectTranslation>
