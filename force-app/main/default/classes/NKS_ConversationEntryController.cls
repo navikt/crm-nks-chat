@@ -2,7 +2,7 @@ public class NKS_ConversationEntryController {
     private static LoggerUtility logger = new LoggerUtility('Messaging');
     private static final String LOG_PREFIX = 'NKS_ConversationEntryController';
 
-    private static final String PREFIX_FRIDA = 'Frida:';
+    private static final String PREFIX_NAVBOT = 'NavBot:';
     private static final String PREFIX_BRUKER = 'Bruker:';
     private static final String PREFIX_VEILEDER = 'Veileder:';
 
@@ -271,7 +271,7 @@ public class NKS_ConversationEntryController {
                 String trimmedLine = line == null ? null : line.trim();
                 if (
                     !String.isBlank(trimmedLine) &&
-                    (trimmedLine.startsWith(PREFIX_FRIDA) ||
+                    (trimmedLine.startsWith(PREFIX_NAVBOT) ||
                     trimmedLine.startsWith(PREFIX_BRUKER) ||
                     trimmedLine.startsWith(PREFIX_VEILEDER))
                 ) {
@@ -335,7 +335,7 @@ public class NKS_ConversationEntryController {
             sender.subject = originalSender.subject;
         }
 
-        if (messageText.startsWith(PREFIX_FRIDA)) {
+        if (messageText.startsWith(PREFIX_NAVBOT)) {
             sender.role = 'System';
             sender.subject = null;
         } else if (messageText.startsWith(PREFIX_BRUKER)) {
@@ -407,7 +407,7 @@ public class NKS_ConversationEntryController {
 
         String text = entry.messageText.trim();
 
-        if (text.startsWith(PREFIX_FRIDA) || text.startsWith(PREFIX_BRUKER) || text.startsWith(PREFIX_VEILEDER)) {
+        if (text.startsWith(PREFIX_NAVBOT) || text.startsWith(PREFIX_BRUKER) || text.startsWith(PREFIX_VEILEDER)) {
             return text;
         }
 
@@ -420,7 +420,7 @@ public class NKS_ConversationEntryController {
             return PREFIX_VEILEDER + ' ' + text;
         }
 
-        return PREFIX_FRIDA + ' ' + text;
+        return PREFIX_NAVBOT + ' ' + text;
     }
 
     private static Message__c createAuthEventMessage(MessagingSession msgSession, Thread__c thread) {
@@ -469,8 +469,8 @@ public class NKS_ConversationEntryController {
             return messageText;
         }
 
-        if (messageText.startsWith(PREFIX_FRIDA)) {
-            return messageText.substring(PREFIX_FRIDA.length()).trim();
+        if (messageText.startsWith(PREFIX_NAVBOT)) {
+            return messageText.substring(PREFIX_NAVBOT.length()).trim();
         }
         if (messageText.startsWith(PREFIX_BRUKER)) {
             return messageText.substring(PREFIX_BRUKER.length()).trim();
