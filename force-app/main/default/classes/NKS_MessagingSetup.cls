@@ -17,26 +17,6 @@ public with sharing class NKS_MessagingSetup {
         ];
     }
 
-    public static List<User> getUsersMissingMessagingLicense() {
-        return [
-            SELECT Id, Name, Profile.UserLicense.Name
-            FROM User
-            WHERE
-                Id IN (
-                    SELECT UserOrGroupId
-                    FROM GroupMember
-                    WHERE
-                        Group.DeveloperName LIKE 'NKS_Skill_%'
-                        OR Group.DeveloperName LIKE 'HOT_ServicetjenestenVeiledere%'
-                )
-                AND Id NOT IN (
-                    SELECT AssigneeId
-                    FROM PermissionSetLicenseAssign
-                    WHERE PermissionSetLicense.DeveloperName = :messagingLicenseDeveloperName
-                )
-        ];
-    }
-
     public static void addMessagingPermissions(List<User> users) {
         LoggerUtility logger = new LoggerUtility('Messaging');
         PermissionSetLicense messagingLicense = [
