@@ -8,19 +8,14 @@
                 samtale med NavBot
             </button>
         </p>
-        <c-community-modal
-            show-close-button
-            show-modal={modalOpen}
-            onmodalclosed={closeModal}
-            modal-header="Chatbot samtale"
-        >
+        <c-ds-modal show-close-button show-modal={modalOpen} onmodalclosed={closeModal} modal-header="Chatbot samtale">
             <div slot="modalContent">
                 <div lwc:if={isChatTranscript}>
                     <lightning-formatted-rich-text value={chatbotMessage}></lightning-formatted-rich-text>
                 </div>
                 <div lwc:else class="aksel-body-long aksel-body-long--medium chatbot-text">{chatbotMessage}</div>
             </div>
-        </c-community-modal>
+        </c-ds-modal>
         <c-community-message-container message-groups={messageGroups}></c-community-message-container>
     </div>
 </template>
