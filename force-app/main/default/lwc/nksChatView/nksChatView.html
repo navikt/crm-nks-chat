@@ -1,26 +1,21 @@
 <template>
     <div class="container">
-        <p class="navds-bodylong navds-bodylong--medium">Chatsamtale</p>
-        <h1 class="navds-heading navds-heading--xlarge header">{themeGroup}</h1>
-        <p class="navds-bodylong navds-bodylong--medium modal-text">
+        <p class="aksel-body-long aksel-body-long--medium">Chatsamtale</p>
+        <h1 class="aksel-heading aksel-heading--xlarge header">{themeGroup}</h1>
+        <p class="aksel-body-long aksel-body-long--medium modal-text">
             Trykk her for å se
-            <button onclick={handleModalButton} class="navds-link navds-link--action frida-button">
+            <button onclick={handleModalButton} class="aksel-link aksel-link--action frida-button">
                 samtale med NavBot
             </button>
         </p>
-        <c-community-modal
-            show-close-button
-            show-modal={modalOpen}
-            onmodalclosed={closeModal}
-            modal-header="Chatbot samtale"
-        >
+        <c-ds-modal show-close-button show-modal={modalOpen} onmodalclosed={closeModal} modal-header="Chatbot samtale">
             <div slot="modalContent">
                 <div lwc:if={isChatTranscript}>
                     <lightning-formatted-rich-text value={chatbotMessage}></lightning-formatted-rich-text>
                 </div>
-                <div lwc:else class="chatbot-text">{chatbotMessage}</div>
+                <div lwc:else class="aksel-body-long aksel-body-long--medium chatbot-text">{chatbotMessage}</div>
             </div>
-        </c-community-modal>
+        </c-ds-modal>
         <c-community-message-container message-groups={messageGroups}></c-community-message-container>
     </div>
 </template>
