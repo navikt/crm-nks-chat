@@ -8,6 +8,7 @@ public with sharing class NKS_MessagingSessionReportData {
             SELECT NKS_Messaging_Session_Id__c
             FROM ReportingData__c
             WHERE NKS_Messaging_Session_Id__c IN :sessionIds
+            WITH SYSTEM_MODE
         ]) {
             sessionIds.remove(existing.NKS_Messaging_Session_Id__c);
         }
@@ -43,6 +44,7 @@ public with sharing class NKS_MessagingSessionReportData {
                 Status
             FROM MessagingSession
             WHERE Id IN :sessionIds
+            WITH SYSTEM_MODE
         ];
 
         List<ReportingData__c> reportingDataList = new List<ReportingData__c>();
@@ -84,7 +86,7 @@ public with sharing class NKS_MessagingSessionReportData {
         }
 
         if (!reportingDataList.isEmpty()) {
-            insert reportingDataList;
+            insert as system reportingDataList;
         }
 
         return sessionIds;
