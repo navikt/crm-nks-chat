@@ -1,117 +1,76 @@
-@isTest
+@IsTest
 private class NKS_ConversationEntryService_Test {
-    @isTest
-    static void testGetConversationEntryMessages_allNullOptionalParams() {
-        Test.setMock(HttpCalloutMock.class, new SingleRequestMock(200, 'OK', '{}', null));
-
-        Test.startTest();
+    private static void assertGet(Long startTime, Long endTime, String direction, Integer recordLimit, String query) {
+        NKS_RequestMock mock = new NKS_RequestMock(
+            'callout:Conversation_Data_API/conversation-entries?conversationIdentifier=test-conversation-id' + query,
+            'GET',
+            200,
+            '{"conversationEntries":[]}'
+        );
+        Test.setMock(HttpCalloutMock.class, mock);
         HttpResponse response = NKS_ConversationEntryService.getConversationEntryMessages(
             'test-conversation-id',
-            null,
-            null,
-            null,
-            null
+            startTime,
+            endTime,
+            direction,
+            recordLimit
         );
-        Test.stopTest();
-
-        Assert.areEqual(200, response.getStatusCode(), 'Expected 200 status code');
+        Assert.areEqual(1, mock.calls);
+        Assert.areEqual(200, response.getStatusCode());
+        Assert.areEqual('{"conversationEntries":[]}', response.getBody());
     }
 
-    @isTest
-    static void testGetConversationEntryMessages_withFromEndDirection() {
-        Test.setMock(HttpCalloutMock.class, new SingleRequestMock(200, 'OK', '{}', null));
-
-        Test.startTest();
-        HttpResponse response = NKS_ConversationEntryService.getConversationEntryMessages(
-            'test-conversation-id',
-            1000000L,
-            2000000L,
-            'FROMEND',
-            100
-        );
-        Test.stopTest();
-
-        Assert.areEqual(200, response.getStatusCode(), 'Expected 200 status code');
+    @IsTest
+    static void optionalParametersAndBoundaries() {
+        assertGet(null, null, null, null, '');
+        assertGet(1000L, null, null, null, '&startTimestamp=1000');
+        assertGet(null, 2000L, null, null, '&endTimestamp=2000');
+        assertGet(1000L, 2000L, 'FROMEND', 1, '&startTimestamp=1000&endTimestamp=2000&direction=FROMEND&limit=1');
+        assertGet(null, null, 'FROMSTART', 1000, '&direction=FROMSTART&limit=1000');
     }
 
-    @isTest
-    static void testGetConversationEntryMessages_withFromStartDirection() {
-        Test.setMock(HttpCalloutMock.class, new SingleRequestMock(200, 'OK', '{}', null));
-
-        Test.startTest();
-        HttpResponse response = NKS_ConversationEntryService.getConversationEntryMessages(
-            'test-conversation-id',
-            null,
-            null,
-            'FROMSTART',
-            1000
-        );
-        Test.stopTest();
-
-        Assert.areEqual(200, response.getStatusCode(), 'Expected 200 status code');
+    @IsTest
+    static void invalidOptionsAreOmitted() {
+        assertGet(null, null, 'INVALID_DIRECTION', 50, '&limit=50');
+        assertGet(null, null, null, -1, '');
+        assertGet(null, null, null, 0, '');
+        assertGet(null, null, 'FROMEND', 1001, '&direction=FROMEND');
     }
 
-    @isTest
-    static void testGetConversationEntryMessages_withInvalidDirection() {
-        Test.setMock(HttpCalloutMock.class, new SingleRequestMock(400, 'Bad Request', '{}', null));
-
-        Test.startTest();
-        HttpResponse response = NKS_ConversationEntryService.getConversationEntryMessages(
-            'test-conversation-id',
-            1000000L,
-            null,
-            'INVALID_DIRECTION',
-            50
+    @IsTest
+    static void deleteRequestAndErrorResponse() {
+        NKS_RequestMock mock = new NKS_RequestMock(
+            'callout:Conversation_Data_API/conversation-participants?participantEntityId=first,second&cascadeLevel=FULL_CASCADE',
+            'DELETE',
+            503,
+            'Unavailable'
         );
-        Test.stopTest();
-
-        Assert.areEqual(400, response.getStatusCode(), 'Expected 400 status code');
-    }
-
-    @isTest
-    static void testGetConversationEntryMessages_withExcessiveRecordLimit() {
-        Test.setMock(HttpCalloutMock.class, new SingleRequestMock(200, 'OK', '{}', null));
-
-        Test.startTest();
-        HttpResponse response = NKS_ConversationEntryService.getConversationEntryMessages(
-            'test-conversation-id',
-            null,
-            null,
-            'FROMEND',
-            1001
-        );
-        Test.stopTest();
-
-        Assert.areEqual(200, response.getStatusCode(), 'Expected 200 status code');
-    }
-
-    @isTest
-    static void testGetConversationEntryMessages_withZeroRecordLimit() {
-        Test.setMock(HttpCalloutMock.class, new SingleRequestMock(200, 'OK', '{}', null));
-
-        Test.startTest();
-        HttpResponse response = NKS_ConversationEntryService.getConversationEntryMessages(
-            'test-conversation-id',
-            null,
-            null,
-            null,
-            0
-        );
-        Test.stopTest();
-
-        Assert.areEqual(200, response.getStatusCode(), 'Expected 200 status code');
-    }
-
-    @isTest
-    static void testDeleteConversationParticipantData() {
-        Test.setMock(HttpCalloutMock.class, new SingleRequestMock(200, 'OK', '{}', null));
-
-        Test.startTest();
+        Test.setMock(HttpCalloutMock.class, mock);
         HttpResponse response = NKS_ConversationEntryService.deleteConversationParticipantData(
-            new List<String>{ 'participantId1', 'participantId2' }
+            new List<String>{ 'first', 'second' }
         );
-        Test.stopTest();
+        Assert.areEqual(1, mock.calls);
+        Assert.areEqual(503, response.getStatusCode());
+        Assert.areEqual('Unavailable', response.getBody());
+    }
 
-        Assert.areEqual(200, response.getStatusCode(), 'Expected 200 status code');
+    @IsTest
+    static void calloutExceptionPropagates() {
+        Test.setMock(
+            HttpCalloutMock.class,
+            new NKS_RequestMock(
+                    'callout:Conversation_Data_API/conversation-participants?participantEntityId=first&cascadeLevel=FULL_CASCADE',
+                    'DELETE',
+                    200,
+                    '{}'
+                )
+                .throwing()
+        );
+        try {
+            NKS_ConversationEntryService.deleteConversationParticipantData(new List<String>{ 'first' });
+            Assert.fail('Expected callout exception');
+        } catch (CalloutException ex) {
+            Assert.areEqual('Simulated participant callout failure', ex.getMessage());
+        }
     }
 }
