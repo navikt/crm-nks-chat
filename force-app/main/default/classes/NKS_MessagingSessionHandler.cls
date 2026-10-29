@@ -3,29 +3,11 @@ global with sharing class NKS_MessagingSessionHandler extends MyTriggers {
     private static final String LOG_PREFIX = 'NKS_MessagingSessionHandler';
 
     global override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
-        List<String> fieldNamesToCheck = new List<String>{ 'EndTime', 'Status', 'CRM_Authentication_Status__c' };
-        List<Id> messagingSessionIdsToConvert = new List<Id>();
-
         try {
-            for (MessagingSession newRecord : (List<MessagingSession>) records) {
-                MessagingSession oldRecord = (MessagingSession) triggerOldMap.get(newRecord.Id);
+            NKS_ConversationEntryQueueable job = buildConversionJob((List<MessagingSession>) records, triggerOldMap);
 
-                if (
-                    MyTriggers.hasChangedFields(fieldNamesToCheck, newRecord, oldRecord) &&
-                    newRecord.EndTime != null &&
-                    newRecord.EndTime <= Datetime.now() &&
-                    newRecord.CRM_Authentication_Status__c == 'Completed' &&
-                    (newRecord.Status == 'Ended' ||
-                    newRecord.Status == 'Inactive')
-                ) {
-                    messagingSessionIdsToConvert.add(newRecord.Id);
-                }
-            }
-
-            if (!messagingSessionIdsToConvert.isEmpty()) {
-                System.enqueueJob(
-                    new NKS_ConversationEntryQueueable(messagingSessionIdsToConvert, null, null, 'FROMSTART', 1000)
-                );
+            if (job != null) {
+                System.enqueueJob(job);
             }
         } catch (Exception e) {
             logger.error(
@@ -41,5 +23,28 @@ global with sharing class NKS_MessagingSessionHandler extends MyTriggers {
         } finally {
             logger.publish();
         }
+    }
+
+    @TestVisible
+    private static NKS_ConversationEntryQueueable buildConversionJob(
+        List<MessagingSession> sessions,
+        Map<Id, sObject> oldMap
+    ) {
+        List<String> watchedFields = new List<String>{ 'EndTime', 'Status', 'CRM_Authentication_Status__c' };
+        List<Id> ids = new List<Id>();
+        for (MessagingSession session : sessions) {
+            MessagingSession oldSession = (MessagingSession) oldMap.get(session.Id);
+            if (
+                MyTriggers.hasChangedFields(watchedFields, session, oldSession) &&
+                session.EndTime != null &&
+                session.EndTime <= Datetime.now() &&
+                session.CRM_Authentication_Status__c == 'Completed' &&
+                (session.Status == 'Ended' ||
+                session.Status == 'Inactive')
+            ) {
+                ids.add(session.Id);
+            }
+        }
+        return ids.isEmpty() ? null : new NKS_ConversationEntryQueueable(ids, null, null, 'FROMSTART', 1000);
     }
 }
