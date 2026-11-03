@@ -1,4 +1,5 @@
 public class NKS_ConversationEntryQueueable implements Queueable, Database.AllowsCallouts {
+    @TestVisible
     private List<Id> messagingSessionIds;
     private Long startTimestamp;
     private Long endTimestamp;

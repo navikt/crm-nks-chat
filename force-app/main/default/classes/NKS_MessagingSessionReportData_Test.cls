@@ -2,30 +2,7 @@
 public with sharing class NKS_MessagingSessionReportData_Test {
     @TestSetup
     static void makeData() {
-        User thisUser = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
-        System.runAs(thisUser) {
-            MessagingChannel msgChannel = new MessagingChannel();
-            msgChannel.MasterLabel = 'TestChannel';
-            msgChannel.DeveloperName = 'TestChannel';
-            msgChannel.IsActive = true;
-            msgChannel.MessageType = 'Text';
-            msgChannel.MessagingPlatformKey = 'TestChannel';
-            insert msgChannel;
-
-            MessagingEndUser msgEndUser = new MessagingEndUser();
-            msgEndUser.Name = 'Messaging User';
-            msgEndUser.MessagingChannelId = msgChannel.Id;
-            msgEndUser.MessageType = 'EmbeddedMessaging';
-            msgEndUser.MessagingPlatformKey = 'TestChannel';
-            insert msgEndUser;
-
-            MessagingSession msgSession = new MessagingSession();
-            msgSession.MessagingEndUserId = msgEndUser.Id;
-            msgSession.MessagingChannelId = msgChannel.Id;
-            msgSession.Status = 'Ended';
-            msgSession.EndTime = Datetime.now();
-            insert msgSession;
-        }
+        NKS_MessagingTestFixture.createSession('Ended', false);
     }
 
     @IsTest

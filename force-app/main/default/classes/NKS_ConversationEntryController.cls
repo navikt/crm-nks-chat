@@ -10,6 +10,7 @@ public class NKS_ConversationEntryController {
     private static final String CONVERSATION_TERMINATED_BY_END_USER = '---conversation terminated by end-user---';
     private static final String WELCOME_MARKER_EN = 'you\'re chatting with ';
 
+    @TestVisible
     private static Map<String, User> navUserInfoByUserId = getNavUserInfoByUserId();
 
     public static void convertConversationEntries(
@@ -52,6 +53,23 @@ public class NKS_ConversationEntryController {
                 WHERE Id IN :messagingSessionIds
             ];
 
+            convertQueriedSessions(messagingSessions, startTimestamp, endTimestamp, queryDirection, recordLimit);
+        } catch (Exception e) {
+            logger.exception(e, CRM_ApplicationDomain.Domain.NKS);
+        } finally {
+            logger.publish();
+        }
+    }
+
+    @TestVisible
+    private static void convertQueriedSessions(
+        List<MessagingSession> messagingSessions,
+        Long startTimestamp,
+        Long endTimestamp,
+        String queryDirection,
+        Integer recordLimit
+    ) {
+        try {
             Map<Id, ConversationEntryWrapper> wrapperBySessionId = new Map<Id, ConversationEntryWrapper>();
 
             for (MessagingSession session : messagingSessions) {
@@ -60,9 +78,7 @@ public class NKS_ConversationEntryController {
                         continue;
                     }
 
-                    String conversationIdentifier = Test.isRunningTest()
-                        ? '17978db9-ed91-4363-adcb-d1b581168eed'
-                        : session.Conversation.ConversationIdentifier;
+                    String conversationIdentifier = session.Conversation?.ConversationIdentifier;
 
                     if (conversationIdentifier == null) {
                         logger.error(
@@ -163,7 +179,18 @@ public class NKS_ConversationEntryController {
             return null;
         }
 
-        return (ConversationEntryWrapper) JSON.deserialize(response.getBody(), ConversationEntryWrapper.class);
+        ConversationEntryWrapper wrapper = (ConversationEntryWrapper) JSON.deserialize(
+            response.getBody(),
+            ConversationEntryWrapper.class
+        );
+        if (wrapper == null) {
+            logger.error(
+                LOG_PREFIX + '.fetchConversationEntryWrapper | Wrapper not found | sessionId=' + session.Id,
+                null,
+                CRM_ApplicationDomain.Domain.NKS
+            );
+        }
+        return wrapper;
     }
 
     @TestVisible
@@ -500,6 +527,7 @@ public class NKS_ConversationEntryController {
         }
     }
 
+    @TestVisible
     private static void updateThread(Thread__c thread) {
         try {
             thread.CRM_isActive__c = false;

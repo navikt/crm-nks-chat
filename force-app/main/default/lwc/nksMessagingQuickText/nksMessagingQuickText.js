@@ -9,6 +9,7 @@ export default class NksMessagingQuickText extends LightningElement {
     // eslint-disable-next-line compat/compat
     _boundEditors = new WeakSet();
     _scanInterval;
+    iteration = 0;
 
     connectedCallback() {
         this.bindEditors();
@@ -49,6 +50,15 @@ export default class NksMessagingQuickText extends LightningElement {
     }
 
     bindEditors() {
+        if (this.iteration > 20) {
+            console.log('Max iterations reached');
+            if (this._scanInterval) {
+                window.clearInterval(this._scanInterval);
+                this._scanInterval = null;
+            }
+            return;
+        }
+
         // eslint-disable-next-line @lwc/lwc/no-document-query
         const conversationBodies = document.querySelectorAll('[data-target-selection-name="scrt_conversationBody"]');
 
@@ -66,6 +76,7 @@ export default class NksMessagingQuickText extends LightningElement {
                 }
             });
         });
+        this.iteration++;
     }
 
     insertquicktext(event, editor) {
