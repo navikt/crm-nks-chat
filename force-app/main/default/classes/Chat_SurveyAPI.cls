@@ -1,13 +1,13 @@
-@RestResource(urlMapping='/LiveChatTranscript/')
+@RestResource(urlMapping='/MessagingSession/')
 global with sharing class Chat_SurveyAPI {
-    private static LoggerUtility logger = new LoggerUtility('Chat API');
+    private static LoggerUtility logger = new LoggerUtility('NKS Survey');
     /**
      * @description Function to get SurveyInvitationLink via REST API
      * @author Sara Mohammadi | 01.06.2023
      */
     @HttpGet
     global static void getSurveyInvitationLink() {
-        String chatKey = RestContext.request.params.get('ChatKey');
+        String sessionKey = RestContext.request.params.get('SessionKey');
         RestRequest request = RestContext.request;
         RestResponse response = RestContext.response;
         response.addHeader('Content-Type', 'application/json');
@@ -21,10 +21,10 @@ global with sharing class Chat_SurveyAPI {
             : null;
 
         try {
-            String surveyInvitationLink = Chat_SurveyHelper.getSurveyInvitationLink(chatKey);
+            String surveyInvitationLink = Chat_SurveyHelper.getSurveyInvitationLink(sessionKey);
             response.statusCode = 200;
             response.responseBody = Blob.valueOf(JSON.serializePretty(surveyInvitationLink));
-            if (Test.isRunningTest() && chatKey == 'test') {
+            if (Test.isRunningTest() && sessionKey == 'test') {
                 throw new CalloutException('This is a test exception!');
             }
         } catch (Exception ex) {
