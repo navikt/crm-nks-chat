@@ -1,13 +1,12 @@
 import { LightningElement, wire } from 'lwc';
 import getQuicktexts from '@salesforce/apex/CRM_HenvendelseQuicktextController.getQuicktexts';
 
-const QUICK_TEXT_TRIGGER_KEYS = ['Enter', ' ', ','];
+const QUICK_TEXT_TRIGGER_KEYS = ['Enter', ';', ','];
 
 export default class NksMessagingQuickText extends LightningElement {
     quickTextMap = [];
     recentlyInserted = '';
-    // eslint-disable-next-line compat/compat
-    _boundEditors = new WeakSet();
+    _boundEditors = new Map();
     _scanInterval;
     iteration = 0;
 
@@ -24,6 +23,10 @@ export default class NksMessagingQuickText extends LightningElement {
             window.clearInterval(this._scanInterval);
             this._scanInterval = null;
         }
+        this._boundEditors.forEach((handler, editor) => {
+            editor.removeEventListener('keyup', handler);
+        });
+        this._boundEditors.clear();
     }
 
     @wire(getQuicktexts, {})
@@ -68,37 +71,43 @@ export default class NksMessagingQuickText extends LightningElement {
                 return;
             }
 
-            this._boundEditors.add(editor);
-
-            editor.addEventListener('keyup', (event) => {
+            const handler = (event) => {
                 if (QUICK_TEXT_TRIGGER_KEYS.includes(event.key)) {
                     this.insertquicktext(event, editor);
                 }
-            });
+            };
+            this._boundEditors.set(editor, handler);
+            editor.addEventListener('keyup', handler);
         });
         this.iteration++;
     }
 
     insertquicktext(event, editor) {
+        if (
+            event.isComposing ||
+            event.ctrlKey ||
+            event.altKey ||
+            event.metaKey ||
+            editor.selectionStart !== editor.selectionEnd
+        ) {
+            return;
+        }
+
         if (!Array.isArray(this.quickTextMap) || this.quickTextMap.length === 0) {
             this.recentlyInserted = '';
             return;
         }
 
         const caretEnd = editor.selectionEnd;
-        const lastItem = editor.value
-            .substring(0, caretEnd)
-            .replace(/(\r\n|\n|\r)/g, ' ')
-            .trim()
-            .split(' ')
-            .pop();
+        const trigger = event.key === 'Enter' ? '\n' : event.key;
+        const beforeCaret = editor.value.substring(0, caretEnd);
 
-        if (!lastItem) {
+        if (!beforeCaret.endsWith(trigger)) {
             this.recentlyInserted = '';
             return;
         }
 
-        const lastWord = lastItem.replace(event.key, '');
+        const lastWord = beforeCaret.slice(0, -trigger.length).match(/(?:^|\s)(\S+)$/)?.[1];
         const obj = this._getQmappedItem(lastWord);
 
         if (!obj) {
@@ -108,12 +117,12 @@ export default class NksMessagingQuickText extends LightningElement {
 
         const quickText = obj.content?.message ?? '';
         const isCaseSensitive = Boolean(obj.content?.isCaseSensitive);
-        const startIndex = caretEnd - lastWord.length - 1;
-        const lastChar = event.key === 'Enter' ? '\n' : event.key;
+        const startIndex = caretEnd - lastWord.length - trigger.length;
+        const lastChar = event.key === ';' ? '' : trigger;
 
         if (isCaseSensitive) {
             const words = quickText.split(' ');
-            const first = lastItem.charAt(0);
+            const first = lastWord.charAt(0);
 
             if (first && first === first.toLowerCase()) {
                 words[0] = (words[0] || '').toLowerCase();
@@ -146,8 +155,10 @@ export default class NksMessagingQuickText extends LightningElement {
         const safeStart = Math.max(0, start);
         const safeEnd = Math.max(safeStart, end);
 
-        editor.setRangeText(replacement, safeStart, safeEnd, 'end');
-        editor.dispatchEvent(new CustomEvent('input', { bubbles: true }));
+        editor.setRangeText(replacement, safeStart, safeEnd);
+        const caret = safeStart + replacement.length;
+        editor.setSelectionRange(caret, caret);
+        editor.dispatchEvent(new CustomEvent('input', { bubbles: true, composed: true }));
 
         this.recentlyInserted = replacement;
     }
