@@ -9,7 +9,7 @@ import { getRecordNotifyChange } from 'lightning/uiRecordApi';
 import { refreshApex } from '@salesforce/apex';
 
 import AUTH_STARTED from '@salesforce/label/c.CRM_Chat_Authentication_Started';
-import IDENTITY_CONFIRMED_DISCLAIMER from '@salesforce/label/c.CRM_Chat_Identity_Confirmed_Disclaimer';
+import IDENTITY_CONFIRMED_DISCLAIMER from '@salesforce/label/c.CRM_Chat_Identity_Confirmed';
 import SEND_AUTH_REQUEST from '@salesforce/label/c.NKS_Chat_Send_Authentication_Request';
 import SET_TO_REDACTION_LABEL from '@salesforce/label/c.NKS_Set_To_Redaction';
 import CHAT_LOGIN_MSG_NO from '@salesforce/label/c.NKS_Chat_Login_Message_NO';

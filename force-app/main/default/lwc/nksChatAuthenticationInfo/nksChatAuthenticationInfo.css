@@ -1,16 +1,27 @@
 .custom-button {
     --slds-c-button-radius-border: 15rem;
-    --slds-c-button-brand-color-background: #ffaa33;
-    --slds-c-button-brand-color-border: #ffaa33;
-    --slds-c-button-brand-color-background-hover: #ffc166;
-    --slds-c-button-brand-color-border-hover: #ffc166;
-    --slds-c-button-brand-color-background-active: #ffc166;
-    --slds-c-button-brand-text-color: black;
-    --slds-c-button-brand-text-color-active: black;
-    --slds-c-button-brand-text-color-hover: black;
+    --slds-c-button-brand-color-background: var(--slds-g-color-warning-base-80);
+    --slds-c-button-brand-color-border: var(--slds-g-color-warning-base-40);
+    --slds-c-button-brand-color-background-hover: var(--slds-g-color-warning-base-80);
+    --slds-c-button-brand-color-border-hover: var(--slds-g-color-warning-base-40);
+    --slds-c-button-brand-color-background-active: var(--slds-g-color-warning-base-80);
+    --slds-c-button-brand-color-border-active: var(--slds-g-color-warning-base-40);
+    --slds-c-button-brand-text-color: var(--slds-g-color-warning-base-20);
+    --slds-c-button-brand-text-color-active: var(--slds-g-color-warning-base-20);
+    --slds-c-button-brand-text-color-hover: var(--slds-g-color-warning-base-20);
+    padding: 0.141rem 0;
 }
 
 .custom-badge {
-    --slds-c-badge-color-background: #ffb24914;
-    --slds-c-badge-color-border: #ffb249;
+    --slds-c-badge-color-background: var(--slds-g-color-warning-container-1);
+    --slds-c-badge-text-color: var(--slds-g-color-on-warning-1);
+    --slds-c-badge-color-border: var(--slds-g-color-warning-container-1);
+}
+
+.custom-spacing {
+    padding: 0 1rem 3.125rem 1rem;
+}
+
+.badge-spacing {
+    padding: 0.516rem 0;
 }
