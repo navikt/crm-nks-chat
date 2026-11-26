@@ -14,7 +14,7 @@
         <name>CRM_Chat_Authentication_Started</name>
     </customLabels>
     <customLabels>
-        <label>Identitet bekreftet</label>
+        <label>Bekreftet identitet</label>
         <name>CRM_Chat_Identity_Confirmed</name>
     </customLabels>
     <customLabels>
